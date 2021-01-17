@@ -11,7 +11,7 @@ using System.IO;
 using System.Timers;
 using System.Text.RegularExpressions;
 
-namespace geckoBot.modules
+namespace GeckoBot
 {
     //global variables
     public class Globals
