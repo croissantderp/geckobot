@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Timers;
+using System.Text.RegularExpressions;
 
 namespace geckoBot.modules
 {
@@ -206,7 +207,10 @@ namespace geckoBot.modules
             Globals.emoteDict = Load("C:\\gecko2.gek").ToString().Split('ҩ').Select(part => part.Split('⁊')).Where(part => part.Length == 2).ToDictionary(sp => sp[0], sp => sp[1]);
 
             //splits string by $
-            string[] yesnt = stuff.Split("$");
+            string[] yesnt = Regex.Split(stuff, @"(?<!\\)\$");
+
+            //removes empty strings which would break this command
+            yesnt = yesnt.Where(x => !string.IsNullOrEmpty(x)).ToArray();
 
             //final string array with converted segments
             string[] final = new string[yesnt.Length];
@@ -895,7 +899,7 @@ namespace geckoBot.modules
             //embed
             var embed = new EmbedBuilder
             {
-            Title = "geckobot" + Globals.names[Globals.currentValue] + System.Environment.NewLine + "1/14/2020 instruction manual"
+            Title = "geckobot" + Globals.names[Globals.currentValue] + System.Environment.NewLine + "1/16/2020 instruction manual"
             };
 
             //changes based on sections
