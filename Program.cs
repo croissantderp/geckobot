@@ -9,7 +9,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace TutorialBot
+namespace GeckoBot
 {
     class Program
     {
