@@ -522,17 +522,29 @@ namespace geckoBot.modules
             DateTime date = DateTime.Today;
             string final = (date.DayOfYear - 1).ToString();
 
+            //sends file with exception for leap years
+            await Context.Channel.SendFileAsync(filePath: pathfinder(date.DayOfYear - 1, true), text: "Today is " + date.ToString("d") + ". Day " + date.DayOfYear + " of the year " + date.Year + " (gecko #" + final + ")");
+            if (date.DayOfYear == 366)
+            {
+                await Context.Channel.SendFileAsync(filePath: pathfinder(date.DayOfYear, false), text: "Today is " + date.ToString("d") + ". Day " + date.DayOfYear + " of the year " + date.Year + "(gecko #366)");
+            }
+        }
+
+        //generates paths for gecko image functions
+        public string pathfinder(int num, bool isPNG)
+        {
+            string final = num.ToString();
+
             //adds 0s as needed
             while (final.Length < 3)
             {
                 final = "0" + final;
             }
-            //sends file with exception for leap years
-            await Context.Channel.SendFileAsync(filePath: @"D:\Documents\stuff\GeckoImages_for_bot\" + final + "_icon" + (date.DayOfYear == 366 ? ".gif" : ".png"), text: "Today is " + date.ToString("d") + ". Day " + date.DayOfYear + " of the year " + date.Year + " (gecko #" + final + ")");
-            if (date.DayOfYear == 366)
-            {
-                await Context.Channel.SendFileAsync(filePath: @"D:\Documents\stuff\GeckoImages_for_bot\366_icon.gif", text: "Today is " + date.ToString("d") + ". Day " + date.DayOfYear + " of the year " + date.Year + "(gecko #366)");
-            }
+
+            //generates filepath based on number and if image is png
+            string finalPath = @"D:\Documents\stuff\GeckoImages_for_bot\" + final + "_icon" + (isPNG ? ".png" : ".gif");
+
+            return finalPath;
         }
 
         //sends a message with a link to the gecko collection
@@ -569,7 +581,7 @@ namespace geckoBot.modules
             }
 
             //sends file
-            await Context.Channel.SendFileAsync(filePath: @"D:\Documents\stuff\GeckoImages_for_bot\" + final + "_icon" + (numb == 365 || numb ==366 ? ".gif" : ".png"), text: "gecko #" + final);
+            await Context.Channel.SendFileAsync(filePath: pathfinder(numb, (numb == 366 ? false : true)), text: "gecko #" + final);
         }
 
         //finds a gecko
@@ -586,7 +598,7 @@ namespace geckoBot.modules
             }
 
             //sends files
-            await Context.Channel.SendFileAsync(filePath: @"D:\Documents\stuff\GeckoImages_for_bot\" + final + "_icon" + (value == 365 || value == 366 ? ".gif" : ".png"), text: "gecko #" + final);
+            await Context.Channel.SendFileAsync(filePath: pathfinder(value, (value == 366 ? false : true)), text: "gecko #" + final);
         }
 
         //sets up daily dms
@@ -765,11 +777,11 @@ namespace geckoBot.modules
                 //gets user from id
                 IUser b = client.GetUser(a);
 
-                //sends files
-                await Discord.UserExtensions.SendFileAsync(b, filePath: @"D:\Documents\stuff\GeckoImages_for_bot\" + final + "_icon" + (date.DayOfYear == 366 ? ".gif" : ".png"), text: "Today is " + date.ToString("d") + ". The " + date.DayOfYear + " day of the year (gecko #" + final + ")");
+                //sends file with exception for leap years
+                await Context.Channel.SendFileAsync(filePath: pathfinder(date.DayOfYear - 1, true), text: "Today is " + date.ToString("d") + ". Day " + date.DayOfYear + " of the year " + date.Year + " (gecko #" + final + ")");
                 if (date.DayOfYear == 366)
                 {
-                    await Discord.UserExtensions.SendFileAsync(b, filePath: @"D:\Documents\stuff\GeckoImages_for_bot\366_icon" + ".gif", text: "Today is " + date.ToString("d") + ". The " + date.DayOfYear + " day of the year (gecko #366)");
+                    await Context.Channel.SendFileAsync(filePath: pathfinder(date.DayOfYear, false), text: "Today is " + date.ToString("d") + ". Day " + date.DayOfYear + " of the year " + date.Year + "(gecko #366)");
                 }
             }
 
@@ -1001,6 +1013,18 @@ namespace geckoBot.modules
                 var embed2 = embed.Build();
 
                 await ReplyAsync(embed: embed2);
+            }
+        }
+
+        //termination command
+        [Command("terminate")]
+        public async Task terminate(string passcode)
+        {
+            //if password is correct
+            if (passcode == Top.Secret)
+            {
+                await ReplyAsync("terminating...");
+                System.Environment.Exit(0);
             }
         }
 
