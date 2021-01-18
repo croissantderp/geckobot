@@ -1,10 +1,9 @@
-geckoBot/bin/
-geckoBot/obj/
+bin/
+obj/
 .vs
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
 
 .idea
-modules/Top.cs
 modules/Top.cs
