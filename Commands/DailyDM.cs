@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using System.IO;
+using Discord.API;
 
 namespace GeckoBot.Commands
 {
@@ -130,7 +132,6 @@ namespace GeckoBot.Commands
             }
         }
 
-        
         //actually starts the timer
         public void Start()
         {
@@ -186,15 +187,20 @@ namespace GeckoBot.Commands
                 IUser b = client.GetUser(a);
 
                 //sends file with exception for leap years
-                await Context.Channel.SendFileAsync(filePath: Utils.pathfinder(date.DayOfYear - 1, true), text: "Today is " + date.ToString("d") + ". Day " + date.DayOfYear + " of the year " + date.Year + " (gecko #" + final + ")");
+                await b.SendFileAsync(filePath: Utils.pathfinder(date.DayOfYear - 1, true), text: "Today is " + date.ToString("d") + ". Day " + date.DayOfYear + " of the year " + date.Year + " (gecko #" + final + ")");
                 if (date.DayOfYear == 366)
                 {
-                    await Context.Channel.SendFileAsync(filePath: Utils.pathfinder(date.DayOfYear, false), text: "Today is " + date.ToString("d") + ". Day " + date.DayOfYear + " of the year " + date.Year + "(gecko #366)");
+                    await b.SendFileAsync(filePath: Utils.pathfinder(date.DayOfYear, false), text: "Today is " + date.ToString("d") + ". Day " + date.DayOfYear + " of the year " + date.Year + "(gecko #366)");
                 }
             }
+
+            //Utils.pathfinder(date.DayOfYear - 1, true)
+
+            Utils.changeProfile(Context.Client, Utils.pathfinder(date.DayOfYear - 1, true));
 
             //updates last run counter
             Globals.lastrun = DateTime.Now.DayOfYear;
         }
+
     }
 }

@@ -16,7 +16,7 @@ namespace GeckoBot.Commands
             //embed
             var embed = new EmbedBuilder
             {
-            Title = "geckobot" + Globals.names[Globals.currentValue] + System.Environment.NewLine + "1/16/2020 instruction manual"
+            Title = "geckobot" + Globals.names[Globals.currentValue] + System.Environment.NewLine + "1/18/2020 instruction manual"
             };
 
             //changes based on sections

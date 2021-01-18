@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.IO;
+using Discord;
+using System.Runtime.InteropServices;
+using System.Drawing;
 
 namespace GeckoBot
 {
@@ -24,6 +28,20 @@ namespace GeckoBot
             string finalPath = @"D:\Documents\stuff\GeckoImages_for_bot\" + final + "_icon" + (isPNG ? ".png" : ".gif");
 
             return finalPath;
+        }
+
+        public static async void changeProfile(IDiscordClient client, string path)
+        {
+            ISelfUser self = client.CurrentUser;
+
+            Discord.Image image = new Discord.Image(path);
+
+            await self.ModifyAsync(x =>
+            {
+                x.Avatar = image;
+            });
+            //static extern Image image(string path);
+
         }
         
         //replaces strings with emotes

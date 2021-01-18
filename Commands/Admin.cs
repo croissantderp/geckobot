@@ -31,5 +31,16 @@ namespace GeckoBot.Commands
                 await Context.Message.AddReactionAsync(new Emoji("✅"));
             }
         }
+
+        //temporary command to set name
+        [Command("profile")]
+        public async Task profile(string password, string path)
+        {
+            if (password == Top.Secret)
+            {
+                Utils.changeProfile(Context.Client, path);
+                await ReplyAsync("profile changed");
+            }
+        }
     }
 }
