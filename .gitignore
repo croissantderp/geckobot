@@ -1,6 +1,6 @@
 geckoBot/bin/
 geckoBot/obj/
-geckoBot/.vs/
+.vs
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
