@@ -1,0 +1,436 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Discord.Commands;
+
+namespace GeckoBot.Commands
+{
+    //significant figures
+    [Group("sigfig")]
+    public class SigFig : ModuleBase<SocketCommandContext>
+    {
+        
+        public string[] figures(decimal number)
+        {
+            //converts number to a string
+            string yes = number.ToString();
+
+            //splits the number into two strings, one of the digits before the decimal, one of them after
+            string[] numberArray = yes.Split(".");
+
+            //a list of the numbers after the decimal point
+            List<string> Decimal = new List<string>();
+
+            //number of sigfigs in number
+            int SigNum = 0;
+
+            //a list of numbers before the decimal point
+            List<string> numberList = new List<string>();
+
+            //adds numbers
+            numberList.Add(numberArray[0]);
+
+            //if a decimal exists
+            if (numberArray.Length == 2)
+            {
+                //adds the decimal point to the list
+                Decimal.Add(".");
+                //adds ** which bolds text
+                Decimal.Add("**");
+                //adds the number
+                Decimal.Add(numberArray[1]);
+                Decimal.Add("**");
+
+                //if there are numbers before the decimal
+                if (numberList[0] != ("0") && numberList[0] != ("-0"))
+                {
+                    //bolds everythings
+                    numberList.Add("**");
+                    numberList.Insert(0, "**");
+
+                    //counts total number of sigfigs
+                    SigNum = numberList[1].Length + Decimal[2].Length;
+                }
+                else
+                {
+                    //counts total number of sigfigs
+                    SigNum = Decimal[2].Length;
+                }
+            }
+            //if decimal does not exist
+            else if (numberArray.Length == 1)
+            {
+                //temporary string
+                string temp = numberList[0];
+
+                //gets rid of exponential notation
+                decimal Value = decimal.Parse(temp, System.Globalization.NumberStyles.Float);
+
+                //number of 0s in the number
+                int Zeros = 0;
+
+                //temp string array
+                string[] temp3 = new string[2];
+
+                //divides by 10
+                for (int i = 0; i < numberList[0].Length; i++)
+                {
+                    //if number is divisible by 10, do it
+                    if (Value % 10 == 0)
+                    {
+                        Value /= 10;
+                        Zeros += 1;
+                    }
+                    //if number is no longer divisible by 10
+                    else
+                    {
+                        //new string array for adding values
+                        string[] temp2 = new string[Zeros + 1];
+
+                        //adds value to string array with bolding
+                        temp2[0] = ("**" + Value.ToString(new string('#', 339)) + "**");
+
+                        //counts total number of sigfigs
+                        SigNum = Value.ToString(new string('#', 339)).Length;
+
+                        //adds zeros to end of number
+                        for (int j = 0; j < Zeros; j++)
+                        {
+                            temp2[j + 1] = "0";
+                        }
+
+                        //joins new string array to a single string
+                        temp = string.Join("", temp2);
+
+                        //passes value to final number list
+                        numberList[0] = temp;
+                        break;
+                    }
+                }
+            }
+            string[] final = { string.Join("", numberList.Select(p => p.ToString())), string.Join("", Decimal.Select(p => p.ToString())), SigNum.ToString()};
+            return final;
+        }
+
+        //general sigfig command
+        [Command("")]
+        public async Task sigfigbase(decimal number)
+        {
+            //constructs reply
+            await ReplyAsync(string.Join("", figures(number)[0] + figures(number)[1] + " " + figures(number)[2]));
+        }
+
+        //rounds values (found off of stack overflow I don't know how it works)
+        private decimal RoundNum(decimal d, int digits)
+        {
+            int neg = 1;
+            if (d < 0)
+            {
+                d = d * (-1);
+                neg = -1;
+            }
+
+            int n = 0;
+            if (d > 1)
+            {
+                while (d > 1)
+                {
+                    d = d / 10;
+                    n++;
+                }
+                d = Math.Round(d * (decimal)Math.Pow(10, digits));
+                d = d * (decimal)Math.Pow(10, n - digits);
+            }
+            else
+            {
+                while ((double)d < 0.1)
+                {
+                    d = d * 10;
+                    n++;
+                }
+                d = Math.Round(d * (decimal)Math.Pow(10, digits));
+                d = d / (decimal)Math.Pow(10, n + digits);
+            }
+
+            return d * neg;
+        }
+
+        //sigfig add
+        [Command("add")]
+        public async Task sigAdd(decimal number1, decimal number2)
+        {
+            decimal finalNum = number1 + number2;
+            decimal final = 0;
+
+            int accuracy1 = int.Parse(figures(number1)[2]);
+            int accuracy2 = int.Parse(figures(number2)[2]);
+
+            bool isDecimal = false;
+
+            string[] extra = new string[final.ToString().Length+1];
+
+            string[] check1 = new string[2];
+            string[] check2 = new string[2];
+            check1 = number1.ToString().Split(".");
+            check2 = number2.ToString().Split(".");
+
+            if (number1.ToString().Contains(".") && number2.ToString().Contains("."))
+            {
+                isDecimal = true;
+            }
+            
+            if (isDecimal)
+            {
+                if (accuracy1 < check2[0].Length)
+                {
+                    accuracy1 = check2[0].Length;
+                }
+                if (accuracy1 < check1[0].Length)
+                {
+                    accuracy1 = check1[0].Length;
+                }
+                if (accuracy2 < check1[0].Length)
+                {
+                    accuracy2 = check1[0].Length;
+                }
+                if (accuracy2 < check2[0].Length)
+                {
+                    accuracy2 = check2[0].Length;
+                }
+
+                if (accuracy1 <= accuracy2)
+                {
+                    final = RoundNum(finalNum, accuracy1);
+
+                    if (accuracy1 > final.ToString().Length)
+                    {
+                        extra[0] = ".";
+                        for (int i = 0; i < accuracy1 - final.ToString().Length; i++)
+                        {
+                            extra[i + 1] = "0";
+                        }
+                    }
+                }
+                else
+                {
+                    final = RoundNum(finalNum, accuracy2);
+
+                    if (accuracy2 > final.ToString().Length)
+                    {
+                        extra[0] = ".";
+                        for (int i = 0; i < accuracy2 - final.ToString().Length; i++)
+                        {
+                            extra[i + 1] = "0";
+                        }
+                    }
+                }
+            }
+            else
+            {
+                final = finalNum;
+            }
+
+            if (!isDecimal)
+            {
+                int final2 = (int)final;
+                await ReplyAsync(string.Join("", figures(final2)[0] + figures(final2)[1] + " " + figures(final2)[2]));
+            }
+            else
+            {
+                decimal e = decimal.Parse(final.ToString() + string.Join("", extra));
+
+                await ReplyAsync(string.Join("", figures(e)[0] + figures(e)[1] + " " + figures(e)[2]));
+            }
+        }
+
+        //sigfig subtract
+        [Command("subtract")]
+        public async Task sigSubtract(decimal number1, decimal number2)
+        {
+            decimal finalNum = number1 - number2;
+            decimal final = 0;
+            int accuracy1 = int.Parse(figures(number1)[2]);
+            int accuracy2 = int.Parse(figures(number2)[2]);
+
+            bool isDecimal = false;
+
+            string[] extra = new string[final.ToString().Length + 1];
+
+            string[] check1 = new string[2];
+            string[] check2 = new string[2];
+            check1 = number1.ToString().Split(".");
+            check2 = number2.ToString().Split(".");
+
+            if (number1.ToString().Contains(".") && number2.ToString().Contains("."))
+            {
+                isDecimal = true;
+            }
+            
+
+            if (isDecimal)
+            {
+                if (accuracy1 < check2[0].Length)
+                {
+                    accuracy1 = check2[0].Length;
+                }
+                if (accuracy1 < check1[0].Length)
+                {
+                    accuracy1 = check1[0].Length;
+                }
+                if (accuracy2 < check1[0].Length)
+                {
+                    accuracy2 = check1[0].Length;
+                }
+                if (accuracy2 < check2[0].Length)
+                {
+                    accuracy2 = check2[0].Length;
+                }
+
+                if (accuracy1 <= accuracy2)
+                {
+                    final = RoundNum(finalNum, accuracy1-2);
+
+                    if (accuracy1 > final.ToString().Length)
+                    {
+                        extra[0] = ".";
+                        for (int i = 0; i < accuracy1 - final.ToString().Length; i++)
+                        {
+                            extra[i + 1] = "0";
+                        }
+                    }
+                }
+                else
+                {
+                    final = RoundNum(finalNum, accuracy2-2);
+
+                    if (accuracy2 > final.ToString().Length)
+                    {
+                        extra[0] = ".";
+                        for (int i = 0; i < accuracy2 - final.ToString().Length; i++)
+                        {
+                            extra[i + 1] = "0";
+                        }
+                    }
+                }
+            }
+            else
+            {
+                final = finalNum;
+            }
+
+            if (!isDecimal)
+            {
+                int final2 = (int)final;
+                await ReplyAsync(string.Join("", figures(final2)[0] + figures(final2)[1] + " " + figures(final2)[2]));
+            }
+            else
+            {
+                decimal e = decimal.Parse(final.ToString() + string.Join("", extra));
+
+                await ReplyAsync(string.Join("", figures(e)[0] + figures(e)[1] + " " + figures(e)[2]));
+            }
+        }
+
+        //sigfig multiply
+        [Command("multiply")]
+        public async Task sigMultiply(decimal number1, decimal number2)
+        {
+            decimal finalNum = number1 * number2;
+
+            int accuracy1 = int.Parse(figures(number1)[2]);
+            int accuracy2 = int.Parse(figures(number2)[2]);
+
+            decimal final = 0;
+
+            string[] extra = new string[final.ToString().Length+1];
+
+            if (accuracy1 <= accuracy2)
+            {
+                final = RoundNum(finalNum, accuracy1);
+                if (accuracy1 > final.ToString().Length)
+                {
+                    extra[0] = ".";
+                    for (int i = 0; i < accuracy1 - final.ToString().Length; i++)
+                    {
+                        extra[i+1] = "0";
+                    }
+                }
+            }
+            else
+            {
+                final = RoundNum(finalNum, accuracy2);
+                if (accuracy2 > final.ToString().Length)
+                {
+                    extra[0] = ".";
+                    for (int i = 0; i < accuracy2 - final.ToString().Length; i++)
+                    {
+                        extra[i+1] = "0";
+                    }
+                }
+            }
+            Console.WriteLine();
+            decimal e = decimal.Parse(final.ToString() + string.Join("", extra));
+
+            if (e.ToString().Length > accuracy1 + 1 || e.ToString().Length > accuracy2 + 1)
+            {
+                double f = double.Parse(final.ToString() + string.Join("", extra));
+                await ReplyAsync(string.Join("", figures((decimal)f)[0] + figures((decimal)f)[1] + " " + figures((decimal)f)[2]));
+            }
+            else
+            {
+                await ReplyAsync(string.Join("", figures(e)[0] + figures(e)[1] + " " + figures(e)[2]));
+            }
+        }
+
+        //sigfig divide
+        [Command("divide")]
+        public async Task sigDivide(decimal number1, decimal number2)
+        {
+            decimal finalNum = number1 / number2;
+            int accuracy1 = int.Parse(figures(number1)[2]);
+            int accuracy2 = int.Parse(figures(number2)[2]);
+
+            decimal final = 0;
+
+            string[] extra = new string[final.ToString().Length + 1];
+
+            if (accuracy1 <= accuracy2)
+            {
+                final = RoundNum(finalNum, accuracy1);
+                if (accuracy1 > final.ToString().Length)
+                {
+                    extra[0] = ".";
+                    for (int i = 0; i < accuracy1 - final.ToString().Length; i++)
+                    {
+                        extra[i + 1] = "0";
+                    }
+                }
+            }
+            else
+            {
+                final = RoundNum(finalNum, accuracy2);
+                if (accuracy2 > final.ToString().Length)
+                {
+                    extra[0] = ".";
+                    for (int i = 0; i < accuracy2 - final.ToString().Length; i++)
+                    {
+                        extra[i + 1] = "0";
+                    }
+                }
+            }
+
+            decimal e = decimal.Parse(final.ToString() + string.Join("", extra));
+
+            if (e.ToString().Length > accuracy1 + 1 || e.ToString().Length > accuracy2 + 1)
+            {
+                double f = double.Parse(final.ToString() + string.Join("", extra));
+                await ReplyAsync(string.Join("", figures((decimal)f)[0] + figures((decimal)f)[1] + " " + figures((decimal)f)[2]));
+            }
+            else
+            {
+                await ReplyAsync(string.Join("", figures(e)[0] + figures(e)[1] + " " + figures(e)[2]));
+            }
+        }
+    }
+}
