@@ -6,4 +6,4 @@ riderModule.iml
 /_ReSharper.Caches/
 
 .idea
-geckoBot/modules/Top.cs
+modules/Top.cs
