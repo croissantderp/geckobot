@@ -6,7 +6,6 @@ using Discord.WebSocket;
 
 namespace GeckoBot.Commands
 {
-    [Group("t")]
     public class Timer : ModuleBase<SocketCommandContext>
     {
         //timer

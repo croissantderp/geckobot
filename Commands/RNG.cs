@@ -7,6 +7,15 @@ namespace GeckoBot.Commands
 {
     public class RNG : ModuleBase<SocketCommandContext>
     {
+        //random number generator
+        [Command("rng")]
+        public async Task rng(int min, int max)
+        {
+            Random random = new Random();
+            int number = random.Next(min, max + 1);
+            await ReplyAsync(number.ToString());
+        }
+
         //how to stonks
         [Command("lottery")]
         public async Task lottery()
