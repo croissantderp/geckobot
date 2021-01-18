@@ -1,8 +1,8 @@
-bin/
-obj/
+geckoBot/bin/
+geckoBot/obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
 
 .idea
-Top.cs
+geckoBot/modules/Top.cs
