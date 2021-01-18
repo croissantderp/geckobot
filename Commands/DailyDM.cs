@@ -3,8 +3,6 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using System.IO;
-using Discord.API;
 
 namespace GeckoBot.Commands
 {
