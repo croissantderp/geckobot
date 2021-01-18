@@ -16,10 +16,10 @@ namespace GeckoBot.Commands
             string final = (date.DayOfYear - 1).ToString();
 
             //sends file with exception for leap years
-            await Context.Channel.SendFileAsync(filePath: Utils.pathfinder(date.DayOfYear - 1, true), text: "Today is " + date.ToString("d") + ". Day " + date.DayOfYear + " of the year " + date.Year + " (gecko #" + final + ")");
+            await Context.Channel.SendFileAsync(Utils.pathfinder(date.DayOfYear - 1, true), "Today is " + date.ToString("d") + ". Day " + date.DayOfYear + " of the year " + date.Year + " (gecko #" + final + ")");
             if (date.DayOfYear == 366)
             {
-                await Context.Channel.SendFileAsync(filePath: Utils.pathfinder(date.DayOfYear, false), text: "Today is " + date.ToString("d") + ". Day " + date.DayOfYear + " of the year " + date.Year + "(gecko #366)");
+                await Context.Channel.SendFileAsync(Utils.pathfinder(date.DayOfYear, false), "Today is " + date.ToString("d") + ". Day " + date.DayOfYear + " of the year " + date.Year + "(gecko #366)");
             }
         }
         

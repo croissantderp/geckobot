@@ -8,7 +8,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <OutputPath>D:\Documents\stuff\coding\geckobot build\</OutputPath>
+    <OutputPath>bin\Build</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

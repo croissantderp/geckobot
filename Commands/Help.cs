@@ -94,7 +94,7 @@ namespace GeckoBot.Commands
                     );
                     break;
                 default:
-                    await Context.Channel.SendFileAsync(filePath: @"D:\Documents\stuff\GeckoImages_for_bot\message.gif");
+                    await Context.Channel.SendFileAsync(@"..\..\Cache\message.gif");
                     found = false;
                     break;
             }

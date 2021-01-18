@@ -22,7 +22,8 @@ namespace GeckoBot
             }
 
             //generates filepath based on number and if image is png
-            string finalPath = @"D:\Documents\stuff\GeckoImages_for_bot\" + final + "_icon" + (isPNG ? ".png" : ".gif");
+            // Looks in \bin\Cache for png
+            string finalPath = @"..\..\Cache\" + final + "_icon" + (isPNG ? ".png" : ".gif");
 
             return finalPath;
         }

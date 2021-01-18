@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30611.23
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "geckoBot", "geckoBot.csproj", "{CE9B7226-B00F-4523-B8E8-EC5DA30E686F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeckoBot", "GeckoBot.csproj", "{CE9B7226-B00F-4523-B8E8-EC5DA30E686F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
