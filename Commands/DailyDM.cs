@@ -39,6 +39,8 @@ namespace GeckoBot.Commands
                     //checks
                     await check("");
 
+                    Globals.isCounting = true;
+
                     await ReplyAsync("will start in " + (61 - minutes) + " minutes");
                 }
             }
@@ -126,10 +128,10 @@ namespace GeckoBot.Commands
             else
             {
                 //loads things the same way as above
-                if (FileUtils.Load("C:\\gecko3.gek") != null)
+                if (FileUtils.Load(@"..\..\Cache\gecko3.gek") != null)
                 {
                     Globals.dmUsers.Clear();
-                    string[] temp = FileUtils.Load("C:\\gecko3.gek").Split(",");
+                    string[] temp = FileUtils.Load(@"..\..\Cache\gecko3.gek").Split(",");
                     foreach (string a in temp)
                     {
                         Globals.dmUsers.Add(ulong.Parse(a));
@@ -146,7 +148,7 @@ namespace GeckoBot.Commands
                     Globals.dmUsers.Remove(user.Id);
 
                     //saves info
-                    FileUtils.Save(string.Join(",", Globals.dmUsers.ToArray()), "C:\\gecko3.gek");
+                    FileUtils.Save(string.Join(",", Globals.dmUsers.ToArray()), @"..\..\Cache\gecko3.gek");
 
                     //DMs the user
                     await user.SendMessageAsync("hi, daily gecko updates have been canceled");
@@ -185,10 +187,10 @@ namespace GeckoBot.Commands
         async Task dailydm()
         {
             //loads file in same way as described above
-            if (FileUtils.Load("C:\\gecko3.gek") != null)
+            if (FileUtils.Load(@"..\..\Cache\gecko3.gek") != null)
             {
                 Globals.dmUsers.Clear();
-                string[] temp = FileUtils.Load("C:\\gecko3.gek").Split(",");
+                string[] temp = FileUtils.Load(@"..\..\Cache\gecko3.gek").Split(",");
 
                 foreach (string a in temp)
                 {
