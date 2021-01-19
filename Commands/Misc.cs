@@ -19,6 +19,7 @@ namespace GeckoBot.Commands
             await Context.User.SendMessageAsync("blorp");
         }
 
+        //creates new files if there are none
         [Command("instantiate")]
         public async Task instantiate()
         {

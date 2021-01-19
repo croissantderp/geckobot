@@ -178,6 +178,14 @@ namespace GeckoBot.Commands
             //gets client
             DiscordSocketClient client = Context.Client;
 
+            //if it is geckobot's birthday
+            bool isBirthday = false;
+
+            if (date.DayOfYear == 288)
+            {
+                isBirthday = true;
+            }
+
             //DMs everybody on the list
             foreach (ulong a in Globals.dmUsers)
             {
@@ -188,10 +196,14 @@ namespace GeckoBot.Commands
                 await b.SendFileAsync(
                     DriveUtils.ImagePath(date.DayOfYear - 1), 
                     $"Today is {date.ToString("d")}. Day {date.DayOfYear} of the year {date.Year} (gecko #{final})");
+
+                if (isBirthday)
+                {
+                    await b.SendMessageAsync("happy birthday geckobot :cake:");
+                }
             }
 
-            //DriveUtils.pathfinder(date.DayOfYear - 1, true)
-
+            //changes geckobot's profile to new gecko
             Utils.changeProfile(
                 Context.Client, 
                 DriveUtils.ImagePath(date.DayOfYear - 1));

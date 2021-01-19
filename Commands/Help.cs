@@ -33,7 +33,8 @@ namespace GeckoBot.Commands
                 case "general":
                     embed.AddField("**general**",
                         "I can do math with '\\`add [value] [value]' replace add with subtract, multiply and divide to do other operations." + System.Environment.NewLine + System.Environment.NewLine +
-                        "To play rock paper scissors, enter '\\`rps [scissors/rock/paper]'." + System.Environment.NewLine + System.Environment.NewLine
+                        "To play rock paper scissors, enter '\\`rps [scissors/rock/paper]'." + System.Environment.NewLine + System.Environment.NewLine +
+                        "to open a dm with me, use '\\`dm'" + System.Environment.NewLine + System.Environment.NewLine
                     );
                     break;
                 case "gecko":
