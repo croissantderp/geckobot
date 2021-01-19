@@ -28,7 +28,7 @@ namespace GeckoBot.Commands
                 Globals.emoteDict.Remove(yes1);
 
                 //converts dictionary to string and saves
-                FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0}⁊{1}ҩ"), "C:\\gecko2.gek");
+                FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0}⁊{1}ҩ"), @"..\..\Cache\gecko2.gek");
 
                 //adds reaction
                 await Context.Message.AddReactionAsync(new Emoji("✅"));
@@ -68,7 +68,7 @@ namespace GeckoBot.Commands
                     Globals.emoteDict.Add(yes1, string.Join("", temp.Select(p => p.ToString())));
 
                     //converts dictionary to string and saves
-                    FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0}⁊{1}ҩ"), "C:\\gecko2.gek");
+                    FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0}⁊{1}ҩ"), @"..\..\Cache\gecko2.gek");
 
                     //adds reaction
                     await Context.Message.AddReactionAsync(new Emoji("✅"));
@@ -118,7 +118,7 @@ namespace GeckoBot.Commands
             }
 
             //converts dictionary to string and saves
-            FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0}⁊{1}ҩ"), "C:\\gecko2.gek");
+            FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0}⁊{1}ҩ"), @"..\..\Cache\gecko2.gek");
 
             //replies with number of new emotes added
             await ReplyAsync(emotesAdded.ToString() + " new emotes added");

@@ -20,7 +20,6 @@ namespace GeckoBot
             {
                 x.Avatar = image;
             });
-            //static extern Image image(string path);
 
         }
         

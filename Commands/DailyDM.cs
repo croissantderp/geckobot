@@ -58,13 +58,13 @@ namespace GeckoBot.Commands
             if (yes)
             {
                 //if file exists, load it
-                if (FileUtils.Load("C:\\gecko3.gek") != null)
+                if (FileUtils.Load(@"..\..\Cache\gecko3.gek") != null)
                 {
                     //clears
                     Globals.dmUsers.Clear();
 
                     //gets info
-                    string[] temp = FileUtils.Load("C:\\gecko3.gek").Split(",");
+                    string[] temp = FileUtils.Load(@"..\..\Cache\gecko3.gek").Split(",");
 
                     //adds info to list
                     foreach (string a in temp)
@@ -87,7 +87,7 @@ namespace GeckoBot.Commands
                     Globals.dmUsers.Add(user.Id);
 
                     //saves info
-                    FileUtils.Save(string.Join(",", Globals.dmUsers.ToArray()), "C:\\gecko3.gek");
+                    FileUtils.Save(string.Join(",", Globals.dmUsers.ToArray()), @"..\..\Cache\gecko3.gek");
 
                     //DMs the user
                     await user.SendMessageAsync("hi, daily gecko updates have been set up, cancel by '\\`dm false'");
