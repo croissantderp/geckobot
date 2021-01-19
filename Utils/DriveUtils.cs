@@ -73,12 +73,13 @@ namespace GeckoBot
         // Checks cache for image, returns the pathname if found or "" if not found
         private static string CheckCache(string num)
         {
-            string png = @"..\..\Cache\" + num + "_icon.png";
-            string gif = @"..\..\Cache\" + num + "_icon.gif";
-            string jpeg = @"..\..\Cache\" + num + "_icon.jpeg";
-
-            if (File.Exists(png)) return png;
-            return File.Exists(gif) ? gif : null;
+            List<string> supportedTypes = new (){ "png", "jpeg", "gif" };
+            foreach (var type in supportedTypes)
+            {
+                string path = $"../../Cache/{num}_icon.{type}";
+                if (File.Exists(path)) return path;
+            }
+            return null;
         }
         
         // Adds zeroes to an integer to match the gecko naming convention
