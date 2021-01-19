@@ -33,7 +33,7 @@ namespace GeckoBot.Commands
                 {
                     //sets timer to amount of time until next hour plus a little bit
                     System.Timers.Timer timer = new System.Timers.Timer((61 - minutes) * 60 * 1000);
-                    timer.Elapsed += async (sender, e) => await trueStart();
+                    timer.Elapsed += async (sender, e) => await trueStart(timer);
                     timer.Start();
 
                     //checks
@@ -45,10 +45,12 @@ namespace GeckoBot.Commands
         }
 
         //actually starts timer
-        public async Task trueStart()
+        public async Task trueStart(System.Timers.Timer timer)
         {
             Start();
             await ReplyAsync("started");
+
+            timer.Stop();
         }
         
         //checks
