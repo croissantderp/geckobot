@@ -100,6 +100,8 @@ namespace GeckoBot
         // Gets path from cache or downloads image to cache from drive
         public static string ImagePath(int num)
         {
+            FileUtils.checkForCacheExistance();
+
             string name = addZeros(num);
 
             // If image already exists in cache, use it

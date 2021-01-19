@@ -36,6 +36,9 @@ namespace GeckoBot.Commands
                     timer.Elapsed += async (sender, e) => await trueStart();
                     timer.Start();
 
+                    //checks
+                    await dailydm();
+
                     await ReplyAsync("will start in " + (61 - minutes) + " minutes");
                 }
             }

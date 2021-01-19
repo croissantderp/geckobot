@@ -24,15 +24,8 @@ namespace GeckoBot.Commands
         public async Task instantiate()
         {
             //checks if files exist
-            if (!File.Exists(@"..\..\Cache\gecko2.gek"))
-            {
-                File.Create(@"..\..\Cache\gecko2.gek");
-            }
+            FileUtils.checkForExistance();
 
-            if (!File.Exists(@"..\..\Cache\gecko3.gek"))
-            {
-                File.Create(@"..\..\Cache\gecko3.gek");
-            }
             //adds reaction
             await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
