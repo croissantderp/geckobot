@@ -1,10 +1,14 @@
 bin/
 obj/
-.vs
 /packages/
 modules/
 riderModule.iml
 /_ReSharper.Caches/
 
+# IDEs
 .idea
+.vs
+
+# Auth
 Top.cs
+GeckoBot-af43fa71833e.json

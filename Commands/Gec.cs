@@ -7,6 +7,13 @@ namespace GeckoBot.Commands
 {
     public class Gec : ModuleBase<SocketCommandContext>
     {
+        // Force cache a gecko image
+        [Command("load")]
+        public async Task test(int name)
+        {
+            await ReplyAsync($"Cached at `{DriveUtils.ImagePath(name)}`");
+        }
+        
         //gets daily gecko image
         [Command("gec")]
         public async Task gec()
@@ -16,11 +23,9 @@ namespace GeckoBot.Commands
             string final = (date.DayOfYear - 1).ToString();
 
             //sends file with exception for leap years
-            await Context.Channel.SendFileAsync(Utils.pathfinder(date.DayOfYear - 1, true), "Today is " + date.ToString("d") + ". Day " + date.DayOfYear + " of the year " + date.Year + " (gecko #" + final + ")");
-            if (date.DayOfYear == 366)
-            {
-                await Context.Channel.SendFileAsync(Utils.pathfinder(date.DayOfYear, false), "Today is " + date.ToString("d") + ". Day " + date.DayOfYear + " of the year " + date.Year + "(gecko #366)");
-            }
+            await Context.Channel.SendFileAsync(
+                DriveUtils.ImagePath(date.DayOfYear - 1), 
+                $"Today is {date.ToString("d")}. Day {date.DayOfYear} of the year {date.Year} (gecko #{final})");
         }
         
         //sends a message with a link to the gecko collection
@@ -47,17 +52,13 @@ namespace GeckoBot.Commands
         {
             //gets random value
             Random random = new Random();
-            int numb = random.Next(0,367);
-            string final = (numb).ToString();
-
-            //adds 0s as needed
-            while (final.Length < 3)
-            {
-                final = "0" + final;
-            }
+            int numb = random.Next(0,497);
+            string final = DriveUtils.addZeros(numb);
 
             //sends file
-            await Context.Channel.SendFileAsync(filePath: Utils.pathfinder(numb, (numb == 366 ? false : true)), text: "gecko #" + final);
+            await Context.Channel.SendFileAsync(
+                DriveUtils.ImagePath(numb), 
+                $"gecko #{final}");
         }
 
         //finds a gecko
@@ -65,16 +66,12 @@ namespace GeckoBot.Commands
         public async Task fgec(int value)
         {
             //converts int to string
-            string final = value.ToString();
-
-            //adds 0s as needed
-            while (final.Length < 3)
-            {
-                final = "0" + final;
-            }
+            string final = DriveUtils.addZeros(value);
 
             //sends files
-            await Context.Channel.SendFileAsync(filePath: Utils.pathfinder(value, (value == 366 ? false : true)), text: "gecko #" + final);
+            await Context.Channel.SendFileAsync(
+                DriveUtils.ImagePath(value), 
+                $"gecko #{final}");
         }
     }
 }

@@ -18,7 +18,7 @@ namespace GeckoBot
         //loads emote dictionary as string and converts it back into dictionary
         public static void RefreshEmoteDict()
         {
-            emoteDict = File.Load("C:\\gecko2.gek")
+            emoteDict = FileUtils.Load("C:\\gecko2.gek")
                 .Split('ҩ')
                 .Select(part => part.Split('⁊'))
                 .Where(part => part.Length == 2)

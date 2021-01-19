@@ -58,13 +58,13 @@ namespace GeckoBot.Commands
             if (yes)
             {
                 //if file exists, load it
-                if (File.Load("C:\\gecko3.gek") != null)
+                if (FileUtils.Load("C:\\gecko3.gek") != null)
                 {
                     //clears
                     Globals.dmUsers.Clear();
 
                     //gets info
-                    string[] temp = File.Load("C:\\gecko3.gek").Split(",");
+                    string[] temp = FileUtils.Load("C:\\gecko3.gek").Split(",");
 
                     //adds info to list
                     foreach (string a in temp)
@@ -87,7 +87,7 @@ namespace GeckoBot.Commands
                     Globals.dmUsers.Add(user.Id);
 
                     //saves info
-                    File.Save(string.Join(",", Globals.dmUsers.ToArray()), "C:\\gecko3.gek");
+                    FileUtils.Save(string.Join(",", Globals.dmUsers.ToArray()), "C:\\gecko3.gek");
 
                     //DMs the user
                     await user.SendMessageAsync("hi, daily gecko updates have been set up, cancel by '\\`dm false'");
@@ -97,10 +97,10 @@ namespace GeckoBot.Commands
             else
             {
                 //loads things the same way as above
-                if (File.Load("C:\\gecko3.gek") != null)
+                if (FileUtils.Load("C:\\gecko3.gek") != null)
                 {
                     Globals.dmUsers.Clear();
-                    string[] temp = File.Load("C:\\gecko3.gek").Split(",");
+                    string[] temp = FileUtils.Load("C:\\gecko3.gek").Split(",");
                     foreach (string a in temp)
                     {
                         Globals.dmUsers.Add(ulong.Parse(a));
@@ -117,7 +117,7 @@ namespace GeckoBot.Commands
                     Globals.dmUsers.Remove(user.Id);
 
                     //saves info
-                    File.Save(string.Join(",", Globals.dmUsers.ToArray()), "C:\\gecko3.gek");
+                    FileUtils.Save(string.Join(",", Globals.dmUsers.ToArray()), "C:\\gecko3.gek");
 
                     //DMs the user
                     await user.SendMessageAsync("hi, daily gecko updates have been canceled");
@@ -156,10 +156,10 @@ namespace GeckoBot.Commands
         async Task dailydm()
         {
             //loads file in same way as described above
-            if (File.Load("C:\\gecko3.gek") != null)
+            if (FileUtils.Load("C:\\gecko3.gek") != null)
             {
                 Globals.dmUsers.Clear();
-                string[] temp = File.Load("C:\\gecko3.gek").Split(",");
+                string[] temp = FileUtils.Load("C:\\gecko3.gek").Split(",");
 
                 foreach (string a in temp)
                 {
@@ -185,16 +185,16 @@ namespace GeckoBot.Commands
                 IUser b = client.GetUser(a);
 
                 //sends file with exception for leap years
-                await b.SendFileAsync(filePath: Utils.pathfinder(date.DayOfYear - 1, true), text: "Today is " + date.ToString("d") + ". Day " + date.DayOfYear + " of the year " + date.Year + " (gecko #" + final + ")");
-                if (date.DayOfYear == 366)
-                {
-                    await b.SendFileAsync(filePath: Utils.pathfinder(date.DayOfYear, false), text: "Today is " + date.ToString("d") + ". Day " + date.DayOfYear + " of the year " + date.Year + "(gecko #366)");
-                }
+                await b.SendFileAsync(
+                    DriveUtils.ImagePath(date.DayOfYear - 1), 
+                    $"Today is {date.ToString("d")}. Day {date.DayOfYear} of the year {date.Year} (gecko #{final})");
             }
 
-            //Utils.pathfinder(date.DayOfYear - 1, true)
+            //DriveUtils.pathfinder(date.DayOfYear - 1, true)
 
-            Utils.changeProfile(Context.Client, Utils.pathfinder(date.DayOfYear - 1, true));
+            Utils.changeProfile(
+                Context.Client, 
+                DriveUtils.ImagePath(date.DayOfYear - 1));
 
             //updates last run counter
             Globals.lastrun = DateTime.Now.DayOfYear;

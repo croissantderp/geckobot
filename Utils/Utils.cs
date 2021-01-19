@@ -10,24 +10,6 @@ namespace GeckoBot
     // Miscellaneous utils go here
     public class Utils
     {
-        //generates paths for gecko image functions
-        public static string pathfinder(int num, bool isPNG)
-        {
-            string final = num.ToString();
-
-            //adds 0s as needed
-            while (final.Length < 3)
-            {
-                final = "0" + final;
-            }
-
-            //generates filepath based on number and if image is png
-            // Looks in \bin\Cache for png
-            string finalPath = @"..\..\Cache\" + final + "_icon" + (isPNG ? ".png" : ".gif");
-
-            return finalPath;
-        }
-
         public static async void changeProfile(IDiscordClient client, string path)
         {
             ISelfUser self = client.CurrentUser;
@@ -46,8 +28,8 @@ namespace GeckoBot
         public static string emoteReplace(string stuff)
         {
             //loads emote dictionary as string and converts it back into dictionary
-            Globals.emoteDict = File.Load("C:\\gecko2.gek").ToString().Split('ҩ').Select(part => part.Split('⁊')).Where(part => part.Length == 2).ToDictionary(sp => sp[0], sp => sp[1]);
-
+            Globals.RefreshEmoteDict();
+            
             //splits string by $
             string[] yesnt = Regex.Split(stuff, @"(?<!\\)\$");
 
@@ -60,7 +42,7 @@ namespace GeckoBot
             for (int i = 0; i < yesnt.Length; i++)
             {
                 //checks if a key exists for the segment and if it is prefaced by \
-                if (Globals.emoteDict.ContainsKey(yesnt[i]) && !(yesnt[i][0] == '\\'))
+                if (Globals.emoteDict.ContainsKey(yesnt[i]) && yesnt[i][0] != '\\')
                 {
                     final[i] = Globals.emoteDict[yesnt[i]];
                 }
