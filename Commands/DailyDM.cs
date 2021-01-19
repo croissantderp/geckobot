@@ -19,9 +19,33 @@ namespace GeckoBot.Commands
             }
             else
             {
-                Start();
-                await ReplyAsync("started");
+                //now
+                DateTime time = DateTime.Now;
+
+                //getting minutes
+                int minutes = time.Minute;
+
+                if (Globals.isCounting)
+                {
+                    await ReplyAsync("already counting, t - " + (61 - minutes) + " minutes");
+                }
+                else
+                {
+                    //sets timer to amount of time until next hour plus a little bit
+                    System.Timers.Timer timer = new System.Timers.Timer((61 - minutes) * 60 * 1000);
+                    timer.Elapsed += async (sender, e) => await trueStart();
+                    timer.Start();
+
+                    await ReplyAsync("will start in " + (61 - minutes) + " minutes");
+                }
             }
+        }
+
+        //actually starts timer
+        public async Task trueStart()
+        {
+            Start();
+            await ReplyAsync("started");
         }
         
         //checks
@@ -179,12 +203,7 @@ namespace GeckoBot.Commands
             DiscordSocketClient client = Context.Client;
 
             //if it is geckobot's birthday
-            bool isBirthday = false;
-
-            if (date.DayOfYear == 288)
-            {
-                isBirthday = true;
-            }
+            bool isBirthday = date.DayOfYear == 288;
 
             //DMs everybody on the list
             foreach (ulong a in Globals.dmUsers)
