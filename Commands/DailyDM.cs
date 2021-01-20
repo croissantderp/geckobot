@@ -50,7 +50,11 @@ namespace GeckoBot.Commands
         public async Task trueStart(System.Timers.Timer timer)
         {
             Start();
-            await ReplyAsync("started");
+
+            if (!Globals.started)
+            {
+                await ReplyAsync("started");
+            }
 
             timer.Stop();
         }
@@ -166,7 +170,7 @@ namespace GeckoBot.Commands
         {
             //one hour looping timer for checking
             System.Timers.Timer timer = new System.Timers.Timer(1000*60*60);
-            timer.Elapsed += new System.Timers.ElapsedEventHandler(daily);
+            timer.Elapsed += async (sender, e) => await daily(timer);
             timer.Start();
 
             //makes sure there is only one timer
@@ -174,8 +178,24 @@ namespace GeckoBot.Commands
         }
 
         //checks when timer runs out
-        async void daily(object sender, System.Timers.ElapsedEventArgs e)
+        async Task daily(System.Timers.Timer timer)
         {
+            //now
+            DateTime time = DateTime.Now;
+
+            //getting minutes
+            int minutes = time.Minute;
+
+            if (minutes > 10)
+            {
+                timer.Stop();
+
+                //sets timer to amount of time until next hour plus a little bit
+                System.Timers.Timer timer2 = new System.Timers.Timer((61 - minutes) * 60 * 1000);
+                timer.Elapsed += async (sender, e) => await trueStart(timer);
+                timer.Start();
+            }
+
             if (Globals.lastrun != DateTime.Now.DayOfYear)
             {
                 Globals.daysSinceReset += 1;

@@ -12,11 +12,24 @@ namespace GeckoBot.Commands
 {
     public class Misc : ModuleBase<SocketCommandContext>
     {
-        //opens dm with user
-        [Command("dmme")]
-        public async Task DMme()
+        //sends message
+        [Command("send")]
+        public async Task send(string target, string message)
         {
-            await Context.User.SendMessageAsync("blorp");
+            if (target == "dm")
+            {
+                await Context.User.SendMessageAsync(message);
+            }
+            else
+            {
+                //gets current client
+                DiscordSocketClient client = Context.Client;
+
+                //parses channel id provided and gets channel from client
+                var chnl = client.GetChannel(ulong.Parse(target)) as IMessageChannel;
+
+                chnl.SendMessageAsync(message);
+            }
         }
 
         //creates new files if there are none
