@@ -85,7 +85,7 @@ namespace GeckoBot.Commands
                     embed.AddField("**cursed edits**",
                         "do cursed things with (edited) messages" + System.Environment.NewLine + System.Environment.NewLine +
                         "to insert edited randomly with a message use '\\`edit [text before edit] [text after edit]'" + System.Environment.NewLine + System.Environment.NewLine +
-                        "to flip the parens of the (edited) use '\\`flip [line one text] [line two text]'"
+                        "to flip the parens of the (edited) use '\\`edit flip [line one text] [line two text]'"
                     );
                     break;
                 case "za_warudo":

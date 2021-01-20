@@ -201,13 +201,29 @@ namespace GeckoBot.Commands
             //generates statement to send
             DateTime date = DateTime.Today;
             string final = (date.DayOfYear - 1).ToString();
-            while (final.Length < 3)
-            {
-                final = "0" + final;
-            }
 
             //gets client
             DiscordSocketClient client = Context.Client;
+
+            //DMs everybody on the list
+            await dmGroup(
+                DriveUtils.ImagePath(date.DayOfYear - 1),
+                $"Today is {date.ToString("d")}. Day {date.DayOfYear} of the year {date.Year} (gecko #{final})");
+
+            //changes geckobot's profile to new gecko
+            Utils.changeProfile(
+                Context.Client, 
+                DriveUtils.ImagePath(date.DayOfYear - 1));
+
+            //updates last run counter
+            Globals.lastrun = DateTime.Now.DayOfYear;
+        }
+
+        public async Task dmGroup(string path, string content)
+        {
+            DiscordSocketClient client = Context.Client;
+
+            DateTime date = DateTime.Today;
 
             //if it is geckobot's birthday
             bool isBirthday = date.DayOfYear == 288;
@@ -220,23 +236,14 @@ namespace GeckoBot.Commands
 
                 //sends file with exception for leap years
                 await b.SendFileAsync(
-                    DriveUtils.ImagePath(date.DayOfYear - 1), 
-                    $"Today is {date.ToString("d")}. Day {date.DayOfYear} of the year {date.Year} (gecko #{final})");
+                    path,
+                    content);
 
                 if (isBirthday)
                 {
                     await b.SendMessageAsync("happy birthday geckobot :cake:");
                 }
             }
-
-            //changes geckobot's profile to new gecko
-            Utils.changeProfile(
-                Context.Client, 
-                DriveUtils.ImagePath(date.DayOfYear - 1));
-
-            //updates last run counter
-            Globals.lastrun = DateTime.Now.DayOfYear;
         }
-
     }
 }
