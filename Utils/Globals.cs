@@ -37,7 +37,7 @@ namespace GeckoBot
         }
 
         //people to dm for daily gecko images
-        public static List<ulong> dmUsers = new List<ulong>();
+        public static List<ulong> dmUsers = new ();
 
         //last time bot was run and daily geckoimage was sent
         public static int lastrun = DateTime.Now.DayOfYear;
@@ -140,5 +140,7 @@ namespace GeckoBot
         };
 
         public static int currentValue = 0;
+
+        public static int HighestGecko;
     }
 }

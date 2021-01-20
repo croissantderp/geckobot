@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Google.Apis.Drive.v3;
 
 namespace GeckoBot.Commands
 {
@@ -9,7 +12,7 @@ namespace GeckoBot.Commands
     {
         // Force cache a gecko image
         [Command("load")]
-        public async Task test(int name)
+        public async Task load(int name)
         {
             await ReplyAsync($"Cached at `{DriveUtils.ImagePath(name)}`");
         }
@@ -50,9 +53,11 @@ namespace GeckoBot.Commands
         [Command("rgec")]
         public async Task rgec()
         {
+            refreshHighestGec();
+            
             //gets random value
             Random random = new Random();
-            int numb = random.Next(0,497);
+            int numb = random.Next(0,Globals.HighestGecko);
             string final = DriveUtils.addZeros(numb);
 
             //sends file
@@ -72,6 +77,35 @@ namespace GeckoBot.Commands
             await Context.Channel.SendFileAsync(
                 DriveUtils.ImagePath(value), 
                 $"gecko #{final}");
+        }
+        
+        // Gets the highest number gecko
+        [Command("hgec")]
+        public async Task hgec()
+        {
+            refreshHighestGec();
+            int num = Globals.HighestGecko;
+            
+            //sends file
+            await Context.Channel.SendFileAsync(
+                DriveUtils.ImagePath(num), 
+                $"gecko #{num}");
+        }
+
+        // Gets the filename of the highest number gecko off of drive, then updates the Global value
+        void refreshHighestGec()
+        {
+            DriveService driveService = DriveUtils.AuthenticateServiceAccount(
+                "geckobotfileretriever@geckobot.iam.gserviceaccount.com", 
+                "../../../GeckoBot-af43fa71833e.json");
+            var listRequest = driveService.Files.List();
+            //listRequest.Fields = "nextPageToken, files(id, name)";
+            listRequest.PageSize = 1; // Only fetch one
+            listRequest.OrderBy = "name desc"; // Name descending gets the highest number gecko
+            listRequest.Q = "mimeType contains 'image'"; // Filter out folders or other non image types
+            
+            IList<Google.Apis.Drive.v3.Data.File> files = listRequest.Execute().Files;
+            Globals.HighestGecko = int.Parse(Regex.Replace(files[0].Name, @"_.+", ""));
         }
     }
 }
