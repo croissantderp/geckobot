@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -44,6 +44,10 @@ namespace GeckoBot
                 if (Globals.emoteDict.ContainsKey(yesnt[i]) && yesnt[i][0] != '\\')
                 {
                     final[i] = Globals.emoteDict[yesnt[i]];
+                    if (final[i].Contains("@फΉ̚ᐼㇶ⤊"))
+                    {
+                        final[i] = final[i].Replace("@फΉ̚ᐼㇶ⤊", "");
+                    }
                 }
                 else
                 {
@@ -62,6 +66,18 @@ namespace GeckoBot
 
             //returns joined segments
             return string.Join("", final.Select(p => p.ToString()));
+        }
+
+        public static bool containsForbidden(string input)
+        {
+            if (input.Contains("@फΉ̚ᐼㇶ⤊") || input.Contains("⁊") || input.Contains("ҩ"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

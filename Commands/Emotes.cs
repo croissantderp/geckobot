@@ -24,14 +24,21 @@ namespace GeckoBot.Commands
             //if key is found
             if (Globals.emoteDict.ContainsKey(yes1))
             {
-                //removes key
-                Globals.emoteDict.Remove(yes1);
+                if (Globals.emoteDict[yes1].Contains("@फΉ̚ᐼㇶ⤊"))
+                {
+                    await ReplyAsync("that is an admin command and cannot be removed");
+                }
+                else
+                {
+                    //removes key
+                    Globals.emoteDict.Remove(yes1);
 
-                //converts dictionary to string and saves
-                FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0}⁊{1}ҩ"), @"..\..\Cache\gecko2.gek");
+                    //converts dictionary to string and saves
+                    FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0}⁊{1}ҩ"), @"..\..\Cache\gecko2.gek");
 
-                //adds reaction
-                await Context.Message.AddReactionAsync(new Emoji("✅"));
+                    //adds reaction
+                    await Context.Message.AddReactionAsync(new Emoji("✅"));
+                }
             }
             else
             {
@@ -39,7 +46,35 @@ namespace GeckoBot.Commands
                 await ReplyAsync("emote not found!");
             }
         }
-        
+
+        //removal function
+        [Command("aer")]
+        public async Task aer(string passcode, string yes1)
+        {
+            if (passcode == Top.Secret)
+            {
+                Globals.RefreshEmoteDict();
+
+                //if key is found
+                if (Globals.emoteDict.ContainsKey(yes1))
+                {
+                    //removes key
+                    Globals.emoteDict.Remove(yes1);
+
+                    //converts dictionary to string and saves
+                    FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0}⁊{1}ҩ"), @"..\..\Cache\gecko2.gek");
+
+                    //adds reaction
+                    await Context.Message.AddReactionAsync(new Emoji("✅"));
+                }
+                else
+                {
+                    //if emote is not found
+                    await ReplyAsync("emote not found!");
+                }
+            }
+        }
+
         //save function
         [Command("es")]
         public async Task es(string yes1, string yes)
@@ -48,7 +83,7 @@ namespace GeckoBot.Commands
 
             //if emote name contains banned characters
             string combined = yes + yes1;
-            if (combined.Contains("⁊") || combined.Contains("ҩ"))
+            if (Utils.containsForbidden(combined))
             {
                 await ReplyAsync("saved things cannot contain 'ҩ' or '⁊'!");
             }
@@ -74,9 +109,47 @@ namespace GeckoBot.Commands
                     await Context.Message.AddReactionAsync(new Emoji("✅"));
                 }
             }
-
         }
-        
+
+        //save function
+        [Command("aes")]
+        public async Task aes(string passcode, string yes1, string yes)
+        {
+            if (passcode == Top.Secret)
+            {
+                Globals.RefreshEmoteDict();
+
+                //if emote name contains banned characters
+                string combined = yes + yes1;
+                if (Utils.containsForbidden(combined))
+                {
+                    await ReplyAsync("saved things cannot contain 'ҩ' or '⁊'!");
+                }
+                else
+                {
+                    //if emote dictionary already has a definition for the new key
+                    if (Globals.emoteDict.ContainsKey(yes1))
+                    {
+                        await ReplyAsync("this name is taken, use a different name!");
+                    }
+                    else
+                    {
+                        //removes ::: for animated saving
+                        string[] temp = yes.Split(":::");
+
+                        //joins the split string and saves to emote dictionary
+                        Globals.emoteDict.Add(yes1, "@फΉ̚ᐼㇶ⤊" + string.Join("", temp.Select(p => p.ToString())));
+
+                        //converts dictionary to string and saves
+                        FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0}⁊{1}ҩ"), @"..\..\Cache\gecko2.gek");
+
+                        //adds reaction
+                        await Context.Message.AddReactionAsync(new Emoji("✅"));
+                    }
+                }
+            }
+        }
+
         //big save function
         [Command("ess")]
         public async Task ess()
@@ -106,7 +179,7 @@ namespace GeckoBot.Commands
                     string name = c.ToString().Remove(count - 20, 20).Remove(0, 2);
 
                     //if the emote dictionary already contains a key or emote contains banned characters
-                    if (!Globals.emoteDict.ContainsKey(name) && !name.Contains("ҩ") && !name.Contains("⁊"))
+                    if (!Globals.emoteDict.ContainsKey(name) && !Utils.containsForbidden(name))
                     {
                         //adds to emote dictionary
                         Globals.emoteDict.Add(name, c.ToString());
