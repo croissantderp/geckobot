@@ -35,7 +35,7 @@ namespace GeckoBot
                     GoogleCredential credential = GoogleCredential.FromStream(stream)
                         .CreateScoped(scopes);
 
-                        // Create the  Analytics service.
+                        // Create the Analytics service.
                     return new DriveService(new BaseClientService.Initializer()
                     {
                         HttpClientInitializer = credential,
@@ -45,7 +45,6 @@ namespace GeckoBot
                 if (Path.GetExtension(serviceAccountCredentialFilePath).ToLower() == ".p12")
                 {
                     // If its a P12 file
-
                     var certificate = new X509Certificate2(serviceAccountCredentialFilePath, "notasecret",
                         X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
                     var credential = new ServiceAccountCredential(
@@ -113,6 +112,7 @@ namespace GeckoBot
                 "geckobotfileretriever@geckobot.iam.gserviceaccount.com", 
                 "../../../GeckoBot-af43fa71833e.json");
             var listRequest = driveService.Files.List();
+            listRequest.PageSize = 1; // Only fetch one
             listRequest.Q = $"name contains '{name}'"; // Search for the image via the given number
             
             IList<Google.Apis.Drive.v3.Data.File> files = listRequest.Execute().Files;
