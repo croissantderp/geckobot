@@ -130,6 +130,7 @@ namespace GeckoBot
 
         public static string[] names =
         {
+            Top.SecretName,
             " 1: A Game Of Tokens",
             " 2: Electric boogaloo",
             " 3: return of the rbot",
