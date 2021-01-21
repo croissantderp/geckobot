@@ -47,10 +47,11 @@ namespace GeckoBot.Commands
                     else
                     {
                         embed.Description = "​";
+
+                        //adds subfield with blank title
+                        embed.AddField("​", subfields[0]);
                     }
 
-                    //adds subfield with blank title
-                    embed.AddField("​", subfields[0]);
                 }
                 else
                 {

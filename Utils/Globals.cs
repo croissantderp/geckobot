@@ -48,6 +48,8 @@ namespace GeckoBot
         //is timer is running
         public static bool started = false;
 
+        public static bool counterStarted = false;
+
         public static bool isCounting = false;
 
         //various dictionaries for music generation

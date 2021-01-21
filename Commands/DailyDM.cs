@@ -15,7 +15,7 @@ namespace GeckoBot.Commands
             //if started or not
             if (Globals.started)
             {
-                await ReplyAsync("already started");
+                await ReplyAsync("hourly check already started");
             }
             else
             {
@@ -27,7 +27,7 @@ namespace GeckoBot.Commands
 
                 if (Globals.isCounting)
                 {
-                    await ReplyAsync("already counting, t - " + (61 - minutes) + " minutes");
+                    await ReplyAsync("hourly check already scheduled, will start in t - " + (61 - minutes) + " minutes");
                 }
                 else
                 {
@@ -41,7 +41,7 @@ namespace GeckoBot.Commands
 
                     Globals.isCounting = true;
 
-                    await ReplyAsync("will start in " + (61 - minutes) + " minutes");
+                    await ReplyAsync("hourly check will start in t - " + (61 - minutes) + " minutes");
                 }
             }
         }
@@ -51,9 +51,10 @@ namespace GeckoBot.Commands
         {
             Start();
 
-            if (!Globals.started)
+            if (!Globals.counterStarted)
             {
-                await ReplyAsync("started");
+                await ReplyAsync("hourly check started");
+                Globals.counterStarted = true;
             }
 
             timer.Stop();
@@ -85,7 +86,7 @@ namespace GeckoBot.Commands
                 await ReplyAsync("checked");
             }
         }
-        
+
         //sets up daily dms
         [Command("dm")]
         public async Task dmgec(bool yes)
@@ -196,7 +197,13 @@ namespace GeckoBot.Commands
                 timer.Start();
             }
 
-            await check("");
+            if (Globals.lastrun != DateTime.Now.DayOfYear)
+            {
+                //checks
+                await dailydm();
+
+                await ReplyAsync("checked and updated");
+            }
         }
 
         //sends daily dm
