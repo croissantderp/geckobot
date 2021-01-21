@@ -28,7 +28,7 @@ namespace GeckoBot.Commands
                 //parses channel id provided and gets channel from client
                 var chnl = client.GetChannel(ulong.Parse(target)) as IMessageChannel;
 
-                chnl.SendMessageAsync(message);
+                await chnl.SendMessageAsync(message);
             }
         }
 

@@ -186,7 +186,7 @@ namespace GeckoBot.Commands
             //getting minutes
             int minutes = time.Minute;
 
-            if (minutes > 10)
+            if (minutes > 2)
             {
                 timer.Stop();
 
@@ -196,11 +196,7 @@ namespace GeckoBot.Commands
                 timer.Start();
             }
 
-            if (Globals.lastrun != DateTime.Now.DayOfYear)
-            {
-                Globals.daysSinceReset += 1;
-                await dailydm();
-            }
+            await check("");
         }
 
         //sends daily dm

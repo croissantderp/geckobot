@@ -6,6 +6,13 @@ namespace GeckoBot.Commands
 {
     public class Help : ModuleBase<SocketCommandContext>
     {
+        //identifies the version of geckobot
+        [Command("id")]
+        public async Task identify()
+        {
+            await ReplyAsync("geckobot" + Globals.names[Globals.currentValue]);
+        }
+
         //instructions
         [Command("what do you")]
         public async Task instructions(string section)
