@@ -8,6 +8,12 @@ namespace GeckoBot.Commands
 {
     public class DailyDM : ModuleBase<SocketCommandContext>
     {
+        [Command("last checked")]
+        public async Task last()
+        {
+            await ReplyAsync(Globals.lastCheck.ToString());
+        }
+
         //starts timer for various checks
         [Command("start")]
         public async Task test()
@@ -187,22 +193,28 @@ namespace GeckoBot.Commands
             //getting minutes
             int minutes = time.Minute;
 
-            if (minutes > 2)
+            Globals.lastCheck = DateTime.Now;
+
+            //if timer is misaligned with hour, realign it
+            if (minutes > 5)
             {
+                //stops current timer
                 timer.Stop();
 
                 //sets timer to amount of time until next hour plus a little bit
                 System.Timers.Timer timer2 = new System.Timers.Timer((61 - minutes) * 60 * 1000);
-                timer.Elapsed += async (sender, e) => await trueStart(timer);
-                timer.Start();
+                timer2.Elapsed += async (sender, e) => await trueStart(timer2);
+                timer2.Start();
+
+                //sets some variables so stats show up
+                Globals.started = false;
+                Globals.isCounting = true;
             }
 
             if (Globals.lastrun != DateTime.Now.DayOfYear)
             {
                 //checks
                 await dailydm();
-
-                await ReplyAsync("checked and updated");
             }
         }
 

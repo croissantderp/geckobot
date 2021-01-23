@@ -42,6 +42,8 @@ namespace GeckoBot
         //last time bot was run and daily geckoimage was sent
         public static int lastrun = DateTime.Now.DayOfYear;
 
+        public static DateTime lastCheck = DateTime.Now;
+
         //days since bot was reset
         public static int daysSinceReset = 0;
 
