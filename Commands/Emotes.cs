@@ -8,6 +8,26 @@ namespace GeckoBot.Commands
 {
     public class Emotes : ModuleBase<SocketCommandContext>
     {
+        //sends message
+        [Command("te")]
+        public async Task send(string target, string message)
+        {
+            if (target == "dm")
+            {
+                await Context.User.SendMessageAsync(Utils.emoteReplace(message));
+            }
+            else
+            {
+                //gets current client
+                DiscordSocketClient client = Context.Client;
+
+                //parses channel id provided and gets channel from client
+                var chnl = client.GetChannel(ulong.Parse(target)) as IMessageChannel;
+
+                await chnl.SendMessageAsync(Utils.emoteReplace(message));
+            }
+        }
+
         //simple retrival function
         [Command("e")]
         public async Task e(string yes)

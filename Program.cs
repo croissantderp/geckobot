@@ -76,7 +76,7 @@ namespace GeckoBot
             if (message.HasStringPrefix("`", ref argPos))
             {
                 var result = await _commands.ExecuteAsync(context, argPos, _services);
-                if (!result.IsSuccess) Console.WriteLine(result.ErrorReason);
+                if (!result.IsSuccess) await message.Channel.SendMessageAsync(result.ErrorReason);
                 if (result.Error.Equals(CommandError.UnmetPrecondition)) await message.Channel.SendMessageAsync(result.ErrorReason);
             }
         }

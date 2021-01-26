@@ -23,7 +23,7 @@ namespace GeckoBot.Commands
             //embed
             var embed = new EmbedBuilder
             {
-            Title = "geckobot" + Globals.names[Globals.currentValue] + System.Environment.NewLine + "1/23/2020 instruction manual"
+            Title = "geckobot" + Globals.names[Globals.currentValue] + System.Environment.NewLine + "1/25/2020 instruction manual"
             };
 
             //changes based on sections
@@ -40,9 +40,8 @@ namespace GeckoBot.Commands
                 case "general":
                     embed.AddField("**general**",
                         "I can do math with '\\`add [value] [value]' replace add with subtract, multiply and divide to do other operations." + System.Environment.NewLine + System.Environment.NewLine +
-                        "To play rock paper scissors, enter '\\`rps [scissors/rock/paper]'." + System.Environment.NewLine + System.Environment.NewLine +
-                        "to send a message, use '\\`send [channel to send message in] [message]' put dm as channel if you want the bot to dm you" + System.Environment.NewLine + System.Environment.NewLine
-                    );
+                        "To play rock paper scissors, enter '\\`rps [scissors/rock/paper]'." + System.Environment.NewLine + System.Environment.NewLine
+                        );
                     break;
                 case "gecko":
                     embed.AddField("**gecko images:**",
@@ -70,9 +69,10 @@ namespace GeckoBot.Commands
                     );
                     break;
                 case "emote":
-                    embed.AddField("**global emotes:**",
+                    embed.AddField("***e* system:**",
                         "Strange discord oversight/intentional design lets bots use emotes globally!" + System.Environment.NewLine + System.Environment.NewLine +
                         "To use an emote use '\\`e [emote name]' this command is also integrated into other commands (e.g. '\\`flip')" + System.Environment.NewLine + System.Environment.NewLine +
+                        "to send a message to a specific channel, use '\\`te [channel to send message in] [message]' put dm as channel if you want the bot to dm you" + System.Environment.NewLine + System.Environment.NewLine +
                         "To log an emote so it can be used globally, type '\\`es [common name] [actual emote here]' make sure the actual emote actually sends as an emote or it won't work. " + System.Environment.NewLine + System.Environment.NewLine +
                         "To save an animated emote, get the emote id (formatted like this: <a:[name]:[id]>) by entering backslash before the emote and copying the message, then paste it and the id will be there, remember to remove the backslash when saving. Then insert a random ':::' anywhere in the id and type '\\`es [common name] [emote id with random ::: ]'" + System.Environment.NewLine + System.Environment.NewLine +
                         "geckobot can also log every emote of every server that it is in by '\\`ess'" + System.Environment.NewLine + System.Environment.NewLine +
