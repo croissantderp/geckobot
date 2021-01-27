@@ -34,6 +34,30 @@ namespace GeckoBot.Commands
         {
             await ReplyAsync(Utils.emoteReplace(yes));
         }
+
+
+        //finds emote
+        [Command("ge")]
+        public async Task ge(string input)
+        {
+            Globals.RefreshEmoteDict();
+            if (Globals.emoteDict.ContainsValue(input))
+            {
+                string key = Globals.emoteDict.FirstOrDefault(x => x.Value == input).Key;
+                await ReplyAsync(key);
+            }
+            else
+            {
+                await ReplyAsync(input + " not found");
+            }
+        }
+
+        //sends the file for emote storage
+        [Command("el")]
+        public async Task el()
+        {
+            await Context.Channel.SendFileAsync(@"..\..\Cache\gecko2.gek");
+        }
         
         //removal function
         [Command("er")]

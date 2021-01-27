@@ -41,6 +41,11 @@ namespace GeckoBot
             checkForCacheExistance();
 
             //checks if files exist
+            if (!File.Exists(@"..\..\Cache\gecko1.gek"))
+            {
+                File.Create(@"..\..\Cache\gecko1.gek");
+            }
+            
             if (!File.Exists(@"..\..\Cache\gecko2.gek"))
             {
                 File.Create(@"..\..\Cache\gecko2.gek");

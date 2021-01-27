@@ -18,6 +18,8 @@ namespace GeckoBot.Commands
         [Command("start")]
         public async Task test()
         {
+            await Context.Client.SetGameAsync("`what do you do?");
+
             //if started or not
             if (Globals.started)
             {
@@ -56,6 +58,12 @@ namespace GeckoBot.Commands
         public async Task trueStart(System.Timers.Timer timer)
         {
             Start();
+
+            if (Globals.lastrun != DateTime.Now.DayOfYear)
+            {
+                //checks
+                await dailydm();
+            }
 
             if (!Globals.counterStarted)
             {
@@ -97,6 +105,8 @@ namespace GeckoBot.Commands
         [Command("dm")]
         public async Task dmgec(bool yes)
         {
+            FileUtils.checkForExistance();
+
             if (yes)
             {
                 //if file exists, load it

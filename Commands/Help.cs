@@ -23,7 +23,7 @@ namespace GeckoBot.Commands
             //embed
             var embed = new EmbedBuilder
             {
-            Title = "geckobot" + Globals.names[Globals.currentValue] + System.Environment.NewLine + "1/25/2020 instruction manual"
+            Title = "geckobot" + Globals.names[Globals.currentValue] + System.Environment.NewLine + "1/26/2020 instruction manual"
             };
 
             //changes based on sections
@@ -34,72 +34,102 @@ namespace GeckoBot.Commands
                                          "(highly recommended to have developer mode on to easily use)" + System.Environment.NewLine +
                                          "if there's a problem, ping my owner croissantderp#4167 " + System.Environment.NewLine + System.Environment.NewLine +
                                          "links: [trello](https://trello.com/invite/b/cFS33M13/8fddf3ac42bd0fe419e482c6f4414e01/gecko-bot-todo) [github](https://github.com/croissantderp/geckobot) [invite](https://discord.com/oauth2/authorize?client_id=766064505079726140&scope=bot&permissions=379968)" + System.Environment.NewLine + System.Environment.NewLine + 
-                                         "sections (replace 'do?' with these): general | gecko | random | sigfigs | emote | embed | edit | za_warudo" + System.Environment.NewLine + System.Environment.NewLine +
-                                         "**In order to not make admins angery, consider using a spam channel for these commands as they are lengthy.**");
+                                         "'\\`what do you do?' help command, sections (replace 'do?' with these): general | gecko | random | sigfig | e | embed | edit | za_warudo | count | admin" + System.Environment.NewLine + System.Environment.NewLine +
+                                         "**In order to not make admins angery, consider using a spam channel for these commands as they are lengthy.**"
+                                         );
                     break;
                 case "general":
                     embed.AddField("**general**",
-                        "I can do math with '\\`add [value] [value]' replace add with subtract, multiply and divide to do other operations." + System.Environment.NewLine + System.Environment.NewLine +
-                        "To play rock paper scissors, enter '\\`rps [scissors/rock/paper]'." + System.Environment.NewLine + System.Environment.NewLine
+                        "'\\`add [value] [value]' does simple math, replace add with subtract, multiply and divide to do other operations." + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`rps [scissors/rock/paper]' to play rock paper scissors." + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`instantiate' creates the nessecary directories if they do not exist" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`id' displays current instance of geckobot." + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`report' logs a bug" + System.Environment.NewLine + System.Environment.NewLine
                         );
                     break;
                 case "gecko":
                     embed.AddField("**gecko images:**",
-                        "to see the entire collection try '\\`GecColle' [go here](https://drive.google.com/drive/folders/1Omwv0NNV0k_xlECZq3d4r0MbSbuHC_Og?usp=sharing)" + System.Environment.NewLine + System.Environment.NewLine +
-                        "to see the daily gecko profile picture, try '\\`gec' " + System.Environment.NewLine + System.Environment.NewLine +
-                        "to see a random gecko profile picture, try '\\`rgec'" + System.Environment.NewLine + System.Environment.NewLine +
-                        "to see a find a gecko profile picture, try '\\`fgec [int]' where int is the gecko#" + System.Environment.NewLine + System.Environment.NewLine +
-                        "to receive daily gecko dms, use '\\`dm [true/false]' where true is to sign up and false is to cancel" + System.Environment.NewLine + System.Environment.NewLine +
-                        "to start the daily clock use '\\`start', manually check by '`check [passcode for force-checking]' use a blank space surrounded by quotes for regular checking" + System.Environment.NewLine + System.Environment.NewLine
+                        "'\\`GecColle' returns a link to the geckoimage archive, or [go here](https://drive.google.com/drive/folders/1Omwv0NNV0k_xlECZq3d4r0MbSbuHC_Og?usp=sharing)" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`gec' shows the daily gecko image" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`load [int]' caches a gecko image" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`rgec' shwos a random gecko" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`fgec [int]' finds a gecko where int is the gecko#" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`dm [true/false]' activates daily gecko nonifs where true is to sign up and false is to cancel" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`start' starts the timer for geckobot daily functions" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`check [passcode for force-checking]' checks if it is a new day, use a blank space surrounded by quotes for regular checking"
                     );
                     break;
                 case "random":
                     embed.AddField("**random shenanigans:**",
-                        "To generate a random number enter '\\`rng [min value] [max value]'." + System.Environment.NewLine + System.Environment.NewLine +
-                        "To generate a random sequence of music, enter '\\`generate [number of measures in sequence]'" + System.Environment.NewLine + System.Environment.NewLine +
-                        "Enter '\\`lottery' to try a 1/100^6 lottery" + System.Environment.NewLine + System.Environment.NewLine +
-                        "To do a random contest thingy, enter '\\`contest [opponent name]'" + System.Environment.NewLine + System.Environment.NewLine +
-                        "To play a number guessing game, first generate a number by entering '\\`g new [min value] [max value]' then enter '\\`g [value]' to guess" + System.Environment.NewLine + System.Environment.NewLine
+                        "'\\`rng [min value] [max value]' to generate a random number." + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`generate [number of measures in sequence]' generate random music" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`lottery' tries a 1/100^6 lottery" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`contest [opponent name]' pits you in a contest with opponent given"
+                    );
+                    embed.AddField("**number guessing game**",
+                        "'\\`g new [min value] [max value]' to generate a new number." + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`g [value]' to guess"
                     );
                     break;
-                case "sigfigs":
+                case "sigfig":
                     embed.AddField("**sigfigs:**",
-                        "To see the significant figures of a number, enter '\\`sigfig [number]'" + System.Environment.NewLine + System.Environment.NewLine +
-                        "To do sigfig math, do '\\`sigfig add [value] [value]' replace with other operations for those" + System.Environment.NewLine + System.Environment.NewLine
+                        "'\\`sigfig [number]' returns the significant figures of the number" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`sigfig add [value] [value]' does math, replace with other operations for those"
                     );
                     break;
-                case "emote":
-                    embed.AddField("***e* system:**",
-                        "Strange discord oversight/intentional design lets bots use emotes globally!" + System.Environment.NewLine + System.Environment.NewLine +
-                        "To use an emote use '\\`e [emote name]' this command is also integrated into other commands (e.g. '\\`flip')" + System.Environment.NewLine + System.Environment.NewLine +
-                        "to send a message to a specific channel, use '\\`te [channel to send message in] [message]' put dm as channel if you want the bot to dm you" + System.Environment.NewLine + System.Environment.NewLine +
-                        "To log an emote so it can be used globally, type '\\`es [common name] [actual emote here]' make sure the actual emote actually sends as an emote or it won't work. " + System.Environment.NewLine + System.Environment.NewLine +
-                        "To save an animated emote, get the emote id (formatted like this: <a:[name]:[id]>) by entering backslash before the emote and copying the message, then paste it and the id will be there, remember to remove the backslash when saving. Then insert a random ':::' anywhere in the id and type '\\`es [common name] [emote id with random ::: ]'" + System.Environment.NewLine + System.Environment.NewLine +
-                        "geckobot can also log every emote of every server that it is in by '\\`ess'" + System.Environment.NewLine + System.Environment.NewLine +
-                        "To remove an emote, type '\\`er [common name]'" + System.Environment.NewLine + System.Environment.NewLine +
-                        "To react, type '\\`re [channel id] [message id] [emote or common name]' global emote thing works too and you can string many together with '$'" + System.Environment.NewLine + System.Environment.NewLine +
-                        "(escape an emote by prefacing it with '\\\\')"
+                case "e":
+                    embed.AddField("**e system use:**",
+                        "can call items with a key, string multiple keys together with $, this also applies to many other functions (e.g. '\\`flip [emote string]')" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`e [string]' is the simple send function" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`ge [string]' is reverse lookup, where the emote string is the item you want to find the key for" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`re [channel id] [message id] [emote string (note: only emotes)]' is react function" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`te [channel id or 'dm'] [emote string]' is targeted send where the channel id is the target channel" + System.Environment.NewLine + System.Environment.NewLine +
+                        "(escape an emote or '$' by prefacing it with '\\\\')"
+                    );
+                    embed.AddField("**e system manage:**",
+                        "can save anything including emotes which can be used globally." + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`es [key to save as] [anything]' is the simple save function" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`er [key]' will remove a key and related info" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`ess' is super save and saves all the emotes of every server the bot can use" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`el' will send the list of all the saved keys and items"
                     );
                     break;
                 case "embed":
                     embed.AddField("**embed builder:**",
                         "build an embed without breaking discord tos!" + System.Environment.NewLine + System.Environment.NewLine +
-                        "the command is '\\`embed [title of embed] [fields, fields are separated by '$$' title and description are separated by '%%'] [footer] [hexidecimal color]'" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`embed [title of embed] [fields, fields are separated by '$$' title and description are separated by '%%'] [footer] [hexidecimal color]' got that? Good, you will be quized on this" + System.Environment.NewLine + System.Environment.NewLine +
                         "it supports hyperlink markdown, example: '\\[hyperlink markdown](https://example.com)' would make [hyperlink markdown](https://example.com)"
                     );
                     break;
                 case "edit":
                     embed.AddField("**cursed edits**",
                         "do cursed things with (edited) messages" + System.Environment.NewLine + System.Environment.NewLine +
-                        "to insert edited randomly with a message use '\\`edit [text before edit] [text after edit]'" + System.Environment.NewLine + System.Environment.NewLine +
-                        "to flip the parens of the (edited) use '\\`edit flip [line one text] [line two text]'"
+                        "\\`edit [text before edit] [text after edit]' inserts (edited) between texts" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`edit flip [line one text] [line two text]' flips the parans of the (edited)"
                     );
                     break;
                 case "za_warudo":
                     embed.AddField("**timer and alarm**",
-                        "to set a timer '\\`timer [message to send after timer] [amount of time in hh:mm:ss format]'" + System.Environment.NewLine + System.Environment.NewLine +
-                        "to set an alarm '\\`alarm [message to send after alarm] [alarm time in (24 hr style) hh:mm:ss format]'"
+                        "'\\`timer [message to send after timer] [amount of time in hh:mm:ss format]' sets an timer" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`alarm [message to send after alarm] [alarm time in (24 hr style) hh:mm:ss format]' sets an alarm"
                     );
+                    break;
+                case "count":
+                    embed.AddField("**counter**",
+                        Globals.daysSinceReset + " day(s) since this bot has been updated"
+                        );
+                    break;
+                case "admin":
+                    embed.AddField("**admin**",
+                        "ask a geckobot admin to do something" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`terminate' terminates the current instance of geckobot" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`set [passcode] [original name of instance you want to change] [name to change it to]' changes the name of geckobot to something in a predetermined matrix" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`change [passcode] [value to change] [name to change it to]' changes names in predetermined matrix" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`profile [passcode] [local filepath]' to change the bot's profile" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`aes [passcode] [key] [anything]' to save as a undeletable emote" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`aer [passcode] [key]' to remove an undeletable emote" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`bugs [passcode]' shows current bug reports"
+                        );
                     break;
                 default:
                     await Context.Channel.SendFileAsync(@"..\..\Cache\message.gif");
@@ -109,10 +139,6 @@ namespace GeckoBot.Commands
 
             if (found)
             {
-                embed.AddField("**counter**",
-                    Globals.daysSinceReset + " days since this bot has been updated"
-                    );
-
                 embed.WithColor(180, 212, 85);
 
                 var embed2 = embed.Build();

@@ -21,15 +21,34 @@ namespace GeckoBot.Commands
         
         //temporary command to set name
         [Command("set")]
-        public async Task set(string password, int value)
+        public async Task set(string password, string name, int value)
         {
-            if (password == Top.Secret)
+            if (password == Top.Secret || name == Top.SecretName)
             {
                 //changes current value to 
                 Globals.currentValue = value;
 
                 //adds reaction
                 await Context.Message.AddReactionAsync(new Emoji("✅"));
+            }
+        }
+
+        //temporary command to set name
+        [Command("change")]
+        public async Task change(string password, int value, string newName)
+        {
+            if (password == Top.Secret)
+            {
+                if (value != 0)
+                {
+                    Globals.names[value] = newName;
+                    //adds reaction
+                    await Context.Message.AddReactionAsync(new Emoji("✅"));
+                }
+                else
+                {
+                    await ReplyAsync("can't change original name");
+                }
             }
         }
 

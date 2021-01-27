@@ -75,9 +75,13 @@ namespace GeckoBot
             int argPos = 0;
             if (message.HasStringPrefix("`", ref argPos))
             {
-                var result = await _commands.ExecuteAsync(context, argPos, _services);
-                if (!result.IsSuccess) await message.Channel.SendMessageAsync(result.ErrorReason);
-                if (result.Error.Equals(CommandError.UnmetPrecondition)) await message.Channel.SendMessageAsync(result.ErrorReason);
+                string temp = message.Content.Remove(0,1);
+                if (!System.Text.RegularExpressions.Regex.IsMatch(temp, @"(?<!\\)\`"))
+                {
+                    var result = await _commands.ExecuteAsync(context, argPos, _services);
+                    if (!result.IsSuccess) await message.Channel.SendMessageAsync(result.ErrorReason);
+                    if (result.Error.Equals(CommandError.UnmetPrecondition)) await message.Channel.SendMessageAsync(result.ErrorReason);
+                }
             }
         }
     }
