@@ -34,8 +34,15 @@ namespace GeckoBot.Commands
 
         //alarm
         [Command("alarm")]
-        public async Task alarm(string message, string time)
+        public async Task alarm(string message, string date, string time)
         {
+            string[] date1 = date.Split("/");
+            int[] date2 = new int[3];
+            for (int i = 0; i < 3; i++)
+            {
+                date2[i] = int.Parse(date1[i]);
+            }
+
             //parses time in hh:mm:ss format
             string[] times1 = time.Split(":");
             int[] times2 = new int[3];
@@ -44,19 +51,15 @@ namespace GeckoBot.Commands
                 times2[i] = int.Parse(times1[i]);
             }
 
-            //gets current time
-            int hour = DateTime.Now.Hour;
-            int minute = DateTime.Now.Minute;
-            int second = DateTime.Now.Second;
+            DateTime target = new DateTime(date2[2], date2[0], date2[1], times2[0], times2[1], times2[2]);
 
-            //does maths and subtracts the current time from the alarm time
-            int final = (((times2[0] - hour) * 60 * 60) + ((times2[1] - minute) * 60) + (times2[2] - second)) * 1000;
+            TimeSpan final = target - DateTime.Now;
 
             //gets user
             IUser user = Context.User;
 
             //sets timer to exact amount of time
-            System.Timers.Timer timer = new System.Timers.Timer(final);
+            System.Timers.Timer timer = new System.Timers.Timer(final.TotalMilliseconds);
             timer.Elapsed += async (sender, e) => await timerUp(user, message, timer);
             timer.Start();
 
@@ -76,7 +79,7 @@ namespace GeckoBot.Commands
 
         //visible timer command
         [Command("countdown")]
-        public async Task vt(string passcode, string target, bool isTimer, string message, string time, string endMessage)
+        public async Task vt(string passcode, string target, bool isTimer, string message, string date, string time, string endMessage)
         {
             //requires passcode and only one timer may exist at a time because of resource problems
             if (passcode == Top.Secret && !Globals.timerExists)
@@ -90,6 +93,13 @@ namespace GeckoBot.Commands
                 for (int i = 0; i < 3; i++)
                 {
                     times2[i] = int.Parse(times1[i]);
+                }
+
+                string[] date1 = date.Split("/");
+                int[] date2 = new int[3];
+                for (int i = 0; i < 3; i++)
+                {
+                    date2[i] = int.Parse(date1[i]);
                 }
 
                 int hour = times2[0];
@@ -108,8 +118,12 @@ namespace GeckoBot.Commands
                 //gets target channel
                 IMessageChannel channel = Context.Client.GetChannel(ulong.Parse(target)) as IMessageChannel;
 
+                DateTime days = new DateTime(date2[2], date2[0], date2[1]);
+
+                int days2 = (int)(days - DateTime.Now.Date).TotalDays;
+
                 //turns inpout time into a time span
-                TimeSpan timeLeft = new TimeSpan(hour, minute, second);
+                TimeSpan timeLeft = new TimeSpan(days2, hour, minute, second);
 
                 //final time when timer runs out
                 DateTime finalTime = DateTime.Now + timeLeft;
