@@ -177,6 +177,7 @@ namespace GeckoBot.Commands
                 //stops timer
                 timer2.Stop();
 
+                Globals.terminate = false;
                 Globals.timerExists = false;
             }
         }
