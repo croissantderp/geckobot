@@ -39,6 +39,10 @@ namespace GeckoBot
         //people to dm for daily gecko images
         public static List<ulong> dmUsers = new ();
 
+        public static bool timerExists;
+
+        public static bool terminate;
+
         //bug list
         public static List<string> bugs = new();
 

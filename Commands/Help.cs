@@ -23,7 +23,7 @@ namespace GeckoBot.Commands
             //embed
             var embed = new EmbedBuilder
             {
-            Title = "geckobot" + Globals.names[Globals.currentValue] + System.Environment.NewLine + "1/26/2020 instruction manual"
+            Title = "geckobot" + Globals.names[Globals.currentValue] + System.Environment.NewLine + "1/27/2020 instruction manual"
             };
 
             //changes based on sections
@@ -56,6 +56,7 @@ namespace GeckoBot.Commands
                         "'\\`fgec [int]' finds a gecko where int is the gecko#" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`dm [true/false]' activates daily gecko nonifs where true is to sign up and false is to cancel" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`start' starts the timer for geckobot daily functions" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`last checked' shows when the bot last checked" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`check [passcode for force-checking]' checks if it is a new day, use a blank space surrounded by quotes for regular checking"
                     );
                     break;
@@ -111,7 +112,9 @@ namespace GeckoBot.Commands
                 case "za_warudo":
                     embed.AddField("**timer and alarm**",
                         "'\\`timer [message to send after timer] [amount of time in hh:mm:ss format]' sets an timer" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`alarm [message to send after alarm] [alarm time in (24 hr style) hh:mm:ss format]' sets an alarm"
+                        "'\\`alarm [message to send after alarm] [alarm time in (24 hr style) hh:mm:ss format]' sets an alarm" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`countdown' [passcode] [target channel id] [is it a timer or alarm (true/false)]] [message, insert '[time]' whereever you want the time to show up] [time, either time until, or alarm time] [message to change it to at the end]' visible timer feature, creates a viewable updating countdown, ask a geckobot admin to make one because only one instance can exist at a time and it's expensive. " + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`end countdown [passcode]' aborts the countdown"
                     );
                     break;
                 case "count":
