@@ -24,7 +24,7 @@ namespace GeckoBot.Commands
                 //parses channel id provided and gets channel from client
                 var chnl = client.GetChannel(ulong.Parse(target)) as IMessageChannel;
 
-                await chnl.SendMessageAsync(Utils.emoteReplace(message));
+                await chnl.SendMessageAsync(Utils.emoteReplace(message) + " says " + Context.User.ToString());
             }
         }
 
@@ -34,7 +34,6 @@ namespace GeckoBot.Commands
         {
             await ReplyAsync(Utils.emoteReplace(yes));
         }
-
 
         //finds emote
         [Command("ge")]

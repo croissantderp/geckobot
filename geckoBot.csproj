@@ -12,6 +12,7 @@
     <OutputPath>bin\Build</OutputPath>
     <NoWarn>1701;1702;0414;</NoWarn>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>

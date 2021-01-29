@@ -13,6 +13,20 @@ namespace GeckoBot.Commands
             await ReplyAsync("geckobot" + Globals.names[Globals.currentValue]);
         }
 
+        [Command("links")]
+        public async Task links()
+        {
+            var embed = new EmbedBuilder
+            {
+                Title = "geckobot links:",
+                Description = "links: [trello](https://trello.com/invite/b/cFS33M13/8fddf3ac42bd0fe419e482c6f4414e01/gecko-bot-todo) [github](https://github.com/croissantderp/geckobot) [invite](https://discord.com/oauth2/authorize?client_id=766064505079726140&scope=bot&permissions=379968)"
+            };
+
+            embed.WithColor(180, 212, 85);
+
+            await ReplyAsync(embed: embed.Build());
+        }
+
         //instructions
         [Command("what do you")]
         public async Task instructions(string section)
@@ -23,7 +37,7 @@ namespace GeckoBot.Commands
             //embed
             var embed = new EmbedBuilder
             {
-            Title = "geckobot" + Globals.names[Globals.currentValue] + System.Environment.NewLine + "1/27/2020 instruction manual"
+            Title = "geckobot" + Globals.names[Globals.currentValue] + System.Environment.NewLine + "1/28/2020 instruction manual"
             };
 
             //changes based on sections
@@ -44,7 +58,9 @@ namespace GeckoBot.Commands
                         "'\\`rps [scissors/rock/paper]' to play rock paper scissors." + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`instantiate' creates the nessecary directories if they do not exist" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`id' displays current instance of geckobot." + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`report' logs a bug" + System.Environment.NewLine + System.Environment.NewLine
+                        "'\\`report' logs a bug" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`delete [channel id] [message id]' can delete messages sent by geckobot" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`links' returns a list of helpful links"
                         );
                     break;
                 case "gecko":
@@ -131,7 +147,8 @@ namespace GeckoBot.Commands
                         "'\\`profile [passcode] [local filepath]' to change the bot's profile" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`aes [passcode] [key] [anything]' to save as a undeletable emote" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`aer [passcode] [key]' to remove an undeletable emote" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`bugs [passcode]' shows current bug reports"
+                        "'\\`bugs [passcode]' shows current bug reports" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`clear bugs [passcode]' clears all bug reports"
                         );
                     break;
                 default:

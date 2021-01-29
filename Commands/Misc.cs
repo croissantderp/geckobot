@@ -23,6 +23,38 @@ namespace GeckoBot.Commands
             await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
 
+        [Command("delete")]
+        public async Task delete(string channel, string message)
+        {
+            //gets current client
+            DiscordSocketClient client = Context.Client;
+
+            //parses channel id provided and gets channel from client
+            var chnl = client.GetChannel(ulong.Parse(channel)) as IMessageChannel;
+
+            //parses message id provided and gets message from channel
+            var message2 = await chnl.GetMessageAsync(ulong.Parse(message));
+
+            if (message2.Author.Id == Context.Client.CurrentUser.Id)
+            {
+                if (!Globals.undeletable.Contains(message2.Id))
+                {
+                    await message2.DeleteAsync();
+
+                    //adds reaction
+                    await Context.Message.AddReactionAsync(new Emoji("✅"));
+                }
+                else
+                {
+                    await ReplyAsync("message is undeletable");
+                }
+            }
+            else
+            {
+                await ReplyAsync("can only delete messages sent by geckobot");
+            }
+        }
+
         [Command("report")]
         public async Task report(string reason)
         {
@@ -76,6 +108,28 @@ namespace GeckoBot.Commands
                     }
                 }
                 await ReplyAsync(string.Join(", ", Globals.bugs));
+            }
+        }
+
+        [Command("clear bugs")]
+        public async Task clearBugs(string passcode)
+        {
+            if (passcode == Top.Secret)
+            {
+                FileUtils.checkForExistance();
+
+                //if file exists, load it
+                if (FileUtils.Load(@"..\..\Cache\gecko1.gek") != null)
+                {
+                    //clears
+                    Globals.bugs.Clear();
+                }
+
+                //saves info
+                FileUtils.Save(string.Join(",", Globals.bugs.ToArray()), @"..\..\Cache\gecko1.gek");
+
+                //adds reaction
+                await Context.Message.AddReactionAsync(new Emoji("✅"));
             }
         }
     }

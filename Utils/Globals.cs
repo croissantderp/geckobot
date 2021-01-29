@@ -39,9 +39,17 @@ namespace GeckoBot
         //people to dm for daily gecko images
         public static List<ulong> dmUsers = new ();
 
+        //if a timer exists
         public static bool timerExists;
 
+        public static ulong timerChannel = new ulong();
+        public static ulong timerMessage = new ulong();
+
+
+        //if timer should be terminated
         public static bool terminate;
+
+        public static List<ulong> undeletable = new List<ulong>();
 
         //bug list
         public static List<string> bugs = new();
@@ -57,8 +65,10 @@ namespace GeckoBot
         //is timer is running
         public static bool started = false;
 
+        //if the counter has started at least once
         public static bool counterStarted = false;
 
+        //if the counter is counting
         public static bool isCounting = false;
 
         //various dictionaries for music generation

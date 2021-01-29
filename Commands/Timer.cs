@@ -122,7 +122,7 @@ namespace GeckoBot.Commands
 
                 int days2 = (int)(days - DateTime.Now.Date).TotalDays;
 
-                //turns inpout time into a time span
+                //turns input time into a time span
                 TimeSpan timeLeft = new TimeSpan(days2, hour, minute, second);
 
                 //final time when timer runs out
@@ -141,8 +141,10 @@ namespace GeckoBot.Commands
                 //sets timer as exists
                 Globals.timerExists = true;
 
-                //time between checks/updates
-                System.Timers.Timer timer = new System.Timers.Timer(4000);
+                Globals.undeletable.Add(message2.Id);
+                
+                //time between checks
+                System.Timers.Timer timer = new System.Timers.Timer(3000);
                 timer.Elapsed += async (sender, e) => await vtimerUp(message2, finalMessage, endMessage, finalTime, timer);
                 timer.Start();
             }
@@ -151,34 +153,48 @@ namespace GeckoBot.Commands
         //the task that is activated when time is up
         public async Task vtimerUp(IUserMessage toEdit, string[] message, string endMessage, DateTime finalTime, System.Timers.Timer timer2)
         {
-            //gets the duration between final time and now
-            TimeSpan duration = finalTime - DateTime.Now;
-            
-            //rounds to seconds
-            TimeSpan duration2 = TimeSpan.FromSeconds(Math.Round(duration.TotalSeconds));
-
-            //edits the message
-            await toEdit.ModifyAsync(a => a.Content = message[0] + duration2 + message[1]);
-
-            //stops the timer when time runs out
-            if (duration.TotalSeconds <= 0)
+            try
             {
-                await toEdit.ModifyAsync(a => a.Content = endMessage);
+                //gets the duration between final time and now
+                TimeSpan duration = finalTime - DateTime.Now;
 
-                //stops timer
-                timer2.Stop();
+                //rounds to seconds
+                TimeSpan duration2 = TimeSpan.FromSeconds(Math.Round(duration.TotalSeconds));
+
+                //edits the message
+                await toEdit.ModifyAsync(a => a.Content = message[0] + duration2 + message[1]);
+
+                //stops the timer when time runs out
+                if (duration.TotalSeconds <= 0)
+                {
+                    await toEdit.ModifyAsync(a => a.Content = endMessage);
+
+                    Globals.undeletable.Remove(toEdit.Id);
+
+                    //stops timer
+                    timer2.Stop();
+                }
+
+                //if timer is prematurely terminated
+                if (Globals.terminate)
+                {
+                    await toEdit.ModifyAsync(a => a.Content = "countdown aborted");
+
+                    //stops timer
+                    timer2.Stop();
+
+                    Globals.terminate = false;
+                    Globals.timerExists = false;
+                }
             }
-
-            //if timer is prematurely terminated
-            if (Globals.terminate)
+            catch(Exception ex)
             {
-                await toEdit.ModifyAsync(a => a.Content = "countdown aborted");
+                Globals.bugs.Add(ex.ToString());
 
-                //stops timer
-                timer2.Stop();
+                //saves info
+                FileUtils.Save(string.Join(",", Globals.bugs.ToArray()), @"..\..\Cache\gecko1.gek");
 
-                Globals.terminate = false;
-                Globals.timerExists = false;
+                return;
             }
         }
 
