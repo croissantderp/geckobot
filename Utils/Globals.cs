@@ -49,6 +49,10 @@ namespace GeckoBot
         //if timer should be terminated
         public static bool terminate;
 
+        public static DateTime datetime = new();
+
+        public static string[] strings = new string[3];
+
         public static List<ulong> undeletable = new List<ulong>();
 
         //bug list

@@ -79,7 +79,7 @@ namespace GeckoBot.Commands
 
         //visible timer command
         [Command("countdown")]
-        public async Task vt(string passcode, string target, bool isTimer, string message, string date, string time, string endMessage)
+        public async Task vt(string passcode, string target, bool isTimer, string message, string date, string time)
         {
             //requires passcode and only one timer may exist at a time because of resource problems
             if (passcode == Top.Secret && !Globals.timerExists)
@@ -95,45 +95,48 @@ namespace GeckoBot.Commands
                     times2[i] = int.Parse(times1[i]);
                 }
 
-                string[] date1 = date.Split("/");
-                int[] date2 = new int[3];
-                for (int i = 0; i < 3; i++)
-                {
-                    date2[i] = int.Parse(date1[i]);
-                }
-
                 int hour = times2[0];
                 int minute = times2[1];
                 int second = times2[2];
 
+                int days = 0;
+
+                //final time when timer runs out
+                DateTime finalTime = new DateTime();
+
                 if (!isTimer)
                 {
-                    //gets current time
-                    hour -= DateTime.Now.Hour;
-                    minute -= DateTime.Now.Minute;
-                    second -= DateTime.Now.Second;
+                    string[] date1 = date.Split("/");
+                    int[] date2 = new int[3];
+                    for (int i = 0; i < 3; i++)
+                    {
+                        date2[i] = int.Parse(date1[i]);
+                    }
 
+                    finalTime = new DateTime(date2[2], date2[0], date2[1], hour, minute, second);
                 }
+                else
+                {
+                    days = int.Parse(date);
+
+                    //turns input time into a time span
+                    TimeSpan timeLeft = new TimeSpan(days, hour, minute, second);
+
+                    //final time when timer runs out
+                    finalTime = DateTime.Now + timeLeft;
+                }
+
+                string[] endMessage = finalMessage[1].Split("[end]");
 
                 //gets target channel
                 IMessageChannel channel = Context.Client.GetChannel(ulong.Parse(target)) as IMessageChannel;
-
-                DateTime days = new DateTime(date2[2], date2[0], date2[1]);
-
-                int days2 = (int)(days - DateTime.Now.Date).TotalDays;
-
-                //turns input time into a time span
-                TimeSpan timeLeft = new TimeSpan(days2, hour, minute, second);
-
-                //final time when timer runs out
-                DateTime finalTime = DateTime.Now + timeLeft;
 
                 //gets duration for first message
                 TimeSpan duration = finalTime - DateTime.Now;
 
                 TimeSpan duration2 = TimeSpan.FromSeconds(Math.Round(duration.TotalSeconds));
 
-                var message2 = await channel.SendMessageAsync(finalMessage[0] + duration2 + finalMessage[1]);
+                var message2 = await channel.SendMessageAsync(finalMessage[0] + duration2 + endMessage[0]);
 
                 //initializes things
                 await ReplyAsync("countdown initialized");
@@ -143,31 +146,35 @@ namespace GeckoBot.Commands
 
                 Globals.undeletable.Add(message2.Id);
                 
+                Globals.datetime = finalTime;
+
+                Globals.strings = new string[] { finalMessage[0], endMessage[0], endMessage[1] };
+
                 //time between checks
                 System.Timers.Timer timer = new System.Timers.Timer(3000);
-                timer.Elapsed += async (sender, e) => await vtimerUp(message2, finalMessage, endMessage, finalTime, timer);
+                timer.Elapsed += async (sender, e) => await vtimerUp(message2, timer);
                 timer.Start();
             }
         }
 
         //the task that is activated when time is up
-        public async Task vtimerUp(IUserMessage toEdit, string[] message, string endMessage, DateTime finalTime, System.Timers.Timer timer2)
+        public async Task vtimerUp(IUserMessage toEdit, System.Timers.Timer timer2)
         {
             try
             {
                 //gets the duration between final time and now
-                TimeSpan duration = finalTime - DateTime.Now;
+                TimeSpan duration = Globals.datetime - DateTime.Now;
 
                 //rounds to seconds
                 TimeSpan duration2 = TimeSpan.FromSeconds(Math.Round(duration.TotalSeconds));
 
                 //edits the message
-                await toEdit.ModifyAsync(a => a.Content = message[0] + duration2 + message[1]);
+                await toEdit.ModifyAsync(a => a.Content = Globals.strings[0] + duration2 + Globals.strings[1]);
 
                 //stops the timer when time runs out
                 if (duration.TotalSeconds <= 0)
                 {
-                    await toEdit.ModifyAsync(a => a.Content = endMessage);
+                    await toEdit.ModifyAsync(a => a.Content = Globals.strings[2]);
 
                     Globals.undeletable.Remove(toEdit.Id);
 
@@ -210,5 +217,4 @@ namespace GeckoBot.Commands
             }
         }
     }
-   
 }

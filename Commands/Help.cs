@@ -129,7 +129,7 @@ namespace GeckoBot.Commands
                     embed.AddField("**timer and alarm**",
                         "'\\`timer [message to send after timer] [amount of time in hh:mm:ss format]' sets an timer" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`alarm [message to send after alarm] [alarm date in mm/dd/yyyy] [alarm time in (24 hr style) hh:mm:ss format]' sets an alarm" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`countdown' [passcode] [target channel id] [is it a timer or alarm (true/false)]] [message, insert '[time]' whereever you want the time to show up ][date in mm/dd/yyyy] [time, either time until, or alarm time] [message to change it to at the end]' visible timer feature, creates a viewable updating countdown, ask a geckobot admin to make one because only one instance can exist at a time and it's expensive. " + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`countdown' [passcode] [target channel id] [is it a timer or alarm (true/false)]] [message, insert '[time]' wherever you want the time to show up and insert [end] to divide the main message from what message to show at the end ][date in mm/dd/yyyy for alarm or number of days for timer] [time, either time until, or alarm time]' visible timer feature, creates a viewable updating countdown, ask a geckobot admin to make one because only one instance can exist at a time and it's expensive. " + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`end countdown [passcode]' aborts the countdown"
                     );
                     break;
