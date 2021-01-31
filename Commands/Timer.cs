@@ -3,6 +3,9 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using System.ServiceProcess;
+using System.Management;
+using Microsoft.Win32;
 
 namespace GeckoBot.Commands
 {
@@ -152,13 +155,51 @@ namespace GeckoBot.Commands
 
                 //time between checks
                 System.Timers.Timer timer = new System.Timers.Timer(3000);
-                timer.Elapsed += async (sender, e) => await vtimerUp(message2, timer);
+                timer.Elapsed += async (sender, e) => await vtimerUp(message2);
                 timer.Start();
+
+                Globals.timer = timer;
+
+                SystemEvents.PowerModeChanged += PowerEvents;
+            }
+        }
+
+        [Command("pause")]
+        public async Task pause(string passcode)
+        {
+            if (passcode == Top.Secret)
+            {
+                Globals.timer.Stop();
+                await ReplyAsync("paused");
+            }
+        }
+
+        [Command("unpause")]
+        public async Task unpause(string passcode)
+        {
+            if (passcode == Top.Secret)
+            {
+                Globals.timer.Start();
+                await ReplyAsync("unpaused");
+            }
+        }
+
+        public void PowerEvents(object sender, PowerModeChangedEventArgs e)
+        {
+            if (Globals.isSleep)
+            {
+                Globals.timer.Stop();
+                Globals.isSleep = true;
+            }
+            else
+            {
+                Globals.timer.Start();
+                Globals.isSleep = false;
             }
         }
 
         //the task that is activated when time is up
-        public async Task vtimerUp(IUserMessage toEdit, System.Timers.Timer timer2)
+        public async Task vtimerUp(IUserMessage toEdit)
         {
             try
             {
@@ -179,7 +220,7 @@ namespace GeckoBot.Commands
                     Globals.undeletable.Remove(toEdit.Id);
 
                     //stops timer
-                    timer2.Stop();
+                    Globals.timer.Stop();
                 }
 
                 //if timer is prematurely terminated
@@ -188,7 +229,7 @@ namespace GeckoBot.Commands
                     await toEdit.ModifyAsync(a => a.Content = "countdown aborted");
 
                     //stops timer
-                    timer2.Stop();
+                    Globals.timer.Stop();
 
                     Globals.terminate = false;
                     Globals.timerExists = false;

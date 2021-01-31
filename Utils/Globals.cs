@@ -42,9 +42,12 @@ namespace GeckoBot
         //if a timer exists
         public static bool timerExists;
 
+        public static System.Timers.Timer timer = new System.Timers.Timer();
+
         public static ulong timerChannel = new ulong();
         public static ulong timerMessage = new ulong();
 
+        public static bool isSleep = false;
 
         //if timer should be terminated
         public static bool terminate;
