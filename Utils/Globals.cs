@@ -8,6 +8,8 @@ namespace GeckoBot
     //global variables
     public class Globals
     {
+        public static Discord.AllowedMentions allowed = new Discord.AllowedMentions(Discord.AllowedMentionTypes.Users);
+
         //guessing game variables
         public static int gNumber;
         public static int attempts;

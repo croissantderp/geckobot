@@ -24,7 +24,7 @@ namespace GeckoBot.Commands
                 //parses channel id provided and gets channel from client
                 var chnl = client.GetChannel(ulong.Parse(target)) as IMessageChannel;
 
-                await chnl.SendMessageAsync(Utils.emoteReplace(message) + " says " + Context.User.ToString());
+                await chnl.SendMessageAsync(Utils.emoteReplace(message) + " says " + Context.User.ToString(), false, null, null, Globals.allowed);
             }
         }
 
@@ -32,7 +32,7 @@ namespace GeckoBot.Commands
         [Command("e")]
         public async Task e(string yes)
         {
-            await ReplyAsync(Utils.emoteReplace(yes));
+            await ReplyAsync(Utils.emoteReplace(yes), false, null, null, Globals.allowed);
         }
 
         //finds emote

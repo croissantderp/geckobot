@@ -72,7 +72,7 @@ namespace GeckoBot.Commands
             //assigns time
             embed.WithCurrentTimestamp();
 
-            await ReplyAsync(embed: embed.Build());
+            await ReplyAsync("", false, embed: embed.Build(), null, Globals.allowed);
         }
     }
 }

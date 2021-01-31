@@ -14,7 +14,7 @@ namespace GeckoBot.Commands
             string final = "؜" + Utils.emoteReplace(text) + "\n" + Utils.emoteReplace(text2) + "؜؜؜";
 
             //sends a placeholder message
-            var Message1 = await ReplyAsync("ahaaha");
+            var Message1 = await ReplyAsync("ahaaha", false, null, null, Globals.allowed);
 
             //edits it with content
             await Message1.ModifyAsync(m => { m.Content = final; });
@@ -27,7 +27,7 @@ namespace GeckoBot.Commands
             string final = "؜" + Utils.emoteReplace(text2) + "؜؜؜؜؜؜؜؜؜؜؜؜" + Utils.emoteReplace(text);
 
             //sends a placeholder message
-            var Message1 = await ReplyAsync("ahaaha");
+            var Message1 = await ReplyAsync("ahaaha", false, null, null, Globals.allowed);
 
             //edits it with content
             await Message1.ModifyAsync(m => { m.Content = final; });
