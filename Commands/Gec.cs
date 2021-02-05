@@ -49,6 +49,61 @@ namespace GeckoBot.Commands
             await ReplyAsync(embed: embed2);
         }
 
+        [Command("gecko gang")]
+        public async Task gang()
+        {
+            //if file exists, load it
+            if (FileUtils.Load(@"..\..\Cache\gecko3.gek") != null)
+            {
+                //clears
+                Globals.dmUsers.Clear();
+
+                //gets info
+                string[] temp = FileUtils.Load(@"..\..\Cache\gecko3.gek").Split(",");
+
+                //adds info to list
+                foreach (string a in temp)
+                {
+                    Globals.dmUsers.Add(ulong.Parse(a));
+                }
+            }
+
+            List<string> names = new List<string>();
+
+            foreach(ulong a in Globals.dmUsers)
+            {
+                names.Add(Context.Client.GetUser(a).Username);
+            }
+
+            //buils an embed
+            var embed = new EmbedBuilder
+            {
+                Title = "join the gecko gang",
+                Description = (string.Join("\n", names))
+            };
+
+            embed.WithColor(180, 212, 85);
+
+            await ReplyAsync("", false, embed: embed.Build(), null, Globals.allowed);
+        }
+
+        [Command("submit")]
+        public async Task submit()
+        {
+            //buils an embed
+            var embed = new EmbedBuilder
+            {
+                Title = "gecko submissions",
+                Description = ("[submit a geckoimage here](https://forms.gle/CeNkM2aHcdrcidvX6)")
+            };
+
+            embed.WithColor(180, 212, 85);
+
+            var embed2 = embed.Build();
+
+            await ReplyAsync(embed: embed2);
+        }
+
         //sends a random geckoimage
         [Command("rgec")]
         public async Task rgec()

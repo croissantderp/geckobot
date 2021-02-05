@@ -66,11 +66,13 @@ namespace GeckoBot.Commands
                 case "gecko":
                     embed.AddField("**gecko images:**",
                         "'\\`GecColle' returns a link to the geckoimage archive, or [go here](https://drive.google.com/drive/folders/1Omwv0NNV0k_xlECZq3d4r0MbSbuHC_Og?usp=sharing)" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`submit' returns a link to submit a gecko, or [go here](https://forms.gle/CeNkM2aHcdrcidvX6)" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`gec' shows the daily gecko image" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`load [int]' caches a gecko image" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`rgec' shwos a random gecko" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`fgec [int]' finds a gecko where int is the gecko#" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`dm [true/false]' activates daily gecko nonifs where true is to sign up and false is to cancel" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`gecko gang' shows who is in the gecko gang (people who have signed up for daily dms)" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`start' starts the timer for geckobot daily functions" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`last checked' shows when the bot last checked" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`check [passcode for force-checking]' checks if it is a new day, use a blank space surrounded by quotes for regular checking"

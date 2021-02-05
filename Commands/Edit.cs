@@ -17,7 +17,7 @@ namespace GeckoBot.Commands
             var Message1 = await ReplyAsync("ahaaha", false, null, null, Globals.allowed);
 
             //edits it with content
-            await Message1.ModifyAsync(m => { m.Content = final; });
+            await Message1.ModifyAsync(m => { m.Content = final; m.AllowedMentions = Globals.allowed; });
         }
 
         [Command("")]
@@ -27,10 +27,10 @@ namespace GeckoBot.Commands
             string final = "؜" + Utils.emoteReplace(text2) + "؜؜؜؜؜؜؜؜؜؜؜؜" + Utils.emoteReplace(text);
 
             //sends a placeholder message
-            var Message1 = await ReplyAsync("ahaaha", false, null, null, Globals.allowed);
+            var Message1 = await ReplyAsync("ahaaha");
 
             //edits it with content
-            await Message1.ModifyAsync(m => { m.Content = final; });
+            await Message1.ModifyAsync(m => { m.Content = final; m.AllowedMentions = Globals.allowed; });
         }
     }
 }

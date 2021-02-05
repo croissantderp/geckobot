@@ -206,7 +206,7 @@ namespace GeckoBot.Commands
             Globals.lastCheck = DateTime.Now;
 
             //if timer is misaligned with hour, realign it
-            if (minutes > 5)
+            if (minutes > 1)
             {
                 //stops current timer
                 timer.Stop();
