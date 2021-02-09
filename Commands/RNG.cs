@@ -58,7 +58,7 @@ namespace GeckoBot.Commands
 
         //tem
         [Command("tem")]
-        [Summary("Has a 1 in 1000 chance to send the mythical Tem.")]
+        [Summary("???")]
         public async Task tem()
         {
             Random random = new Random();

@@ -25,7 +25,7 @@ namespace GeckoBot.Commands
         [Summary("Sets geckobot's internal name from the array of names.")]
         public async Task set(string password, string name, int value)
         {
-            if (password == Top.Secret || name == Top.SecretName)
+            if (password == Top.Secret && name == Top.SecretName)
             {
                 //changes current value to 
                 Globals.currentValue = value;

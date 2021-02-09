@@ -30,6 +30,7 @@ namespace GeckoBot.Commands
         }
 
         [Command("gun")]
+        [Summary("No such command exists, please never speak of it again or use it.")]
         public async Task gun()
         {
             await ReplyAsync("fine, you win. Now if you would lower the gun. please?");
