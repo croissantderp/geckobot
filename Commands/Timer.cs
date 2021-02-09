@@ -13,6 +13,7 @@ namespace GeckoBot.Commands
     {
         //timer
         [Command("timer")]
+        [Summary("Sets an alarm which will be sent after the specified length of time (in hh:mm:ss format).")]
         public async Task timer(string message, string time)
         {
             //parses time in hh:mm:ss format
@@ -37,6 +38,7 @@ namespace GeckoBot.Commands
 
         //alarm
         [Command("alarm")]
+        [Summary("Sets an alarm which will be sent on the specified date and time (in hh:mm:ss format).")]
         public async Task alarm(string message, string date, string time)
         {
             string[] date1 = date.Split("/");
@@ -74,7 +76,7 @@ namespace GeckoBot.Commands
         public async Task timerUp(IUser user, string message, System.Timers.Timer timer2)
         {
             //dms user
-            await Discord.UserExtensions.SendMessageAsync(user, Utils.emoteReplace(message));
+            await user.SendMessageAsync(Utils.emoteReplace(message));
 
             //stops timer
             timer2.Stop();
@@ -82,6 +84,7 @@ namespace GeckoBot.Commands
 
         //visible timer command
         [Command("countdown")]
+        [Summary("Sets a countdown which will be updated every 3 seconds.")]
         public async Task vt(string passcode, string target, bool isTimer, string message, string date, string time)
         {
             //requires passcode and only one timer may exist at a time because of resource problems
@@ -105,7 +108,7 @@ namespace GeckoBot.Commands
                 int days = 0;
 
                 //final time when timer runs out
-                DateTime finalTime = new DateTime();
+                DateTime finalTime;
 
                 if (!isTimer)
                 {
@@ -151,7 +154,7 @@ namespace GeckoBot.Commands
                 
                 Globals.datetime = finalTime;
 
-                Globals.strings = new string[] { finalMessage[0], endMessage[0], endMessage[1] };
+                Globals.strings = new [] { finalMessage[0], endMessage[0], endMessage[1] };
 
                 //time between checks
                 System.Timers.Timer timer = new System.Timers.Timer(3000);
@@ -165,6 +168,7 @@ namespace GeckoBot.Commands
         }
 
         [Command("pause")]
+        [Summary("Pauses the countdown.")]
         public async Task pause(string passcode)
         {
             if (passcode == Top.Secret)
@@ -175,6 +179,7 @@ namespace GeckoBot.Commands
         }
 
         [Command("unpause")]
+        [Summary("Unpauses the countdown.")]
         public async Task unpause(string passcode)
         {
             if (passcode == Top.Secret)
@@ -242,12 +247,12 @@ namespace GeckoBot.Commands
                 //saves info
                 FileUtils.Save(string.Join(",", Globals.bugs.ToArray()), @"..\..\Cache\gecko1.gek");
 
-                return;
             }
         }
 
         //ends timer
         [Command("end countdown")]
+        [Summary("End the countdown.")]
         public async Task endTimer(string passcode)
         {
             //terminates timer

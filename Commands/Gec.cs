@@ -11,14 +11,19 @@ namespace GeckoBot.Commands
     public class Gec : ModuleBase<SocketCommandContext>
     {
         // Force cache a gecko image
+        // This functionality is accomplished by fgec already, consider removing
+        /*
         [Command("load")]
+        [Summary("Force caches a gecko image.")]
         public async Task load(int name)
         {
             await ReplyAsync($"Cached at `{DriveUtils.ImagePath(name)}`");
         }
+        */
         
         //gets daily gecko image
         [Command("gec")]
+        [Summary("Sends the daily gecko.")]
         public async Task gec()
         {
             //gets day of the year
@@ -33,6 +38,7 @@ namespace GeckoBot.Commands
         
         //sends a message with a link to the gecko collection
         [Command("GecColle")]
+        [Summary("Links the gecko collection Google Drive folder.")]
         public async Task gecColle()
         {
             //buils an embed
@@ -50,6 +56,7 @@ namespace GeckoBot.Commands
         }
 
         [Command("gecko gang")]
+        [Summary("Lists people who are part of the gecko gang.")]
         public async Task gang()
         {
             //if file exists, load it
@@ -84,10 +91,11 @@ namespace GeckoBot.Commands
 
             embed.WithColor(180, 212, 85);
 
-            await ReplyAsync("", false, embed: embed.Build(), null, Globals.allowed);
+            await ReplyAsync("", embed: embed.Build(), allowedMentions: Globals.allowed);
         }
 
         [Command("submit")]
+        [Summary("Links the gecko submission form.")]
         public async Task submit()
         {
             //buils an embed
@@ -106,6 +114,7 @@ namespace GeckoBot.Commands
 
         //sends a random geckoimage
         [Command("rgec")]
+        [Summary("Sends a random gecko.")]
         public async Task rgec()
         {
             refreshHighestGec();
@@ -123,6 +132,7 @@ namespace GeckoBot.Commands
 
         //finds a gecko
         [Command("fgec")]
+        [Summary("Sends the specified gecko.")]
         public async Task fgec(int value)
         {
             //converts int to string
@@ -136,6 +146,7 @@ namespace GeckoBot.Commands
         
         // Gets the highest number gecko
         [Command("hgec")]
+        [Summary("Sends the latest gecko.")]
         public async Task hgec()
         {
             refreshHighestGec();
@@ -148,6 +159,7 @@ namespace GeckoBot.Commands
         }
 
         // Gets the filename of the highest number gecko off of drive, then updates the Global value
+        // Is inefficient; should update soon
         void refreshHighestGec()
         {
             DriveService driveService = DriveUtils.AuthenticateServiceAccount(

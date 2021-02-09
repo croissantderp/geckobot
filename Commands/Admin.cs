@@ -9,6 +9,7 @@ namespace GeckoBot.Commands
     {
         //termination command
         [Command("terminate")]
+        [Summary("Terminates the bot process.")]
         public async Task terminate(string passcode)
         {
             //if password is correct
@@ -21,6 +22,7 @@ namespace GeckoBot.Commands
         
         //temporary command to set name
         [Command("set")]
+        [Summary("Sets geckobot's internal name from the array of names.")]
         public async Task set(string password, string name, int value)
         {
             if (password == Top.Secret || name == Top.SecretName)
@@ -35,6 +37,7 @@ namespace GeckoBot.Commands
 
         //temporary command to set name
         [Command("change")]
+        [Summary("Changes geckobot's internal name to the specified string.")]
         public async Task change(string password, int value, string newName)
         {
             if (password == Top.Secret)
@@ -52,81 +55,15 @@ namespace GeckoBot.Commands
             }
         }
 
-        //temporary command to set name
+        //temporary command to set profile
         [Command("profile")]
+        [Summary("Sets geckobot's profile to the specified image path.")]
         public async Task profile(string password, string path)
         {
             if (password == Top.Secret)
             {
                 Utils.changeProfile(Context.Client, path);
                 await ReplyAsync("profile changed");
-            }
-        }
-
-        //admin save function
-        [Command("aes")]
-        public async Task aes(string passcode, string yes1, string yes)
-        {
-            if (passcode == Top.Secret)
-            {
-                Globals.RefreshEmoteDict();
-
-                //if emote name contains banned characters
-                string combined = yes + yes1;
-                if (Utils.containsForbidden(combined))
-                {
-                    await ReplyAsync("saved things cannot contain 'ҩ' or '⁊'!");
-                }
-                else
-                {
-                    //if emote dictionary already has a definition for the new key
-                    if (Globals.emoteDict.ContainsKey(yes1))
-                    {
-                        await ReplyAsync("this name is taken, use a different name!");
-                    }
-                    else
-                    {
-                        //removes ::: for animated saving
-                        string[] temp = yes.Split(":::");
-
-                        //joins the split string and saves to emote dictionary
-                        Globals.emoteDict.Add(yes1, "@फΉ̚ᐼㇶ⤊" + string.Join("", temp.Select(p => p.ToString())));
-
-                        //converts dictionary to string and saves
-                        FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0}⁊{1}ҩ"), @"..\..\Cache\gecko2.gek");
-
-                        //adds reaction
-                        await Context.Message.AddReactionAsync(new Emoji("✅"));
-                    }
-                }
-            }
-        }
-
-        //admin removal function
-        [Command("aer")]
-        public async Task aer(string passcode, string yes1)
-        {
-            if (passcode == Top.Secret)
-            {
-                Globals.RefreshEmoteDict();
-
-                //if key is found
-                if (Globals.emoteDict.ContainsKey(yes1))
-                {
-                    //removes key
-                    Globals.emoteDict.Remove(yes1);
-
-                    //converts dictionary to string and saves
-                    FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0}⁊{1}ҩ"), @"..\..\Cache\gecko2.gek");
-
-                    //adds reaction
-                    await Context.Message.AddReactionAsync(new Emoji("✅"));
-                }
-                else
-                {
-                    //if emote is not found
-                    await ReplyAsync("emote not found!");
-                }
             }
         }
 

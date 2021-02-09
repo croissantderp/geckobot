@@ -8,7 +8,7 @@ namespace GeckoBot
     //global variables
     public class Globals
     {
-        public static Discord.AllowedMentions allowed = new Discord.AllowedMentions(Discord.AllowedMentionTypes.Users);
+        public static Discord.AllowedMentions allowed = new (Discord.AllowedMentionTypes.Users);
 
         //guessing game variables
         public static int gNumber;
@@ -44,10 +44,10 @@ namespace GeckoBot
         //if a timer exists
         public static bool timerExists;
 
-        public static System.Timers.Timer timer = new System.Timers.Timer();
+        public static System.Timers.Timer timer = new ();
 
-        public static ulong timerChannel = new ulong();
-        public static ulong timerMessage = new ulong();
+        public static ulong timerChannel = new ();
+        public static ulong timerMessage = new ();
 
         public static bool isSleep = false;
 
@@ -58,7 +58,7 @@ namespace GeckoBot
 
         public static string[] strings = new string[3];
 
-        public static List<ulong> undeletable = new List<ulong>();
+        public static List<ulong> undeletable = new ();
 
         //bug list
         public static List<string> bugs = new();
@@ -81,7 +81,7 @@ namespace GeckoBot
         public static bool isCounting = false;
 
         //various dictionaries for music generation
-        public static Dictionary<int, string> notes = new()
+        public static Dictionary<int, string> notes = new ()
         {
             {0, "c"},
             {1, "c#"},
@@ -122,7 +122,7 @@ namespace GeckoBot
             {36, "c4"},
             {37, "rest"},
         };
-        public static Dictionary<int, int> major = new()
+        public static Dictionary<int, int> major = new ()
         {
             {1, 2},
             {2, 4},
@@ -132,7 +132,7 @@ namespace GeckoBot
             {6, 11},
             {7, 12},
         };
-        public static Dictionary<int, int> minor = new Dictionary<int, int>()
+        public static Dictionary<int, int> minor = new ()
         {
             {1, 2},
             {2, 3},
@@ -142,7 +142,7 @@ namespace GeckoBot
             {6, 10},
             {7, 12},
         };
-        public static Dictionary<int, int> timeDict = new()
+        public static Dictionary<int, int> timeDict = new ()
         {
             {1, 2},
             {2, 3},
@@ -151,7 +151,7 @@ namespace GeckoBot
             {5, 8},
             {6, 16},
         };
-        public static Dictionary<int, int> timeDict2 = new()
+        public static Dictionary<int, int> timeDict2 = new ()
         {
             {1, 2},
             {2, 4},

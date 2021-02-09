@@ -10,6 +10,7 @@ namespace GeckoBot.Commands
     {
         //music generation function
         [Command("generate")]
+        [Summary("Generates a tune based on note count.")]
         public async Task generate(int length)
         {
             //rAnDoM
@@ -27,18 +28,17 @@ namespace GeckoBot.Commands
             int dure = 0;
 
             //list that stores notes
-            List<string> noteNames = new List<string>();
+            List<string> noteNames = new ();
 
             //I'm far too lazy to explain this, deal with it.
             while (measures > 0)
             {
                 int noteChance = random.Next(1, 8);
 
-                int newNumber;
+                int newNumber = random.Next(1, 8);
 
                 int judge = random.Next(1, 3);
                 int rest = random.Next(1, 15);
-                newNumber = random.Next(1, 8);
 
                 if (rest == 1 && number != 37)
                 {
@@ -50,22 +50,30 @@ namespace GeckoBot.Commands
                     {
                         if (majorMinor == 1)
                         {
-                            number = (judge == 2 ? inKey - Globals.major[newNumber] : inKey + Globals.major[newNumber]);
+                            number = judge == 2 
+                                ? inKey - Globals.major[newNumber] 
+                                : inKey + Globals.major[newNumber];
                         }
                         else
                         {
-                            number = (judge == 2 ? inKey - Globals.minor[newNumber] : inKey + Globals.minor[newNumber]);
+                            number = judge == 2 
+                                ? inKey - Globals.minor[newNumber] 
+                                : inKey + Globals.minor[newNumber];
                         }
                     }
                     else
                     {
                         if (majorMinor == 2)
                         {
-                            number = (judge == 2 ? inKey - Globals.major[newNumber] : inKey + Globals.major[newNumber]);
+                            number = judge == 2 
+                                ? inKey - Globals.major[newNumber] 
+                                : inKey + Globals.major[newNumber];
                         }
                         else
                         {
-                            number = (judge == 2 ? inKey - Globals.minor[newNumber] : inKey + Globals.minor[newNumber]);
+                            number = judge == 2 
+                                ? inKey - Globals.minor[newNumber] 
+                                : inKey + Globals.minor[newNumber];
                         }
                     }
                 }
@@ -91,7 +99,7 @@ namespace GeckoBot.Commands
                     dure = random.Next(1, (timeRemain + 1) / 2);
                 }
                 
-                noteNames.Add(Globals.notes[number] + " **" + dure.ToString() + "**");
+                noteNames.Add(Globals.notes[number] + $" **{dure}**");
 
                 if (measures <= 0)
                 {
@@ -101,7 +109,8 @@ namespace GeckoBot.Commands
             }
 
             //joins stuff and sends
-            string final = Globals.notes[inKey] + (majorMinor == 2 ? " major, in " : " minor, in ") + time.ToString() + "/" + time2.ToString() + System.Environment.NewLine + string.Join(", ", noteNames.Select(p => p.ToString()));
+            string final = $"{Globals.notes[inKey]}{(majorMinor == 2 ? " major, in " : " minor, in ")}{time}/{time2}" +
+                           $"{Environment.NewLine}{string.Join(", ", noteNames.Select(p => p.ToString()))}";
             await ReplyAsync(final);
         }
     }

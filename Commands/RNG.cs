@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 
 namespace GeckoBot.Commands
@@ -9,6 +10,7 @@ namespace GeckoBot.Commands
     {
         //random number generator
         [Command("rng")]
+        [Summary("Generates a number between min and max.")]
         public async Task rng(int min, int max)
         {
             Random random = new Random();
@@ -18,10 +20,11 @@ namespace GeckoBot.Commands
 
         //how to stonks
         [Command("lottery")]
+        [Summary("Gambles your life savings away.")]
         public async Task lottery()
         {
             //variables
-            string results = " ";
+            string results;
             string[] number2 = new string[6];
             string[] key2 = new string[6];
             int matches = 0;
@@ -34,8 +37,8 @@ namespace GeckoBot.Commands
                 int key = random.Next(1, 100);
                 if (number == key)
                 {
-                    number2[i] = "**" + number.ToString() + "**";
-                    key2[i] = "**" + key.ToString() + "**";
+                    number2[i] = $"**{number}**";
+                    key2[i] = $"**{key}**";
                     matches += 1;
                 }
                 else
@@ -55,6 +58,7 @@ namespace GeckoBot.Commands
 
         //tem
         [Command("tem")]
+        [Summary("Has a 1 in 1000 chance to send the mythical Tem.")]
         public async Task tem()
         {
             Random random = new Random();
@@ -63,31 +67,32 @@ namespace GeckoBot.Commands
 
             if (number == 0)
             {
-                await ReplyAsync("░░░░░░░░░░▄▄░░░░░░░░░░░░░░░░░░░░░░░░░░░" + System.Environment.NewLine +
-                "░░░░░░░░░██▀█▄░░▄██▀░░░░▄██▄░░░░░░░░░░░" + System.Environment.NewLine +
-                "░░░░░░░░██▄▄▄████████▄▄█▀░▀█░░░░░░░░░░░" + System.Environment.NewLine +
-                "░░░░░░░▄██████████████████▄█░░░░░░░░░░░" + System.Environment.NewLine +
-                "░░░░░░▄██████████████████████░░░░░░░░░░" + System.Environment.NewLine +
-                "░░░░░▄████████▀░▀█████████████░░░░░░░░░" + System.Environment.NewLine +
-                "░░░░░███████▀░░░░▀████████████▄░░░░░░░░" + System.Environment.NewLine +
-                "░░░░██████▀░░░░░░░░▀███████████▄▄▄▀▀▄░░" + System.Environment.NewLine +
-                "░▄▀▀████▀░░░▄▄░░░░░░░░░████████░░░░░█░░" + System.Environment.NewLine +
-                "█░░░▀█▀█░░░░▀▀░░░░░░██░░███░██▀░░░░▄▀░░" + System.Environment.NewLine +
-                "█░░░░▀██▄░░░▄░░░▀░░░▄░░░███░██▄▄▄▀▀░░░░" + System.Environment.NewLine +
-                "░▀▄▄▄▄███▄░░▀▄▄▄▀▄▄▄▀░░░███░█░░░░░░░░░░" + System.Environment.NewLine +
-                "░░░░░░████▄░░░░░░░░░░░░▄██░█░░░░░░░░▄▀▀" + System.Environment.NewLine +
-                "░░░░░░███▀▀█▀▄▄▄▄▄▄▄▄▄▀█████░░░░░░▄▀░░▄" + System.Environment.NewLine +
-                "░░░░░░█▀░░█░▀▄▄▄▄▄▄▄▄▄▀░███░█▀▀▀▄▀░░▄▀░" + System.Environment.NewLine +
-                "░░░░░░░░░▄▀░░░░░░░░░░░░░▀█▀░░█░░░░█▀░░░" + System.Environment.NewLine +
-                "░░░░░░░░░█░░░█░░░░░░░░░░░░░░░█░░░░░█░░░" + System.Environment.NewLine +
-                "░░░░░░░░░█▄▄█░▀▄░░█▄░░░░░░░░█░░▄█░░█░░░" + System.Environment.NewLine +
-                "░░░░░░░░░▀▄▄▀░░█▀▀█░▀▀▀▀█▀▀█▀▀▀▀█░█░░░░" + System.Environment.NewLine);
+                await ReplyAsync("░░░░░░░░░░▄▄░░░░░░░░░░░░░░░░░░░░░░░░░░░" + Environment.NewLine +
+                "░░░░░░░░░██▀█▄░░▄██▀░░░░▄██▄░░░░░░░░░░░" + Environment.NewLine +
+                "░░░░░░░░██▄▄▄████████▄▄█▀░▀█░░░░░░░░░░░" + Environment.NewLine +
+                "░░░░░░░▄██████████████████▄█░░░░░░░░░░░" + Environment.NewLine +
+                "░░░░░░▄██████████████████████░░░░░░░░░░" + Environment.NewLine +
+                "░░░░░▄████████▀░▀█████████████░░░░░░░░░" + Environment.NewLine +
+                "░░░░░███████▀░░░░▀████████████▄░░░░░░░░" + Environment.NewLine +
+                "░░░░██████▀░░░░░░░░▀███████████▄▄▄▀▀▄░░" + Environment.NewLine +
+                "░▄▀▀████▀░░░▄▄░░░░░░░░░████████░░░░░█░░" + Environment.NewLine +
+                "█░░░▀█▀█░░░░▀▀░░░░░░██░░███░██▀░░░░▄▀░░" + Environment.NewLine +
+                "█░░░░▀██▄░░░▄░░░▀░░░▄░░░███░██▄▄▄▀▀░░░░" + Environment.NewLine +
+                "░▀▄▄▄▄███▄░░▀▄▄▄▀▄▄▄▀░░░███░█░░░░░░░░░░" + Environment.NewLine +
+                "░░░░░░████▄░░░░░░░░░░░░▄██░█░░░░░░░░▄▀▀" + Environment.NewLine +
+                "░░░░░░███▀▀█▀▄▄▄▄▄▄▄▄▄▀█████░░░░░░▄▀░░▄" + Environment.NewLine +
+                "░░░░░░█▀░░█░▀▄▄▄▄▄▄▄▄▄▀░███░█▀▀▀▄▀░░▄▀░" + Environment.NewLine +
+                "░░░░░░░░░▄▀░░░░░░░░░░░░░▀█▀░░█░░░░█▀░░░" + Environment.NewLine +
+                "░░░░░░░░░█░░░█░░░░░░░░░░░░░░░█░░░░░█░░░" + Environment.NewLine +
+                "░░░░░░░░░█▄▄█░▀▄░░█▄░░░░░░░░█░░▄█░░█░░░" + Environment.NewLine +
+                "░░░░░░░░░▀▄▄▀░░█▀▀█░▀▀▀▀█▀▀█▀▀▀▀█░█░░░░" + Environment.NewLine);
             }
         }
         
         //contest function
         [Command("contest")]
-        public async Task contest(string user)
+        [Summary("Launches a contest between you and someone else to see who wins!")]
+        public async Task contest(IUser user)
         {
             //generates a random number
             Random random = new Random();
@@ -96,11 +101,11 @@ namespace GeckoBot.Commands
             //decides who wins
             if (number == 1)
             {
-                await ReplyAsync(Context.User + " wins!");
+                await ReplyAsync($"<@!{Context.User.Id}> wins!");
             }
             else if (number == 2)
             {
-                await ReplyAsync(user + " wins!");
+                await ReplyAsync($"<@!{user.Id}> wins!");
             }
         }
     }

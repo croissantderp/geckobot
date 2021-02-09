@@ -8,12 +8,14 @@ namespace GeckoBot.Commands
     {
         //identifies the version of geckobot
         [Command("id")]
+        [Summary("Identifies the current version of geckobot.")]
         public async Task identify()
         {
             await ReplyAsync("geckobot" + Globals.names[Globals.currentValue]);
         }
 
         [Command("links")]
+        [Summary("Sends the relevant geckobot links.")]
         public async Task links()
         {
             var embed = new EmbedBuilder
@@ -29,6 +31,7 @@ namespace GeckoBot.Commands
 
         //instructions
         [Command("what do you")]
+        [Summary("Help command.")]
         public async Task instructions(string section)
         {
             //if info is found

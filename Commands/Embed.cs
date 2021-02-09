@@ -8,6 +8,7 @@ namespace GeckoBot.Commands
     {
         //custom embed builder
         [Command("embed")]
+        [Summary("Builds an embed from the provided arguments.")]
         public async Task embed(string title, string field, string footer2, string hex)
         {
             //converts hex to rgb
@@ -22,7 +23,7 @@ namespace GeckoBot.Commands
             g = int.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.AllowHexSpecifier);
             b = int.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.AllowHexSpecifier);
 
-            //starts embed building proceedure
+            //starts embed building procedure
             var embed = new EmbedBuilder
             {
                 Title = title
@@ -72,7 +73,7 @@ namespace GeckoBot.Commands
             //assigns time
             embed.WithCurrentTimestamp();
 
-            await ReplyAsync("", false, embed: embed.Build(), null, Globals.allowed);
+            await ReplyAsync("", embed: embed.Build(), allowedMentions: Globals.allowed);
         }
     }
 }

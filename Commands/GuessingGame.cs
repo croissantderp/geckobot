@@ -10,6 +10,7 @@ namespace GeckoBot.Commands
     {
         //generates new number
         [Command("new")]
+        [Summary("Starts a new game from the min and max provided.")]
         public async Task newNumber(int min, int max)
         {
             //generates number based on min and max value
@@ -17,37 +18,40 @@ namespace GeckoBot.Commands
             int number = random.Next(min, max + 1);
 
             //achievement :D
-            await ReplyAsync(min == max ? "achievement get! play on the easiest difficulty!" : "new number generated between " + min.ToString() + " and " + max.ToString());
+            await ReplyAsync(min == max 
+                ? "achievement get! play on the easiest difficulty!" 
+                : $"new number generated between {min} and {max}");
             
             //assigns variables
             Globals.gNumber = number;
-            Globals.easyMode = (min == max);
+            Globals.easyMode = min == max;
             Globals.attempts = 0;
         }
 
         [Command("")]
+        [Summary("Guesses the picked number.")]
         public async Task attempt(int value)
         {
             //gets value from global variables
             int gNumber = Globals.gNumber;
+            
+            Globals.attempts += 1;
 
             //checks values and adds to attempts
             if (value < gNumber)
             {
                 await ReplyAsync("too low");
-                Globals.attempts += 1;
             }
             else if (value > gNumber)
             {
                 await ReplyAsync("too high");
-                Globals.attempts += 1;
             }
             else
             {
-                Globals.attempts += 1;
-
-                //achievemnt :D
-                await ReplyAsync(Globals.easyMode && Globals.attempts > 1 ? "achievement get! lose the game on the easiest difficulty!" :  Context.User + " got it! The number was " + gNumber.ToString() + ". It took " + Globals.attempts.ToString() + " attempts!");
+                //achievement :D
+                await ReplyAsync(Globals.easyMode && Globals.attempts > 1 
+                    ? "achievement get! lose the game on the easiest difficulty!" 
+                    : $"{Context.User} got it! The number was {gNumber}. It took {Globals.attempts} attempts!");
             }
         }
     }

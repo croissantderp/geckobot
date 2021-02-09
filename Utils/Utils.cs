@@ -14,7 +14,7 @@ namespace GeckoBot
         {
             ISelfUser self = client.CurrentUser;
 
-            Discord.Image image = new Discord.Image(path);
+            Image image = new (path);
 
             await self.ModifyAsync(x =>
             {

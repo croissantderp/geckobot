@@ -9,6 +9,7 @@ namespace GeckoBot.Commands
     public class DailyDM : ModuleBase<SocketCommandContext>
     {
         [Command("last checked")]
+        [Summary("Gets the time since the daily dm was last checked.")]
         public async Task last()
         {
             await ReplyAsync(Globals.lastCheck.ToString());
@@ -16,6 +17,7 @@ namespace GeckoBot.Commands
 
         //starts timer for various checks
         [Command("start")]
+        [Summary("Starts the timer.")]
         public async Task test()
         {
             await Context.Client.SetGameAsync("`what do you do?");
@@ -76,6 +78,7 @@ namespace GeckoBot.Commands
         
         //checks
         [Command("check")]
+        [Summary("Checks whether the daily dm needs to be sent.")]
         public async Task check(string passcode)
         {
             //if password matches secret password
@@ -103,26 +106,23 @@ namespace GeckoBot.Commands
 
         //sets up daily dms
         [Command("dm")]
+        [Summary("Signs you up for daily dm.")]
         public async Task dmgec(bool yes)
         {
             FileUtils.checkForExistance();
 
             if (yes)
             {
-                //if file exists, load it
-                if (FileUtils.Load(@"..\..\Cache\gecko3.gek") != null)
+                //clears
+                Globals.dmUsers.Clear();
+
+                //gets info
+                string[] temp = FileUtils.Load(@"..\..\Cache\gecko3.gek").Split(",");
+
+                //adds info to list
+                foreach (string a in temp)
                 {
-                    //clears
-                    Globals.dmUsers.Clear();
-
-                    //gets info
-                    string[] temp = FileUtils.Load(@"..\..\Cache\gecko3.gek").Split(",");
-
-                    //adds info to list
-                    foreach (string a in temp)
-                    {
-                        Globals.dmUsers.Add(ulong.Parse(a));
-                    }
+                    Globals.dmUsers.Add(ulong.Parse(a));
                 }
 
                 //gets current user
@@ -149,14 +149,11 @@ namespace GeckoBot.Commands
             else
             {
                 //loads things the same way as above
-                if (FileUtils.Load(@"..\..\Cache\gecko3.gek") != null)
+                Globals.dmUsers.Clear();
+                string[] temp = FileUtils.Load(@"..\..\Cache\gecko3.gek").Split(",");
+                foreach (string a in temp)
                 {
-                    Globals.dmUsers.Clear();
-                    string[] temp = FileUtils.Load(@"..\..\Cache\gecko3.gek").Split(",");
-                    foreach (string a in temp)
-                    {
-                        Globals.dmUsers.Add(ulong.Parse(a));
-                    }
+                    Globals.dmUsers.Add(ulong.Parse(a));
                 }
                 
                 //gets current user

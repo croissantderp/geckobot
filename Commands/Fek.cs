@@ -8,6 +8,7 @@ namespace GeckoBot.Commands
     {
         //generates a random order of characters
         [Command("fek")]
+        [Summary("Generates a random string.")]
         public async Task fek()
         {
             //generates random

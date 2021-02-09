@@ -20,17 +20,17 @@ namespace GeckoBot.Commands
             string[] numberArray = yes.Split(".");
 
             //a list of the numbers after the decimal point
-            List<string> Decimal = new List<string>();
+            List<string> Decimal = new ();
 
             //number of sigfigs in number
             int SigNum = 0;
 
             //a list of numbers before the decimal point
-            List<string> numberList = new List<string>();
-
-            //adds numbers
-            numberList.Add(numberArray[0]);
-
+            List<string> numberList = new ()
+            {
+                numberArray[0]
+            };
+            
             //if a decimal exists
             if (numberArray.Length == 2)
             {
@@ -115,6 +115,7 @@ namespace GeckoBot.Commands
 
         //general sigfig command
         [Command("")]
+        [Summary("Tells you how many significant figures your number has.")]
         public async Task sigfigbase(decimal number)
         {
             //constructs reply
@@ -158,6 +159,7 @@ namespace GeckoBot.Commands
 
         //sigfig add
         [Command("add")]
+        [Summary("Adds two numbers with sigfigs in mind.")]
         public async Task sigAdd(decimal number1, decimal number2)
         {
             decimal finalNum = number1 + number2;
@@ -246,6 +248,7 @@ namespace GeckoBot.Commands
 
         //sigfig subtract
         [Command("subtract")]
+        [Summary("Subtracts two numbers with sigfigs in mind.")]
         public async Task sigSubtract(decimal number1, decimal number2)
         {
             decimal finalNum = number1 - number2;
@@ -334,6 +337,7 @@ namespace GeckoBot.Commands
 
         //sigfig multiply
         [Command("multiply")]
+        [Summary("Multiplies two numbers with sigfigs in mind.")]
         public async Task sigMultiply(decimal number1, decimal number2)
         {
             decimal finalNum = number1 * number2;
@@ -385,6 +389,7 @@ namespace GeckoBot.Commands
 
         //sigfig divide
         [Command("divide")]
+        [Summary("Divides two numbers with sigfigs in mind.")]
         public async Task sigDivide(decimal number1, decimal number2)
         {
             decimal finalNum = number1 / number2;
