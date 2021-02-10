@@ -55,6 +55,11 @@ namespace GeckoBot
             {
                 File.Create(@"..\..\Cache\gecko3.gek");
             }
+
+            if (!File.Exists(@"..\..\Cache\gecko4.gek"))
+            {
+                Save(System.DateTime.Now.DayOfYear.ToString(), @"..\..\Cache\gecko4.gek");
+            }
         }
     }
 }

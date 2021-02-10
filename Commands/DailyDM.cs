@@ -65,7 +65,7 @@ namespace GeckoBot.Commands
             }
         }
 
-        public void PowerEvents(object sender, PowerModeChangedEventArgs e)
+        public async void PowerEvents(object sender, PowerModeChangedEventArgs e)
         {
             if (Globals.isSleep)
             {
@@ -77,6 +77,15 @@ namespace GeckoBot.Commands
             {
                 Globals.timer.Start();
                 Globals.dmTimer.Start();
+
+                Globals.lastrun = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek"));
+
+                if (Globals.lastrun != DateTime.Now.DayOfYear)
+                {
+                    //checks
+                    await daily();
+                }
+
                 Globals.isSleep = false;
             }
         }
@@ -85,6 +94,8 @@ namespace GeckoBot.Commands
         public async Task trueStart(System.Timers.Timer timer)
         {
             Start();
+
+            Globals.lastrun = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek"));
 
             if (Globals.lastrun != DateTime.Now.DayOfYear)
             {
@@ -106,6 +117,8 @@ namespace GeckoBot.Commands
         [Summary("Checks whether the daily dm needs to be sent.")]
         public async Task check(string passcode)
         {
+            Globals.lastrun = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek"));
+
             //if password matches secret password
             if (passcode == Top.Secret)
             {
@@ -209,7 +222,7 @@ namespace GeckoBot.Commands
         {
             //one hour looping timer for checking
             System.Timers.Timer timer = new System.Timers.Timer(1000*60*60);
-            timer.Elapsed += async (sender, e) => await daily(timer);
+            timer.Elapsed += async (sender, e) => await daily();
             timer.Start();
 
             Globals.dmTimer = timer;
@@ -219,7 +232,7 @@ namespace GeckoBot.Commands
         }
 
         //checks when timer runs out
-        async Task daily(System.Timers.Timer timer)
+        async Task daily()
         {
             //now
             DateTime time = DateTime.Now;
@@ -233,7 +246,7 @@ namespace GeckoBot.Commands
             if (minutes > 1)
             {
                 //stops current timer
-                timer.Stop();
+                Globals.dmTimer.Stop();
 
                 //sets timer to amount of time until next hour plus a little bit
                 System.Timers.Timer timer2 = new System.Timers.Timer((61 - minutes) * 60 * 1000);
@@ -255,16 +268,15 @@ namespace GeckoBot.Commands
         //sends daily dm
         async Task dailydm()
         {
-            //loads file in same way as described above
-            if (FileUtils.Load(@"..\..\Cache\gecko3.gek") != null)
-            {
-                Globals.dmUsers.Clear();
-                string[] temp = FileUtils.Load(@"..\..\Cache\gecko3.gek").Split(",");
+            FileUtils.checkForExistance();
 
-                foreach (string a in temp)
-                {
-                    Globals.dmUsers.Add(ulong.Parse(a));
-                }
+            //loads file in same way as described above
+            Globals.dmUsers.Clear();
+            string[] temp = FileUtils.Load(@"..\..\Cache\gecko3.gek").Split(",");
+
+            foreach (string a in temp)
+            {
+                Globals.dmUsers.Add(ulong.Parse(a));
             }
 
             //generates statement to send
@@ -286,6 +298,8 @@ namespace GeckoBot.Commands
 
             //updates last run counter
             Globals.lastrun = DateTime.Now.DayOfYear;
+
+            FileUtils.Save(Globals.lastrun.ToString(), @"..\..\Cache\gecko4.gek");
         }
 
         public async Task dmGroup(string path, string content)
