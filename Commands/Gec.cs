@@ -121,7 +121,7 @@ namespace GeckoBot.Commands
             
             //gets random value
             Random random = new Random();
-            int numb = random.Next(0,Globals.HighestGecko);
+            int numb = random.Next(0,Globals.HighestGecko + 1);
             string final = DriveUtils.addZeros(numb);
 
             //sends file

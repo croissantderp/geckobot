@@ -80,6 +80,12 @@ namespace GeckoBot
         //if the counter is counting
         public static bool isCounting = false;
 
+        //if timer has ever started
+        public static bool everStarted = false;
+
+        //the primary timer for dms
+        public static System.Timers.Timer dmTimer = new();
+
         //various dictionaries for music generation
         public static Dictionary<int, string> notes = new ()
         {

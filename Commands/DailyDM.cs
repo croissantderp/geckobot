@@ -3,6 +3,9 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using System.ServiceProcess;
+using System.Management;
+using Microsoft.Win32;
 
 namespace GeckoBot.Commands
 {
@@ -53,6 +56,28 @@ namespace GeckoBot.Commands
 
                     await ReplyAsync("hourly check will start in t - " + (61 - minutes) + " minutes");
                 }
+
+                if (!Globals.everStarted)
+                {
+                    SystemEvents.PowerModeChanged += PowerEvents;
+                    Globals.everStarted = true;
+                }
+            }
+        }
+
+        public void PowerEvents(object sender, PowerModeChangedEventArgs e)
+        {
+            if (Globals.isSleep)
+            {
+                Globals.timer.Stop();
+                Globals.dmTimer.Stop();
+                Globals.isSleep = true;
+            }
+            else
+            {
+                Globals.timer.Start();
+                Globals.dmTimer.Start();
+                Globals.isSleep = false;
             }
         }
 
@@ -186,6 +211,8 @@ namespace GeckoBot.Commands
             System.Timers.Timer timer = new System.Timers.Timer(1000*60*60);
             timer.Elapsed += async (sender, e) => await daily(timer);
             timer.Start();
+
+            Globals.dmTimer = timer;
 
             //makes sure there is only one timer
             Globals.started = true;

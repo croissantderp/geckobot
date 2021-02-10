@@ -23,10 +23,12 @@ namespace GeckoBot.Commands
         // Also, there's probably a better way of deleting large bot messages than using a delete command
         [Command("delete")]
         [Summary("Delete a geckobot message.")]
-        public async Task delete(IMessageChannel channel, string message)
+        public async Task delete(string channel, string message)
         {
+            var channel2 = Context.Client.GetChannel(ulong.Parse(channel)) as IMessageChannel;
+
             //parses message id provided and gets message from channel
-            var message2 = await channel.GetMessageAsync(ulong.Parse(message));
+            var message2 = await channel2.GetMessageAsync(ulong.Parse(message));
 
             if (message2.Author.Id == Context.Client.CurrentUser.Id)
             {

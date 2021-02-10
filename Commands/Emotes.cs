@@ -25,7 +25,7 @@ namespace GeckoBot.Commands
                 //parses channel id provided and gets channel from client
                 var chnl = client.GetChannel(ulong.Parse(target)) as IMessageChannel;
 
-                await chnl.SendMessageAsync(Utils.emoteReplace(message) + " says " + Context.User, allowedMentions: Globals.allowed);
+                await chnl.SendMessageAsync(Context.User + ": " +Utils.emoteReplace(message), allowedMentions: Globals.allowed);
             }
         }
 

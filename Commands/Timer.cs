@@ -163,7 +163,6 @@ namespace GeckoBot.Commands
 
                 Globals.timer = timer;
 
-                SystemEvents.PowerModeChanged += PowerEvents;
             }
         }
 
@@ -189,19 +188,6 @@ namespace GeckoBot.Commands
             }
         }
 
-        public void PowerEvents(object sender, PowerModeChangedEventArgs e)
-        {
-            if (Globals.isSleep)
-            {
-                Globals.timer.Stop();
-                Globals.isSleep = true;
-            }
-            else
-            {
-                Globals.timer.Start();
-                Globals.isSleep = false;
-            }
-        }
 
         //the task that is activated when time is up
         public async Task vtimerUp(IUserMessage toEdit)
