@@ -32,7 +32,7 @@ namespace GeckoBot.Commands
 
             //sends file with exception for leap years
             await Context.Channel.SendFileAsync(
-                DriveUtils.ImagePath(date.DayOfYear - 1), 
+                DriveUtils.ImagePath(date.DayOfYear - 1, false), 
                 $"Today is {date.ToString("d")}. Day {date.DayOfYear} of the year {date.Year} (gecko #{final})");
         }
         
@@ -126,7 +126,7 @@ namespace GeckoBot.Commands
 
             //sends file
             await Context.Channel.SendFileAsync(
-                DriveUtils.ImagePath(numb), 
+                DriveUtils.ImagePath(numb, false), 
                 $"gecko #{final}");
         }
 
@@ -140,10 +140,24 @@ namespace GeckoBot.Commands
 
             //sends files
             await Context.Channel.SendFileAsync(
-                DriveUtils.ImagePath(value), 
+                DriveUtils.ImagePath(value, false), 
                 $"gecko #{final}");
         }
-        
+
+        //finds a gecko
+        [Command("ogec")]
+        [Summary("Sends an alternate of a gecko")]
+        public async Task ogec(int value)
+        {
+            //converts int to string
+            string final = DriveUtils.addZeros(value);
+
+            //sends files
+            await Context.Channel.SendFileAsync(
+                DriveUtils.ImagePath(value, true),
+                $"gecko #{final}");
+        }
+
         // Gets the highest number gecko
         [Command("hgec")]
         [Summary("Sends the latest gecko.")]
@@ -154,7 +168,7 @@ namespace GeckoBot.Commands
             
             //sends file
             await Context.Channel.SendFileAsync(
-                DriveUtils.ImagePath(num), 
+                DriveUtils.ImagePath(num, false), 
                 $"gecko #{num}");
         }
 

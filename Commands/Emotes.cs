@@ -118,7 +118,7 @@ namespace GeckoBot.Commands
                 else
                 {
                     //removes ::: for animated saving
-                    string[] temp = yes.Split(":::");
+                    string[] temp = System.Text.RegularExpressions.Regex.Split(yes, @"(?<!\\)\:::");
 
                     //joins the split string and saves to emote dictionary
                     Globals.emoteDict.Add(yes1, string.Join("", temp.Select(p => p.ToString())));

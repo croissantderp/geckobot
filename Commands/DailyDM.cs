@@ -288,13 +288,13 @@ namespace GeckoBot.Commands
 
             //DMs everybody on the list
             await dmGroup(
-                DriveUtils.ImagePath(date.DayOfYear - 1),
+                DriveUtils.ImagePath(date.DayOfYear - 1, false),
                 $"Today is {date.ToString("d")}. Day {date.DayOfYear} of the year {date.Year} (gecko #{final})");
 
             //changes geckobot's profile to new gecko
             Utils.changeProfile(
                 Context.Client, 
-                DriveUtils.ImagePath(date.DayOfYear - 1));
+                DriveUtils.ImagePath(date.DayOfYear - 1, false));
 
             //updates last run counter
             Globals.lastrun = DateTime.Now.DayOfYear;

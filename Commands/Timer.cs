@@ -142,7 +142,7 @@ namespace GeckoBot.Commands
 
                 TimeSpan duration2 = TimeSpan.FromSeconds(Math.Round(duration.TotalSeconds));
 
-                var message2 = await channel.SendMessageAsync(finalMessage[0] + duration2 + endMessage[0]);
+                var message2 = await channel.SendMessageAsync(Utils.emoteReplace(finalMessage[0]) + duration2 + Utils.emoteReplace(endMessage[0]));
 
                 //initializes things
                 await ReplyAsync("countdown initialized");
@@ -154,7 +154,7 @@ namespace GeckoBot.Commands
                 
                 Globals.datetime = finalTime;
 
-                Globals.strings = new [] { finalMessage[0], endMessage[0], endMessage[1] };
+                Globals.strings = new [] { Utils.emoteReplace(finalMessage[0]), Utils.emoteReplace(endMessage[0]), Utils.emoteReplace(endMessage[1]) };
 
                 //time between checks
                 System.Timers.Timer timer = new System.Timers.Timer(3000);

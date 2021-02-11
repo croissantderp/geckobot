@@ -97,11 +97,16 @@ namespace GeckoBot
         }
 
         // Gets path from cache or downloads image to cache from drive
-        public static string ImagePath(int num)
+        public static string ImagePath(int num, bool isAlt)
         {
             FileUtils.checkForCacheExistance();
 
             string name = addZeros(num);
+
+            if (isAlt)
+            {
+                name = "b" + name;
+            }
 
             // If image already exists in cache, use it
             string cached = CheckCache(name);
@@ -113,7 +118,7 @@ namespace GeckoBot
                 "../../../GeckoBot-af43fa71833e.json");
             var listRequest = driveService.Files.List();
             listRequest.PageSize = 1; // Only fetch one
-            listRequest.Q = $"name contains '{name}'"; // Search for the image via the given number
+            listRequest.Q = $"name contains '{name}_'"; // Search for the image via the given number
             
             IList<Google.Apis.Drive.v3.Data.File> files = listRequest.Execute().Files;
             
