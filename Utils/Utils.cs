@@ -70,14 +70,7 @@ namespace GeckoBot
 
         public static bool containsForbidden(string input)
         {
-            if (input.Contains("@फΉ̚ᐼㇶ⤊") || input.Contains("⁊") || input.Contains("ҩ"))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return input.Contains("@फΉ̚ᐼㇶ⤊") || input.Contains("⁊") || input.Contains("ҩ");
         }
     }
 }

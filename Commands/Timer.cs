@@ -5,6 +5,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using System.ServiceProcess;
 using System.Management;
+using GeckoBot.Preconditions;
 using Microsoft.Win32;
 
 namespace GeckoBot.Commands
@@ -83,12 +84,13 @@ namespace GeckoBot.Commands
         }
 
         //visible timer command
+        [RequireGeckobotAdmin]
         [Command("countdown")]
         [Summary("Sets a countdown which will be updated every 3 seconds.")]
-        public async Task vt(string passcode, string target, bool isTimer, string message, string date, string time)
+        public async Task vt(string target, bool isTimer, string message, string date, string time)
         {
             //requires passcode and only one timer may exist at a time because of resource problems
-            if (passcode == Top.Secret && !Globals.timerExists)
+            if (!Globals.timerExists)
             {
                 //splits the final message
                 string[] finalMessage = message.Split("[time]");
@@ -165,27 +167,23 @@ namespace GeckoBot.Commands
 
             }
         }
-
+        
+        [RequireGeckobotAdmin]
         [Command("pause")]
         [Summary("Pauses the countdown.")]
-        public async Task pause(string passcode)
+        public async Task pause()
         {
-            if (passcode == Top.Secret)
-            {
-                Globals.timer.Stop();
-                await ReplyAsync("paused");
-            }
+            Globals.timer.Stop();
+            await ReplyAsync("paused");
         }
-
+        
+        [RequireGeckobotAdmin]
         [Command("unpause")]
         [Summary("Unpauses the countdown.")]
-        public async Task unpause(string passcode)
+        public async Task unpause()
         {
-            if (passcode == Top.Secret)
-            {
-                Globals.timer.Start();
-                await ReplyAsync("unpaused");
-            }
+            Globals.timer.Start();
+            await ReplyAsync("unpaused");
         }
 
 
@@ -237,16 +235,14 @@ namespace GeckoBot.Commands
         }
 
         //ends timer
+        [RequireGeckobotAdmin]
         [Command("end countdown")]
         [Summary("End the countdown.")]
-        public async Task endTimer(string passcode)
+        public async Task endTimer()
         {
             //terminates timer
-            if (passcode == Top.Secret)
-            {
-                Globals.terminate = true;
-                await ReplyAsync("countdown terminated");
-            }
+            Globals.terminate = true;
+            await ReplyAsync("countdown terminated");
         }
     }
 }

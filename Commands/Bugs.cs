@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using GeckoBot.Preconditions;
 
 namespace GeckoBot.Commands
 {
@@ -32,48 +33,44 @@ namespace GeckoBot.Commands
             //adds reaction
             await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
-
+        
+        [RequireGeckobotAdmin]
         [Command("bugs")]
         [Summary("Lists current bugs.")]
-        public async Task bugs(string passcode)
+        public async Task bugs()
         {
-            if (passcode == Top.Secret)
+            FileUtils.checkForExistance();
+            
+            //clears
+            Globals.bugs.Clear();
+
+            //gets info
+            string[] temp = FileUtils.Load(@"..\..\Cache\gecko1.gek").Split(",");
+
+            //adds info to list
+            foreach (string a in temp)
             {
-                FileUtils.checkForExistance();
-                
-                //clears
-                Globals.bugs.Clear();
-
-                //gets info
-                string[] temp = FileUtils.Load(@"..\..\Cache\gecko1.gek").Split(",");
-
-                //adds info to list
-                foreach (string a in temp)
-                {
-                    Globals.bugs.Add(a);
-                }
-                
-                await ReplyAsync(string.Join(", ", Globals.bugs));
+                Globals.bugs.Add(a);
             }
+            
+            await ReplyAsync(string.Join(", ", Globals.bugs));
         }
-
+        
+        [RequireGeckobotAdmin]
         [Command("clear bugs")]
         [Summary("Clears all bugs.")]
-        public async Task clearBugs(string passcode)
+        public async Task clearBugs()
         {
-            if (passcode == Top.Secret)
-            {
-                FileUtils.checkForExistance();
-                
-                //clears
-                Globals.bugs.Clear();
+            FileUtils.checkForExistance();
+            
+            //clears
+            Globals.bugs.Clear();
 
-                //saves info
-                FileUtils.Save(string.Join(",", Globals.bugs.ToArray()), @"..\..\Cache\gecko1.gek");
+            //saves info
+            FileUtils.Save(string.Join(",", Globals.bugs.ToArray()), @"..\..\Cache\gecko1.gek");
 
-                //adds reaction
-                await Context.Message.AddReactionAsync(new Emoji("✅"));
-            }
+            //adds reaction
+            await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
     }
 }

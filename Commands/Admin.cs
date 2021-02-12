@@ -2,30 +2,29 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using GeckoBot.Preconditions;
 
 namespace GeckoBot.Commands
 {
     public class Admin : ModuleBase<SocketCommandContext>
     {
         //termination command
+        [RequireGeckobotAdmin]
         [Command("terminate")]
         [Summary("Terminates the bot process.")]
-        public async Task terminate(string passcode)
+        public async Task terminate()
         {
-            //if password is correct
-            if (passcode == Top.Secret)
-            {
-                await ReplyAsync("terminating...");
-                System.Environment.Exit(0);
-            }
+            await ReplyAsync("terminating...");
+            System.Environment.Exit(0);
         }
         
         //temporary command to set name
+        [RequireGeckobotAdmin]
         [Command("set")]
         [Summary("Sets geckobot's internal name from the array of names.")]
-        public async Task set(string password, string name, int value)
+        public async Task set(string name, int value)
         {
-            if (password == Top.Secret && name == Top.SecretName)
+            if (name == Top.SecretName)
             {
                 //changes current value to 
                 Globals.currentValue = value;
@@ -36,35 +35,31 @@ namespace GeckoBot.Commands
         }
 
         //temporary command to set name
+        [RequireGeckobotAdmin]
         [Command("change")]
         [Summary("Changes geckobot's internal name to the specified string.")]
-        public async Task change(string password, int value, string newName)
+        public async Task change(int value, string newName)
         {
-            if (password == Top.Secret)
+            if (value != 0)
             {
-                if (value != 0)
-                {
-                    Globals.names[value] = newName;
-                    //adds reaction
-                    await Context.Message.AddReactionAsync(new Emoji("✅"));
-                }
-                else
-                {
-                    await ReplyAsync("can't change original name");
-                }
+                Globals.names[value] = newName;
+                //adds reaction
+                await Context.Message.AddReactionAsync(new Emoji("✅"));
+            }
+            else
+            {
+                await ReplyAsync("can't change original name");
             }
         }
 
         //temporary command to set profile
+        [RequireGeckobotAdmin]
         [Command("profile")]
         [Summary("Sets geckobot's profile to the specified image path.")]
-        public async Task profile(string password, string path)
+        public async Task profile(string path)
         {
-            if (password == Top.Secret)
-            {
-                Utils.changeProfile(Context.Client, path);
-                await ReplyAsync("profile changed");
-            }
+            Utils.changeProfile(Context.Client, path);
+            await ReplyAsync("profile changed");
         }
 
     }

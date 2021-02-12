@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 
 namespace GeckoBot
@@ -9,7 +10,7 @@ namespace GeckoBot
         {
             checkForExistance();
 
-            using StreamWriter file = new StreamWriter(path);
+            using StreamWriter file = new (path);
             file.Write(data);
         }
 
@@ -18,17 +19,14 @@ namespace GeckoBot
         {
             checkForExistance();
 
-            string line = "";
-            using StreamReader file = new StreamReader(path);
-            line = file.ReadToEnd();
-            
-            return line;
+            using StreamReader file = new (path);
+            return file.ReadToEnd();
         }
 
         //check if cache exists
         public static void checkForCacheExistance()
         {
-            //checks in cache folder exists
+            //checks if cache folder exists
             if (!Directory.Exists(@"..\..\Cache\"))
             {
                 Directory.CreateDirectory(@"..\..\Cache\");
@@ -39,26 +37,33 @@ namespace GeckoBot
         public static void checkForExistance()
         {
             checkForCacheExistance();
-
-            //checks if files exist
-            if (!File.Exists(@"..\..\Cache\gecko1.gek"))
-            {
-                File.Create(@"..\..\Cache\gecko1.gek");
-            }
             
-            if (!File.Exists(@"..\..\Cache\gecko2.gek"))
+            // Cache numbers
+            // gecko1 stores exceptions and reported bugs
+            // gecko2 stores the emote dictionary
+            // gecko3 stores the list of users who have signed up for the daily dm
+            // gecko4 stores the last time the daily dm was executed
+            List<int> caches = new()
             {
-                File.Create(@"..\..\Cache\gecko2.gek");
-            }
-
-            if (!File.Exists(@"..\..\Cache\gecko3.gek"))
+                1, 2, 3, 4
+            };
+            
+            //checks if files exist
+            foreach (int cache in caches)
             {
-                File.Create(@"..\..\Cache\gecko3.gek");
-            }
-
-            if (!File.Exists(@"..\..\Cache\gecko4.gek"))
-            {
-                Save(System.DateTime.Now.DayOfYear.ToString(), @"..\..\Cache\gecko4.gek");
+                string path = $@"..\..\Cache\gecko{cache}.gek";
+                
+                if (!File.Exists(path))
+                {
+                    File.Create(path);
+                }
+                
+                // Initialize cache 4 with current datetime
+                if (cache == 4)
+                {
+                    using StreamWriter file = new (path);
+                    file.Write(System.DateTime.Now.DayOfYear.ToString());
+                }
             }
         }
     }
