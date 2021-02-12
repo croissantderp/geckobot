@@ -26,6 +26,8 @@ namespace GeckoBot
         //replaces strings with emotes
         public static string emoteReplace(string stuff)
         {
+            stuff = escapeforbidden(stuff);
+
             //loads emote dictionary as string and converts it back into dictionary
             Globals.RefreshEmoteDict();
             
@@ -41,7 +43,7 @@ namespace GeckoBot
             for (int i = 0; i < yesnt.Length; i++)
             {
                 //checks if a key exists for the segment and if it is prefaced by \
-                if (Globals.emoteDict.ContainsKey(yesnt[i]) && yesnt[i][0] != '\\')
+                if (Globals.emoteDict.ContainsKey(yesnt[i]))
                 {
                     final[i] = Globals.emoteDict[yesnt[i]];
                     if (final[i].Contains("@फΉ̚ᐼㇶ⤊"))
@@ -71,6 +73,19 @@ namespace GeckoBot
         public static bool containsForbidden(string input)
         {
             return input.Contains("@फΉ̚ᐼㇶ⤊") || input.Contains("⁊") || input.Contains("ҩ");
+        }
+
+        public static string escapeforbidden(string input)
+        {
+            string final = "";
+
+            final = Regex.Replace(input, @"@फΉ̚ᐼㇶ⤊", @"\@फΉ̚ᐼㇶ⤊");
+
+            final = Regex.Replace(final, @"⁊", @"\⁊");
+
+            final = Regex.Replace(final, @"ҩ", @"\ҩ");
+
+            return final;
         }
     }
 }

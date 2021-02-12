@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace GeckoBot
 {
@@ -27,12 +28,12 @@ namespace GeckoBot
         //loads emote dictionary as string and converts it back into dictionary
         public static void RefreshEmoteDict()
         {
-            emoteDict = FileUtils.Load(@"..\..\Cache\gecko2.gek")
-                .Split('ҩ')
-                .Select(part => part.Split('⁊'))
+            emoteDict = Regex.Split(FileUtils.Load(@"..\..\Cache\gecko2.gek"), @"\s(?<!\\)ҩ\s")
+                .Select(part => Regex.Split(part, @"\s(?<!\\)\⁊\s"))
                 .Where(part => part.Length == 2)
                 .ToDictionary(sp => sp[0], sp => sp[1]);
         }
+
         //dictionary to string
         public static string DictToString<T, V>(IEnumerable<KeyValuePair<T, V>> items, string format)
         {

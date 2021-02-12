@@ -1,9 +1,9 @@
-using System.Linq;
-using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using GeckoBot.Preconditions;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GeckoBot.Commands
 {
@@ -83,7 +83,7 @@ namespace GeckoBot.Commands
                     Globals.emoteDict.Remove(yes1);
 
                     //converts dictionary to string and saves
-                    FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0}⁊{1}ҩ"), @"..\..\Cache\gecko2.gek");
+                    FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko2.gek");
 
                     //adds reaction
                     await Context.Message.AddReactionAsync(new Emoji("✅"));
@@ -103,33 +103,28 @@ namespace GeckoBot.Commands
         {
             Globals.RefreshEmoteDict();
 
-            //if emote name contains banned characters
-            string combined = yes + yes1;
-            if (Utils.containsForbidden(combined))
+            //if emote dictionary already has a definition for the new key
+            if (Globals.emoteDict.ContainsKey(yes1))
             {
-                await ReplyAsync("saved things cannot contain 'ҩ' or '⁊'!");
+                await ReplyAsync("this name is taken, use a different name!");
             }
             else
             {
-                //if emote dictionary already has a definition for the new key
-                if (Globals.emoteDict.ContainsKey(yes1))
-                {
-                    await ReplyAsync("this name is taken, use a different name!");
-                }
-                else
-                {
-                    //removes ::: for animated saving
-                    string[] temp = System.Text.RegularExpressions.Regex.Split(yes, @"(?<!\\)\:::");
+                //escapes forbidden
+                yes1 = Utils.escapeforbidden(yes1);
+                yes = Utils.escapeforbidden(yes);
 
-                    //joins the split string and saves to emote dictionary
-                    Globals.emoteDict.Add(yes1, string.Join("", temp.Select(p => p.ToString())));
+                //removes ::: for animated saving
+                string[] temp = System.Text.RegularExpressions.Regex.Split(yes, @"(?<!\\)\:::");
 
-                    //converts dictionary to string and saves
-                    FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0}⁊{1}ҩ"), @"..\..\Cache\gecko2.gek");
+                //joins the split string and saves to emote dictionary
+                Globals.emoteDict.Add(yes1, string.Join("", temp.Select(p => p.ToString())));
 
-                    //adds reaction
-                    await Context.Message.AddReactionAsync(new Emoji("✅"));
-                }
+                //converts dictionary to string and saves
+                FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko2.gek");
+
+                //adds reaction
+                await Context.Message.AddReactionAsync(new Emoji("✅"));
             }
         }
 
@@ -160,10 +155,15 @@ namespace GeckoBot.Commands
                     string name = c.ToString().Remove(count - 20, 20).Remove(0, 2);
 
                     //if the emote dictionary already contains a key or emote contains banned characters
-                    if (!Globals.emoteDict.ContainsKey(name) && !Utils.containsForbidden(name))
+                    if (!Globals.emoteDict.ContainsKey(name))
                     {
+                        string cstring = c.ToString();
+                        //escapes forbidden
+                        name = Utils.escapeforbidden(name);
+                        cstring = Utils.escapeforbidden(cstring);
+
                         //adds to emote dictionary
-                        Globals.emoteDict.Add(name, c.ToString());
+                        Globals.emoteDict.Add(name, cstring);
 
                         //adds to counter
                         emotesAdded += 1;
@@ -172,7 +172,7 @@ namespace GeckoBot.Commands
             }
 
             //converts dictionary to string and saves
-            FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0}⁊{1}ҩ"), @"..\..\Cache\gecko2.gek");
+            FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko2.gek");
 
             //replies with number of new emotes added
             await ReplyAsync(emotesAdded + " new emotes added");
@@ -227,33 +227,28 @@ namespace GeckoBot.Commands
         {
             Globals.RefreshEmoteDict();
 
-            //if emote name contains banned characters
-            string combined = yes + yes1;
-            if (Utils.containsForbidden(combined))
+            //if emote dictionary already has a definition for the new key
+            if (Globals.emoteDict.ContainsKey(yes1))
             {
-                await ReplyAsync("saved things cannot contain 'ҩ' or '⁊'!");
+                await ReplyAsync("this name is taken, use a different name!");
             }
             else
             {
-                //if emote dictionary already has a definition for the new key
-                if (Globals.emoteDict.ContainsKey(yes1))
-                {
-                    await ReplyAsync("this name is taken, use a different name!");
-                }
-                else
-                {
-                    //removes ::: for animated saving
-                    string[] temp = yes.Split(":::");
+                //escapes forbidden
+                yes1 = Utils.escapeforbidden(yes1);
+                yes = Utils.escapeforbidden(yes);
 
-                    //joins the split string and saves to emote dictionary
-                    Globals.emoteDict.Add(yes1, "@फΉ̚ᐼㇶ⤊" + string.Join("", temp.Select(p => p.ToString())));
+                //removes ::: for animated saving
+                string[] temp = yes.Split(":::");
 
-                    //converts dictionary to string and saves
-                    FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0}⁊{1}ҩ"), @"..\..\Cache\gecko2.gek");
+                //joins the split string and saves to emote dictionary
+                Globals.emoteDict.Add(yes1, "@फΉ̚ᐼㇶ⤊" + string.Join("", temp.Select(p => p.ToString())));
 
-                    //adds reaction
-                    await Context.Message.AddReactionAsync(new Emoji("✅"));
-                }
+                //converts dictionary to string and saves
+                FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko2.gek");
+
+                //adds reaction
+                await Context.Message.AddReactionAsync(new Emoji("✅"));
             }
         }
 
@@ -272,7 +267,7 @@ namespace GeckoBot.Commands
                 Globals.emoteDict.Remove(yes1);
 
                 //converts dictionary to string and saves
-                FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0}⁊{1}ҩ"), @"..\..\Cache\gecko2.gek");
+                FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko2.gek");
 
                 //adds reaction
                 await Context.Message.AddReactionAsync(new Emoji("✅"));
