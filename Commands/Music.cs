@@ -22,8 +22,8 @@ namespace GeckoBot.Commands
             int number = random.Next(12, 25);
             int inKey = number;
             
-            int time = Globals.timeDict[random.Next(1, 7)];
-            int time2 = Globals.timeDict2[random.Next(1, 4)];
+            int time = TimeDict[random.Next(1, 7)];
+            int time2 = TimeDict2[random.Next(1, 4)];
             int timeRemain = time;
             int dure = 0;
 
@@ -51,14 +51,14 @@ namespace GeckoBot.Commands
                         if (majorMinor == 1)
                         {
                             number = judge == 2 
-                                ? inKey - Globals.major[newNumber] 
-                                : inKey + Globals.major[newNumber];
+                                ? inKey - Major[newNumber] 
+                                : inKey + Major[newNumber];
                         }
                         else
                         {
                             number = judge == 2 
-                                ? inKey - Globals.minor[newNumber] 
-                                : inKey + Globals.minor[newNumber];
+                                ? inKey - Minor[newNumber] 
+                                : inKey + Minor[newNumber];
                         }
                     }
                     else
@@ -66,14 +66,14 @@ namespace GeckoBot.Commands
                         if (majorMinor == 2)
                         {
                             number = judge == 2 
-                                ? inKey - Globals.major[newNumber] 
-                                : inKey + Globals.major[newNumber];
+                                ? inKey - Major[newNumber] 
+                                : inKey + Major[newNumber];
                         }
                         else
                         {
                             number = judge == 2 
-                                ? inKey - Globals.minor[newNumber] 
-                                : inKey + Globals.minor[newNumber];
+                                ? inKey - Minor[newNumber] 
+                                : inKey + Minor[newNumber];
                         }
                     }
                 }
@@ -99,7 +99,7 @@ namespace GeckoBot.Commands
                     dure = random.Next(1, (timeRemain + 1) / 2);
                 }
                 
-                noteNames.Add(Globals.notes[number] + $" **{dure}**");
+                noteNames.Add(Notes[number] + $" **{dure}**");
 
                 if (measures <= 0)
                 {
@@ -109,9 +109,87 @@ namespace GeckoBot.Commands
             }
 
             //joins stuff and sends
-            string final = $"{Globals.notes[inKey]}{(majorMinor == 2 ? " major, in " : " minor, in ")}{time}/{time2}" +
+            string final = $"{Notes[inKey]}{(majorMinor == 2 ? " major, in " : " minor, in ")}{time}/{time2}" +
                            $"{Environment.NewLine}{string.Join(", ", noteNames.Select(p => p.ToString()))}";
             await ReplyAsync(final);
         }
+        
+        //various dictionaries for music generation
+        private static readonly Dictionary<int, string> Notes = new()
+        {
+            {0, "c"},
+            {1, "c#"},
+            {2, "d"},
+            {3, "d#"},
+            {4, "e"},
+            {5, "f"},
+            {6, "f#"},
+            {7, "g"},
+            {8, "g#"},
+            {9, "a"},
+            {10, "a#"},
+            {11, "b"},
+            {12, "c2"},
+            {13, "c#2"},
+            {14, "d2"},
+            {15, "d#2"},
+            {16, "e2"},
+            {17, "f2"},
+            {18, "f#2"},
+            {19, "g2"},
+            {20, "g#2"},
+            {21, "a2"},
+            {22, "a#2"},
+            {23, "b2"},
+            {24, "c3"},
+            {25, "c#3"},
+            {26, "d3"},
+            {27, "d#3"},
+            {28, "e3"},
+            {29, "f3"},
+            {30, "f#3"},
+            {31, "g3"},
+            {32, "g#3"},
+            {33, "a3"},
+            {34, "a#3"},
+            {35, "b3"},
+            {36, "c4"},
+            {37, "rest"},
+        };
+        private static readonly Dictionary<int, int> Major = new()
+        {
+            {1, 2},
+            {2, 4},
+            {3, 5},
+            {4, 7},
+            {5, 9},
+            {6, 11},
+            {7, 12},
+        };
+        private static readonly Dictionary<int, int> Minor = new()
+        {
+            {1, 2},
+            {2, 3},
+            {3, 5},
+            {4, 7},
+            {5, 8},
+            {6, 10},
+            {7, 12},
+        };
+        private static readonly Dictionary<int, int> TimeDict = new()
+        {
+            {1, 2},
+            {2, 3},
+            {3, 4},
+            {4, 5},
+            {5, 8},
+            {6, 16},
+        };
+        private static readonly Dictionary<int, int> TimeDict2 = new()
+        {
+            {1, 2},
+            {2, 4},
+            {3, 8},
+        };
     }
 }

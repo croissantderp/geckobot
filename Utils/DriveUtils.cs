@@ -35,7 +35,7 @@ namespace GeckoBot
                     GoogleCredential credential = GoogleCredential.FromStream(stream)
                         .CreateScoped(scopes);
 
-                        // Create the Analytics service.
+                    // Create the Analytics service.
                     return new DriveService(new BaseClientService.Initializer()
                     {
                         HttpClientInitializer = credential,
