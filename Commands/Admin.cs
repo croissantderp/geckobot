@@ -6,10 +6,10 @@ using GeckoBot.Preconditions;
 
 namespace GeckoBot.Commands
 {
+    [RequireGeckobotAdmin]
     public class Admin : ModuleBase<SocketCommandContext>
     {
         //termination command
-        [RequireGeckobotAdmin]
         [Command("terminate")]
         [Summary("Terminates the bot process.")]
         public async Task terminate()
@@ -19,7 +19,6 @@ namespace GeckoBot.Commands
         }
         
         //temporary command to set name
-        [RequireGeckobotAdmin]
         [Command("set")]
         [Summary("Sets geckobot's internal name from the array of names.")]
         public async Task set(string name, int value)
@@ -35,7 +34,6 @@ namespace GeckoBot.Commands
         }
 
         //temporary command to set name
-        [RequireGeckobotAdmin]
         [Command("change")]
         [Summary("Changes geckobot's internal name to the specified string.")]
         public async Task change(int value, string newName)
@@ -53,7 +51,6 @@ namespace GeckoBot.Commands
         }
 
         //temporary command to set profile
-        [RequireGeckobotAdmin]
         [Command("profile")]
         [Summary("Sets geckobot's profile to the specified image path.")]
         public async Task profile(string path)
@@ -62,5 +59,12 @@ namespace GeckoBot.Commands
             await ReplyAsync("profile changed");
         }
 
+        [Command("name")]
+        [Summary("Sets geckobot's name")]
+        public async Task name(string name)
+        {
+            Utils.changeName(Context.Client, name);
+            await ReplyAsync("name changed");
+        }
     }
 }

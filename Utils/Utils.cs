@@ -20,7 +20,16 @@ namespace GeckoBot
             {
                 x.Avatar = image;
             });
+        }
 
+        public static async void changeName(IDiscordClient client, string name)
+        {
+            ISelfUser self = client.CurrentUser;
+
+            await self.ModifyAsync(x =>
+            {
+                x.Username = name;
+            });
         }
         
         //replaces strings with emotes

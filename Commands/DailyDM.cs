@@ -67,10 +67,13 @@ namespace GeckoBot.Commands
 
         public async void PowerEvents(object sender, PowerModeChangedEventArgs e)
         {
-            if (Globals.isSleep)
+            if (!Globals.isSleep)
             {
                 Globals.timer.Stop();
                 Globals.dmTimer.Stop();
+
+                await Context.Client.SetGameAsync("shhh! geckobot is sleeping");
+
                 Globals.isSleep = true;
             }
             else
@@ -85,6 +88,8 @@ namespace GeckoBot.Commands
                     //checks
                     await daily();
                 }
+
+                await Context.Client.SetGameAsync("`what do you do?");
 
                 Globals.isSleep = false;
             }
