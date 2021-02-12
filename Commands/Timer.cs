@@ -206,10 +206,7 @@ namespace GeckoBot.Commands
                 {
                     await toEdit.ModifyAsync(a => a.Content = Globals.strings[2]);
 
-                    Globals.undeletable.Remove(toEdit.Id);
-
-                    //stops timer
-                    Globals.timer.Stop();
+                    endCountdown(toEdit.Id);
                 }
 
                 //if timer is prematurely terminated
@@ -217,11 +214,9 @@ namespace GeckoBot.Commands
                 {
                     await toEdit.ModifyAsync(a => a.Content = "countdown aborted");
 
-                    //stops timer
-                    Globals.timer.Stop();
+                    endCountdown(toEdit.Id);
 
                     Globals.terminate = false;
-                    Globals.timerExists = false;
                 }
             }
             catch(Exception ex)
@@ -230,8 +225,21 @@ namespace GeckoBot.Commands
 
                 //saves info
                 FileUtils.Save(string.Join(",", Globals.bugs.ToArray()), @"..\..\Cache\gecko1.gek");
-
             }
+        }
+
+        public void endCountdown(ulong id)
+        {
+            Globals.undeletable.Remove(id);
+
+            //stops timer
+            Globals.timer.Stop();
+
+            Globals.timerExists = false;
+
+            Globals.datetime = new DateTime();
+
+            Globals.strings = new string[0];
         }
 
         //ends timer

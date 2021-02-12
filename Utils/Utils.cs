@@ -76,23 +76,27 @@ namespace GeckoBot
             }
 
             //returns joined segments
-            return string.Join("", final.Select(p => p.ToString()));
-        }
-
-        public static bool containsForbidden(string input)
-        {
-            return input.Contains("@फΉ̚ᐼㇶ⤊") || input.Contains("⁊") || input.Contains("ҩ");
+            return removeforbidden(string.Join("", final.Select(p => p.ToString())));
         }
 
         public static string escapeforbidden(string input)
         {
-            string final = "";
+            string final = input.Replace(@"@फΉ̚ᐼㇶ⤊", @"\@फΉ̚ᐼㇶ⤊");
 
-            final = Regex.Replace(input, @"@फΉ̚ᐼㇶ⤊", @"\@फΉ̚ᐼㇶ⤊");
+            final = final.Replace(@"⁊", @"\⁊");
 
-            final = Regex.Replace(final, @"⁊", @"\⁊");
+            final = final.Replace(@"ҩ", @"\ҩ");
 
-            final = Regex.Replace(final, @"ҩ", @"\ҩ");
+            return final;
+        }
+
+        public static string removeforbidden(string input)
+        {
+            string final = input.Replace(@"@फΉ̚ᐼㇶ⤊", @"\@फΉ̚ᐼㇶ⤊");
+
+            final = final.Replace(@"\⁊", @"⁊");
+
+            final = final.Replace(@"\ҩ", @"ҩ");
 
             return final;
         }
