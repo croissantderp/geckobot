@@ -81,9 +81,9 @@ namespace GeckoBot.Commands
             IUser user = Context.User;
 
             //sets timer to exact amount of time
-            System.Timers.Timer timer = new(final.TotalMilliseconds);
-            timer.Elapsed += async (sender, e) => await timerUp(user, message, timer);
-            timer.Start();
+            System.Timers.Timer t = new(final.TotalMilliseconds);
+            t.Elapsed += async (sender, e) => await timerUp(user, message, t);
+            t.Start();
 
             //adds reaction
             await Context.Message.AddReactionAsync(new Emoji("✅"));
@@ -144,7 +144,7 @@ namespace GeckoBot.Commands
                     days = int.Parse(date);
 
                     //turns input time into a time span
-                    TimeSpan timeLeft = new TimeSpan(days, hour, minute, second);
+                    TimeSpan timeLeft = new(days, hour, minute, second);
 
                     //final time when timer runs out
                     finalTime = DateTime.Now + timeLeft;
