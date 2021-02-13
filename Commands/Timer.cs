@@ -89,7 +89,7 @@ namespace GeckoBot.Commands
         [Summary("Sets a countdown which will be updated every 3 seconds.")]
         public async Task vt(string target, bool isTimer, string message, string date, string time)
         {
-            //requires passcode and only one timer may exist at a time because of resource problems
+            //only one timer may exist at a time because of resource problems
             if (!Globals.timerExists)
             {
                 //splits the final message

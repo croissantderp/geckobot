@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord.Commands;
 
@@ -7,11 +8,18 @@ namespace GeckoBot.Preconditions
     // Inherit from PreconditionAttribute
     public class RequireGeckobotAdmin : PreconditionAttribute
     {
+        // List of all Geckobot Admins
+        private static readonly List<ulong> GeckobotAdmins = new()
+        {
+            526863414635790356,
+            355534246439419904
+        };
+        
         // Override the CheckPermissions method
         public override Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, CommandInfo command, IServiceProvider services)
         {
             // If this command was executed by an admin, return success
-            if (Globals.GeckobotAdmins.Contains(context.User.Id))
+            if (GeckobotAdmins.Contains(context.User.Id))
                 // Since no async work is done, the result has to be wrapped with `Task.FromResult` to avoid compiler errors
                 return Task.FromResult(PreconditionResult.FromSuccess());
             

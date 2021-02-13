@@ -10,13 +10,6 @@ namespace GeckoBot
     public class Globals
     {
         public static Discord.AllowedMentions allowed = new (Discord.AllowedMentionTypes.Users);
-        
-        // List of all Geckobot Admins
-        public static List<ulong> GeckobotAdmins = new()
-        {
-            526863414635790356,
-            355534246439419904
-        };
 
         //guessing game variables
         public static int gNumber;

@@ -68,32 +68,7 @@ namespace GeckoBot.Commands
         [Summary("Removes a key from the dictionary.")]
         public async Task er(string yes1)
         {
-            Globals.RefreshEmoteDict();
-
-            //if key is found
-            if (Globals.emoteDict.ContainsKey(yes1))
-            {
-                if (Globals.emoteDict[yes1].Contains("@फΉ̚ᐼㇶ⤊"))
-                {
-                    await ReplyAsync("that is an admin command and cannot be removed");
-                }
-                else
-                {
-                    //removes key
-                    Globals.emoteDict.Remove(yes1);
-
-                    //converts dictionary to string and saves
-                    FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko2.gek");
-
-                    //adds reaction
-                    await Context.Message.AddReactionAsync(new Emoji("✅"));
-                }
-            }
-            else
-            {
-                //if emote is not found
-                await ReplyAsync("emote not found!");
-            }
+            await EmoteRemove(yes1, false);
         }
 
         //save function
@@ -101,31 +76,7 @@ namespace GeckoBot.Commands
         [Summary("Saves a key to the dictionary.")]
         public async Task es(string yes1, string yes)
         {
-            Globals.RefreshEmoteDict();
-
-            //if emote dictionary already has a definition for the new key
-            if (Globals.emoteDict.ContainsKey(yes1))
-            {
-                await ReplyAsync("this name is taken, use a different name!");
-            }
-            else
-            {
-                //escapes forbidden
-                yes1 = Utils.escapeforbidden(yes1);
-                yes = Utils.escapeforbidden(yes);
-
-                //removes ::: for animated saving
-                string[] temp = System.Text.RegularExpressions.Regex.Split(yes, @"(?<!\\)\:::");
-
-                //joins the split string and saves to emote dictionary
-                Globals.emoteDict.Add(yes1, string.Join("", temp.Select(p => p.ToString())));
-
-                //converts dictionary to string and saves
-                FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko2.gek");
-
-                //adds reaction
-                await Context.Message.AddReactionAsync(new Emoji("✅"));
-            }
+            await EmoteSave(yes1, yes, false);
         }
 
         //big save function
@@ -225,31 +176,7 @@ namespace GeckoBot.Commands
         [Summary("Saves a key to the dictionary which cannot be removed by non admins.")]
         public async Task aes(string yes1, string yes)
         {
-            Globals.RefreshEmoteDict();
-
-            //if emote dictionary already has a definition for the new key
-            if (Globals.emoteDict.ContainsKey(yes1))
-            {
-                await ReplyAsync("this name is taken, use a different name!");
-            }
-            else
-            {
-                //escapes forbidden
-                yes1 = Utils.escapeforbidden(yes1);
-                yes = Utils.escapeforbidden(yes);
-
-                //removes ::: for animated saving
-                string[] temp = yes.Split(":::");
-
-                //joins the split string and saves to emote dictionary
-                Globals.emoteDict.Add(yes1, "@फΉ̚ᐼㇶ⤊" + string.Join("", temp.Select(p => p.ToString())));
-
-                //converts dictionary to string and saves
-                FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko2.gek");
-
-                //adds reaction
-                await Context.Message.AddReactionAsync(new Emoji("✅"));
-            }
+            await EmoteSave(yes1, yes, true);
         }
 
         //admin removal function
@@ -258,13 +185,59 @@ namespace GeckoBot.Commands
         [Summary("Removes a key from the dictionary with admin access (can remove admin keys).")]
         public async Task aer(string yes1)
         {
+            await EmoteRemove(yes1, true);
+        }
+        
+        
+        // Saves an emote to the dictionary
+        private async Task EmoteSave(string key, string value, bool withAdmin)
+        {
+            Globals.RefreshEmoteDict();
+
+            //if emote dictionary already has a definition for the new key
+            if (Globals.emoteDict.ContainsKey(key))
+            {
+                await ReplyAsync("this name is taken, use a different name!");
+            }
+            else
+            {
+                //escapes forbidden
+                key = Utils.escapeforbidden(key);
+                value = Utils.escapeforbidden(value);
+
+                //removes ::: for animated saving
+                string[] temp = System.Text.RegularExpressions.Regex.Split(value, @"(?<!\\)\:::");
+
+                //joins the split string and saves to emote dictionary
+                Globals.emoteDict.Add(
+                    value, 
+                    (withAdmin ? "@फΉ̚ᐼㇶ⤊" : "") + string.Join("", temp.Select(p => p.ToString())));
+
+                //converts dictionary to string and saves
+                FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko2.gek");
+
+                //adds reaction
+                await Context.Message.AddReactionAsync(new Emoji("✅"));
+            }
+        }
+        
+        // Removes an emote from the dictionary
+        private async Task EmoteRemove(string key, bool withAdmin)
+        {
             Globals.RefreshEmoteDict();
 
             //if key is found
-            if (Globals.emoteDict.ContainsKey(yes1))
+            if (Globals.emoteDict.ContainsKey(key))
             {
+                // If the key is an admin key
+                if (Globals.emoteDict[key].Contains("@फΉ̚ᐼㇶ⤊") && !withAdmin)
+                {
+                    await ReplyAsync("that is an admin command and cannot be removed");
+                    return;
+                }
+                
                 //removes key
-                Globals.emoteDict.Remove(yes1);
+                Globals.emoteDict.Remove(key);
 
                 //converts dictionary to string and saves
                 FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko2.gek");
