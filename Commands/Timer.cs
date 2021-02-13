@@ -13,7 +13,7 @@ namespace GeckoBot.Commands
 {
     public class Timer : ModuleBase<SocketCommandContext>
     {
-        public static readonly System.Timers.Timer timer = new();
+        public static System.Timers.Timer timer = new();
         
         // Seemingly unused
         //public static ulong TimerChannel = new();
@@ -175,11 +175,11 @@ namespace GeckoBot.Commands
                 Globals.strings = new [] { EmoteUtils.emoteReplace(finalMessage[0]), EmoteUtils.emoteReplace(endMessage[0]), EmoteUtils.emoteReplace(endMessage[1]) };
 
                 //time between checks
-                System.Timers.Timer timer = new(3000);
-                timer.Elapsed += async (sender, e) => await vtimerUp(message2);
-                timer.Start();
+                System.Timers.Timer t = new(3000);
+                t.Elapsed += async (sender, e) => await vtimerUp(message2);
+                t.Start();
 
-                timer = timer;
+                timer = t;
 
             }
         }
