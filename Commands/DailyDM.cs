@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using GeckoBot.Preconditions;
 using GeckoBot.Utils;
 using Microsoft.Win32;
 
@@ -58,7 +59,7 @@ namespace GeckoBot.Commands
                     timer.Start();
 
                     //checks
-                    await check("");
+                    await check();
 
                     Timer.IsCounting = true;
 
@@ -128,21 +129,11 @@ namespace GeckoBot.Commands
         //checks
         [Command("check")]
         [Summary("Checks whether the daily dm needs to be sent.")]
-        public async Task check(string passcode)
+        public async Task check()
         {
             _lastRun = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek"));
-
-            //if password matches secret password
-            if (passcode == Top.Secret)
-            {
-                //forces update by subtracting one from day of the year
-                _lastRun = DateTime.Now.DayOfYear - 1;
-
-                await dailydm();
-
-                await ReplyAsync("checked and force updated");
-            }
-            else if (_lastRun != DateTime.Now.DayOfYear)
+            
+            if (_lastRun != DateTime.Now.DayOfYear)
             {
                 //checks
                 await dailydm();
@@ -153,6 +144,20 @@ namespace GeckoBot.Commands
             {
                 await ReplyAsync("checked");
             }
+        }
+        
+        // Force updates
+        [RequireGeckobotAdmin]
+        [Command("fcheck")]
+        [Summary("Force updates the daily dm.")]
+        public async Task fcheck()
+        {
+            //forces update by subtracting one from day of the year
+            _lastRun = DateTime.Now.DayOfYear - 1;
+
+            await dailydm();
+
+            await ReplyAsync("checked and force updated");
         }
 
         //sets up daily dms
@@ -231,10 +236,10 @@ namespace GeckoBot.Commands
         }
 
         //actually starts the timer
-        public void Start()
+        private void Start()
         {
             //one hour looping timer for checking
-            System.Timers.Timer timer = new System.Timers.Timer(1000*60*60);
+            System.Timers.Timer timer = new(1000*60*60);
             timer.Elapsed += async (sender, e) => await daily();
             timer.Start();
 
@@ -262,7 +267,7 @@ namespace GeckoBot.Commands
                 dmTimer.Stop();
 
                 //sets timer to amount of time until next hour plus a little bit
-                System.Timers.Timer timer2 = new System.Timers.Timer((61 - minutes) * 60 * 1000);
+                System.Timers.Timer timer2 = new((61 - minutes) * 60 * 1000);
                 timer2.Elapsed += async (sender, e) => await trueStart(timer2);
                 timer2.Start();
 
@@ -315,7 +320,7 @@ namespace GeckoBot.Commands
             FileUtils.Save(_lastRun.ToString(), @"..\..\Cache\gecko4.gek");
         }
 
-        public async Task dmGroup(string path, string content)
+        private async Task dmGroup(string path, string content)
         {
             DiscordSocketClient client = Context.Client;
 
