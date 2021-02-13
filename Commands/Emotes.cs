@@ -211,7 +211,7 @@ namespace GeckoBot.Commands
 
                 //joins the split string and saves to emote dictionary
                 Globals.emoteDict.Add(
-                    value, 
+                    key, 
                     (withAdmin ? "@फΉ̚ᐼㇶ⤊" : "") + string.Join("", temp.Select(p => p.ToString())));
 
                 //converts dictionary to string and saves
