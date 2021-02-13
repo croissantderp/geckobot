@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using GeckoBot.Preconditions;
+using GeckoBot.Utils;
 
 namespace GeckoBot.Commands
 {
@@ -27,7 +28,7 @@ namespace GeckoBot.Commands
             if (name == Top.SecretName)
             {
                 //changes current value to 
-                Globals.currentValue = value;
+                Globals.CurrentName = value;
 
                 //adds reaction
                 await Context.Message.AddReactionAsync(new Emoji("✅"));
@@ -56,7 +57,7 @@ namespace GeckoBot.Commands
         [Summary("Sets geckobot's profile to the specified image path.")]
         public async Task profile(string path)
         {
-            Utils.changeProfile(Context.Client, path);
+            Utils.Utils.changeProfile(Context.Client, path);
             await ReplyAsync("profile changed");
         }
 
@@ -64,7 +65,7 @@ namespace GeckoBot.Commands
         [Summary("Sets geckobot's name")]
         public async Task name(string name)
         {
-            Utils.changeName(Context.Client, name);
+            Utils.Utils.changeName(Context.Client, name);
             await ReplyAsync("name changed");
         }
     }

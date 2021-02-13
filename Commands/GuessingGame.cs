@@ -8,13 +8,18 @@ namespace GeckoBot.Commands
     [Group("g")]
     public class GuessingGame : ModuleBase<SocketCommandContext>
     {
+        //guessing game variables
+        private static int _gNumber;
+        private static int _attempts;
+        private static bool _easyMode;
+        
         //generates new number
         [Command("new")]
         [Summary("Starts a new game from the min and max provided.")]
         public async Task newNumber(int min, int max)
         {
             //generates number based on min and max value
-            Random random = new Random();
+            Random random = new();
             int number = random.Next(min, max + 1);
 
             //achievement :D
@@ -23,35 +28,32 @@ namespace GeckoBot.Commands
                 : $"new number generated between {min} and {max}");
             
             //assigns variables
-            Globals.gNumber = number;
-            Globals.easyMode = min == max;
-            Globals.attempts = 0;
+            _gNumber = number;
+            _easyMode = min == max;
+            _attempts = 0;
         }
 
         [Command("")]
         [Summary("Guesses the picked number.")]
         public async Task attempt(int value)
         {
-            //gets value from global variables
-            int gNumber = Globals.gNumber;
-            
-            Globals.attempts += 1;
+            _attempts += 1;
 
             //checks values and adds to attempts
-            if (value < gNumber)
+            if (value < _gNumber)
             {
                 await ReplyAsync("too low");
             }
-            else if (value > gNumber)
+            else if (value > _gNumber)
             {
                 await ReplyAsync("too high");
             }
             else
             {
                 //achievement :D
-                await ReplyAsync(Globals.easyMode && Globals.attempts > 1 
+                await ReplyAsync(_easyMode && _attempts > 1 
                     ? "achievement get! lose the game on the easiest difficulty!" 
-                    : $"{Context.User} got it! The number was {gNumber}. It took {Globals.attempts} attempts!");
+                    : $"{Context.User} got it! The number was {_gNumber}. It took {_attempts} attempts!");
             }
         }
     }

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using GeckoBot.Preconditions;
+using GeckoBot.Utils;
 
 namespace GeckoBot.Commands
 {

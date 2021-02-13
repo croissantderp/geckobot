@@ -6,7 +6,7 @@ using Google.Apis.Drive.v3;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 
-namespace GeckoBot
+namespace GeckoBot.Utils
 {
     // Utilities for the Gecko Images Suite
     public class DriveUtils
