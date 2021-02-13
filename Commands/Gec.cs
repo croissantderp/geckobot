@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using GeckoBot.Utils;
 using Google.Apis.Drive.v3;
 
 namespace GeckoBot.Commands
@@ -11,6 +12,8 @@ namespace GeckoBot.Commands
     [Summary("Gecko commands.")]
     public class Gec : ModuleBase<SocketCommandContext>
     {
+        private static int HighestGecko;
+        
         // Force cache a gecko image
         // This functionality is accomplished by fgec already, consider removing
         /*
@@ -64,7 +67,7 @@ namespace GeckoBot.Commands
             if (FileUtils.Load(@"..\..\Cache\gecko3.gek") != null)
             {
                 //clears
-                Globals.dmUsers.Clear();
+                DailyDM.DmUsers.Clear();
 
                 //gets info
                 string[] temp = FileUtils.Load(@"..\..\Cache\gecko3.gek").Split(",");
@@ -72,13 +75,13 @@ namespace GeckoBot.Commands
                 //adds info to list
                 foreach (string a in temp)
                 {
-                    Globals.dmUsers.Add(ulong.Parse(a));
+                    DailyDM.DmUsers.Add(ulong.Parse(a));
                 }
             }
 
             List<string> names = new List<string>();
 
-            foreach(ulong a in Globals.dmUsers)
+            foreach(ulong a in DailyDM.DmUsers)
             {
                 names.Add(Context.Client.GetUser(a).Username);
             }
@@ -122,7 +125,7 @@ namespace GeckoBot.Commands
             
             //gets random value
             Random random = new Random();
-            int numb = random.Next(0,Globals.HighestGecko + 1);
+            int numb = random.Next(0, HighestGecko + 1);
             string final = DriveUtils.addZeros(numb);
 
             //sends file
@@ -165,7 +168,7 @@ namespace GeckoBot.Commands
         public async Task hgec()
         {
             refreshHighestGec();
-            int num = Globals.HighestGecko;
+            int num = HighestGecko;
             
             //sends file
             await Context.Channel.SendFileAsync(
@@ -187,7 +190,7 @@ namespace GeckoBot.Commands
             listRequest.Q = "mimeType contains 'image' and sharedWithMe"; // Filter out folders or other non image types
 
             IList<Google.Apis.Drive.v3.Data.File> files = listRequest.Execute().Files;
-            Globals.HighestGecko = int.Parse(Regex.Replace(files[0].Name, @"_.+", ""));
+            HighestGecko = int.Parse(Regex.Replace(files[0].Name, @"_.+", ""));
         }
     }
 }

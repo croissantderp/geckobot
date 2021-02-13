@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Discord;
+using GeckoBot.Commands;
 
-namespace GeckoBot
+namespace GeckoBot.Utils
 {
     // Miscellaneous utils go here
     public class Utils
@@ -32,73 +33,6 @@ namespace GeckoBot
             });
         }
         
-        //replaces strings with emotes
-        public static string emoteReplace(string stuff)
-        {
-            stuff = escapeforbidden(stuff);
-
-            //loads emote dictionary as string and converts it back into dictionary
-            Globals.RefreshEmoteDict();
-            
-            //splits string by $
-            string[] yesnt = Regex.Split(stuff, @"(?<!\\)\$");
-
-            //removes empty strings which would break this command
-            yesnt = yesnt.Where(x => !string.IsNullOrEmpty(x)).ToArray();
-
-            //final string array with converted segments
-            string[] final = new string[yesnt.Length];
-
-            for (int i = 0; i < yesnt.Length; i++)
-            {
-                //checks if a key exists for the segment and if it is prefaced by \
-                if (Globals.emoteDict.ContainsKey(yesnt[i]))
-                {
-                    final[i] = Globals.emoteDict[yesnt[i]];
-                    if (final[i].Contains("@फΉ̚ᐼㇶ⤊"))
-                    {
-                        final[i] = final[i].Replace("@फΉ̚ᐼㇶ⤊", "");
-                    }
-                }
-                else
-                {
-                    //if segment is prefaced by \
-                    if (yesnt[i][0] == '\\')
-                    {
-                        //removes \
-                        final[i] = yesnt[i].Remove(0, 1);
-                    }
-                    else
-                    {
-                        final[i] = yesnt[i];
-                    }
-                }
-            }
-
-            //returns joined segments
-            return removeforbidden(string.Join("", final.Select(p => p.ToString())));
-        }
-
-        public static string escapeforbidden(string input)
-        {
-            string final = input.Replace(@"@फΉ̚ᐼㇶ⤊", @"\@फΉ̚ᐼㇶ⤊");
-
-            final = final.Replace(@"⁊", @"\⁊");
-
-            final = final.Replace(@"ҩ", @"\ҩ");
-
-            return final;
-        }
-
-        public static string removeforbidden(string input)
-        {
-            string final = input.Replace(@"@फΉ̚ᐼㇶ⤊", @"\@फΉ̚ᐼㇶ⤊");
-
-            final = final.Replace(@"\⁊", @"⁊");
-
-            final = final.Replace(@"\ҩ", @"ҩ");
-
-            return final;
-        }
+        
     }
 }

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace GeckoBot
+namespace GeckoBot.Utils
 {
     public class FileUtils
     {

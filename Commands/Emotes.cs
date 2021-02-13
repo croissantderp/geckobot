@@ -1,15 +1,21 @@
+using System.Collections.Generic;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using GeckoBot.Preconditions;
 using System.Linq;
 using System.Threading.Tasks;
+using GeckoBot.Utils;
 
 namespace GeckoBot.Commands
 {
     [Summary("Cross server emote commands.")]
     public class Emotes : ModuleBase<SocketCommandContext>
     {
+        //emote dictionary
+        public static Dictionary<string, string> EmoteDict = new();
+        
+        
         //sends message
         [Command("te")]
         [Summary("Sends a message with words replaced by emotes from the dictionary to the target channel.")]
@@ -17,7 +23,7 @@ namespace GeckoBot.Commands
         {
             if (target == "dm")
             {
-                await Context.User.SendMessageAsync(Utils.emoteReplace(message));
+                await Context.User.SendMessageAsync(EmoteUtils.emoteReplace(message));
             }
             else
             {
@@ -27,7 +33,7 @@ namespace GeckoBot.Commands
                 //parses channel id provided and gets channel from client
                 var chnl = client.GetChannel(ulong.Parse(target)) as IMessageChannel;
 
-                await chnl.SendMessageAsync(Context.User + ": " +Utils.emoteReplace(message), allowedMentions: Globals.allowed);
+                await chnl.SendMessageAsync(Context.User + ": " + EmoteUtils.emoteReplace(message), allowedMentions: Globals.allowed);
             }
         }
 
@@ -36,7 +42,7 @@ namespace GeckoBot.Commands
         [Summary("Sends a message with words replaced by emotes from the dictionary.")]
         public async Task e(string yes)
         {
-            await ReplyAsync(Utils.emoteReplace(yes), allowedMentions: Globals.allowed);
+            await ReplyAsync(EmoteUtils.emoteReplace(yes), allowedMentions: Globals.allowed);
         }
 
         //finds emote
@@ -44,10 +50,10 @@ namespace GeckoBot.Commands
         [Summary("Looks up a key in the dictionary given the value; the reverse of `e.")]
         public async Task ge(string input)
         {
-            Globals.RefreshEmoteDict();
-            if (Globals.emoteDict.ContainsValue(input))
+            EmoteUtils.RefreshEmoteDict();
+            if (EmoteDict.ContainsValue(input))
             {
-                string key = Globals.emoteDict.FirstOrDefault(x => x.Value == input).Key;
+                string key = EmoteDict.FirstOrDefault(x => x.Value == input).Key;
                 await ReplyAsync(key, allowedMentions: Globals.allowed);
             }
             else
@@ -85,7 +91,7 @@ namespace GeckoBot.Commands
         [Summary("Saves all emotes from all guilds into the dictionary.")]
         public async Task ess()
         {
-            Globals.RefreshEmoteDict();
+            EmoteUtils.RefreshEmoteDict();
             
             //gets guilds
             IGuild[] guilds = Context.Client.Guilds.ToArray();
@@ -107,15 +113,15 @@ namespace GeckoBot.Commands
                     string name = c.ToString().Remove(count - 20, 20).Remove(0, 2);
 
                     //if the emote dictionary already contains a key or emote contains banned characters
-                    if (!Globals.emoteDict.ContainsKey(name))
+                    if (!EmoteDict.ContainsKey(name))
                     {
                         string cstring = c.ToString();
                         //escapes forbidden
-                        name = Utils.escapeforbidden(name);
-                        cstring = Utils.escapeforbidden(cstring);
+                        name = EmoteUtils.escapeforbidden(name);
+                        cstring = EmoteUtils.escapeforbidden(cstring);
 
                         //adds to emote dictionary
-                        Globals.emoteDict.Add(name, cstring);
+                        EmoteDict.Add(name, cstring);
 
                         //adds to counter
                         emotesAdded += 1;
@@ -124,7 +130,7 @@ namespace GeckoBot.Commands
             }
 
             //converts dictionary to string and saves
-            FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko2.gek");
+            FileUtils.Save(Globals.DictToString(EmoteDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko2.gek");
 
             //replies with number of new emotes added
             await ReplyAsync(emotesAdded + " new emotes added");
@@ -135,7 +141,7 @@ namespace GeckoBot.Commands
         [Summary("Reacts to a message with the specified emotes.")]
         public async Task ReactCustomAsync(IMessageChannel channel, string message, string emote)
         {
-            Globals.RefreshEmoteDict();
+            EmoteUtils.RefreshEmoteDict();
             
             //parses message id provided and gets message from channel
             var message2 = await channel.GetMessageAsync(ulong.Parse(message));
@@ -146,9 +152,9 @@ namespace GeckoBot.Commands
             foreach (string em in yesnt)
             {
                 //if the emote dictionary contains the key
-                if (Globals.emoteDict.ContainsKey(em))
+                if (EmoteDict.ContainsKey(em))
                 {
-                    var emote2 = Emote.Parse(Globals.emoteDict[em]);
+                    var emote2 = Emote.Parse(EmoteDict[em]);
                     await message2.AddReactionAsync(emote2);
                 }
                 else
@@ -193,29 +199,29 @@ namespace GeckoBot.Commands
         // Saves an emote to the dictionary
         private async Task EmoteSave(string key, string value, bool withAdmin)
         {
-            Globals.RefreshEmoteDict();
+            EmoteUtils.RefreshEmoteDict();
 
             //if emote dictionary already has a definition for the new key
-            if (Globals.emoteDict.ContainsKey(key))
+            if (EmoteDict.ContainsKey(key))
             {
                 await ReplyAsync("this name is taken, use a different name!");
             }
             else
             {
                 //escapes forbidden
-                key = Utils.escapeforbidden(key);
-                value = Utils.escapeforbidden(value);
+                key = EmoteUtils.escapeforbidden(key);
+                value = EmoteUtils.escapeforbidden(value);
 
                 //removes ::: for animated saving
                 string[] temp = System.Text.RegularExpressions.Regex.Split(value, @"(?<!\\)\:::");
 
                 //joins the split string and saves to emote dictionary
-                Globals.emoteDict.Add(
+                EmoteDict.Add(
                     key, 
                     (withAdmin ? "@फΉ̚ᐼㇶ⤊" : "") + string.Join("", temp.Select(p => p.ToString())));
 
                 //converts dictionary to string and saves
-                FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko2.gek");
+                FileUtils.Save(Globals.DictToString(EmoteDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko2.gek");
 
                 //adds reaction
                 await Context.Message.AddReactionAsync(new Emoji("✅"));
@@ -225,23 +231,23 @@ namespace GeckoBot.Commands
         // Removes an emote from the dictionary
         private async Task EmoteRemove(string key, bool withAdmin)
         {
-            Globals.RefreshEmoteDict();
+            EmoteUtils.RefreshEmoteDict();
 
             //if key is found
-            if (Globals.emoteDict.ContainsKey(key))
+            if (EmoteDict.ContainsKey(key))
             {
                 // If the key is an admin key
-                if (Globals.emoteDict[key].Contains("@फΉ̚ᐼㇶ⤊") && !withAdmin)
+                if (EmoteDict[key].Contains("@फΉ̚ᐼㇶ⤊") && !withAdmin)
                 {
                     await ReplyAsync("that is an admin command and cannot be removed");
                     return;
                 }
                 
                 //removes key
-                Globals.emoteDict.Remove(key);
+                EmoteDict.Remove(key);
 
                 //converts dictionary to string and saves
-                FileUtils.Save(Globals.DictToString(Globals.emoteDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko2.gek");
+                FileUtils.Save(Globals.DictToString(EmoteDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko2.gek");
 
                 //adds reaction
                 await Context.Message.AddReactionAsync(new Emoji("✅"));

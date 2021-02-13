@@ -1,21 +1,29 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using System.ServiceProcess;
-using System.Management;
+using GeckoBot.Utils;
 using Microsoft.Win32;
 
 namespace GeckoBot.Commands
 {
     public class DailyDM : ModuleBase<SocketCommandContext>
     {
+        private static System.Timers.Timer dmTimer = new(); //the primary timer for dms
+        
+        private static int _lastRun = DateTime.Now.DayOfYear; //last time bot was run and daily geckoimage was sent
+        private static DateTime _lastCheck = DateTime.Now;
+        
+        public static readonly List<ulong> DmUsers = new(); //people to dm for daily gecko images
+        
+        
         [Command("last checked")]
         [Summary("Gets the time since the daily dm was last checked.")]
         public async Task last()
         {
-            await ReplyAsync(Globals.lastCheck.ToString());
+            await ReplyAsync(_lastCheck.ToString());
         }
 
         //starts timer for various checks
@@ -26,7 +34,7 @@ namespace GeckoBot.Commands
             await Context.Client.SetGameAsync("`what do you do?");
 
             //if started or not
-            if (Globals.started)
+            if (Timer.Started)
             {
                 await ReplyAsync("hourly check already started");
             }
@@ -38,7 +46,7 @@ namespace GeckoBot.Commands
                 //getting minutes
                 int minutes = time.Minute;
 
-                if (Globals.isCounting)
+                if (Timer.IsCounting)
                 {
                     await ReplyAsync("hourly check already scheduled, will start in t - " + (61 - minutes) + " minutes");
                 }
@@ -52,15 +60,15 @@ namespace GeckoBot.Commands
                     //checks
                     await check("");
 
-                    Globals.isCounting = true;
+                    Timer.IsCounting = true;
 
                     await ReplyAsync("hourly check will start in t - " + (61 - minutes) + " minutes");
                 }
 
-                if (!Globals.everStarted)
+                if (!Timer.EverStarted)
                 {
                     SystemEvents.PowerModeChanged += PowerEvents;
-                    Globals.everStarted = true;
+                    Timer.EverStarted = true;
                 }
             }
         }
@@ -69,8 +77,8 @@ namespace GeckoBot.Commands
         {
             if (!Globals.isSleep)
             {
-                Globals.timer.Stop();
-                Globals.dmTimer.Stop();
+                Timer.timer.Stop();
+                dmTimer.Stop();
 
                 await Context.Client.SetGameAsync("shhh! geckobot is sleeping");
 
@@ -78,12 +86,12 @@ namespace GeckoBot.Commands
             }
             else
             {
-                Globals.timer.Start();
-                Globals.dmTimer.Start();
+                Timer.timer.Start();
+                dmTimer.Start();
 
-                Globals.lastrun = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek"));
+                _lastRun = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek"));
 
-                if (Globals.lastrun != DateTime.Now.DayOfYear)
+                if (_lastRun != DateTime.Now.DayOfYear)
                 {
                     //checks
                     await daily();
@@ -100,18 +108,18 @@ namespace GeckoBot.Commands
         {
             Start();
 
-            Globals.lastrun = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek"));
+            _lastRun = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek"));
 
-            if (Globals.lastrun != DateTime.Now.DayOfYear)
+            if (_lastRun != DateTime.Now.DayOfYear)
             {
                 //checks
                 await dailydm();
             }
 
-            if (!Globals.counterStarted)
+            if (!Timer.CounterStarted)
             {
                 await ReplyAsync("hourly check started");
-                Globals.counterStarted = true;
+                Timer.CounterStarted = true;
             }
 
             timer.Stop();
@@ -122,19 +130,19 @@ namespace GeckoBot.Commands
         [Summary("Checks whether the daily dm needs to be sent.")]
         public async Task check(string passcode)
         {
-            Globals.lastrun = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek"));
+            _lastRun = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek"));
 
             //if password matches secret password
             if (passcode == Top.Secret)
             {
                 //forces update by subtracting one from day of the year
-                Globals.lastrun = DateTime.Now.DayOfYear - 1;
+                _lastRun = DateTime.Now.DayOfYear - 1;
 
                 await dailydm();
 
                 await ReplyAsync("checked and force updated");
             }
-            else if (Globals.lastrun != DateTime.Now.DayOfYear)
+            else if (_lastRun != DateTime.Now.DayOfYear)
             {
                 //checks
                 await dailydm();
@@ -157,7 +165,7 @@ namespace GeckoBot.Commands
             if (yes)
             {
                 //clears
-                Globals.dmUsers.Clear();
+                DmUsers.Clear();
 
                 //gets info
                 string[] temp = FileUtils.Load(@"..\..\Cache\gecko3.gek").Split(",");
@@ -165,24 +173,24 @@ namespace GeckoBot.Commands
                 //adds info to list
                 foreach (string a in temp)
                 {
-                    Globals.dmUsers.Add(ulong.Parse(a));
+                    DmUsers.Add(ulong.Parse(a));
                 }
 
                 //gets current user
                 IUser user = Context.User;
 
                 //if they are already signed up
-                if (Globals.dmUsers.Contains(user.Id))
+                if (DmUsers.Contains(user.Id))
                 {
                     await ReplyAsync("you are already signed up!");
                 }
                 else
                 {
                     //adds id
-                    Globals.dmUsers.Add(user.Id);
+                    DmUsers.Add(user.Id);
 
                     //saves info
-                    FileUtils.Save(string.Join(",", Globals.dmUsers.ToArray()), @"..\..\Cache\gecko3.gek");
+                    FileUtils.Save(string.Join(",", DmUsers.ToArray()), @"..\..\Cache\gecko3.gek");
 
                     //DMs the user
                     await user.SendMessageAsync("hi, daily gecko updates have been set up, cancel by '\\`dm false'");
@@ -192,24 +200,24 @@ namespace GeckoBot.Commands
             else
             {
                 //loads things the same way as above
-                Globals.dmUsers.Clear();
+                DmUsers.Clear();
                 string[] temp = FileUtils.Load(@"..\..\Cache\gecko3.gek").Split(",");
                 foreach (string a in temp)
                 {
-                    Globals.dmUsers.Add(ulong.Parse(a));
+                    DmUsers.Add(ulong.Parse(a));
                 }
                 
                 //gets current user
                 IUser user = Context.User;
 
                 //if the are already not signed up
-                if (Globals.dmUsers.Contains(user.Id))
+                if (DmUsers.Contains(user.Id))
                 {
                     //removes user form list
-                    Globals.dmUsers.Remove(user.Id);
+                    DmUsers.Remove(user.Id);
 
                     //saves info
-                    FileUtils.Save(string.Join(",", Globals.dmUsers.ToArray()), @"..\..\Cache\gecko3.gek");
+                    FileUtils.Save(string.Join(",", DmUsers.ToArray()), @"..\..\Cache\gecko3.gek");
 
                     //DMs the user
                     await user.SendMessageAsync("hi, daily gecko updates have been canceled");
@@ -230,10 +238,10 @@ namespace GeckoBot.Commands
             timer.Elapsed += async (sender, e) => await daily();
             timer.Start();
 
-            Globals.dmTimer = timer;
+            dmTimer = timer;
 
             //makes sure there is only one timer
-            Globals.started = true;
+            Timer.Started = true;
         }
 
         //checks when timer runs out
@@ -245,13 +253,13 @@ namespace GeckoBot.Commands
             //getting minutes
             int minutes = time.Minute;
 
-            Globals.lastCheck = DateTime.Now;
+            _lastCheck = DateTime.Now;
 
             //if timer is misaligned with hour, realign it
             if (minutes > 1)
             {
                 //stops current timer
-                Globals.dmTimer.Stop();
+                dmTimer.Stop();
 
                 //sets timer to amount of time until next hour plus a little bit
                 System.Timers.Timer timer2 = new System.Timers.Timer((61 - minutes) * 60 * 1000);
@@ -259,11 +267,11 @@ namespace GeckoBot.Commands
                 timer2.Start();
 
                 //sets some variables so stats show up
-                Globals.started = false;
-                Globals.isCounting = true;
+                Timer.Started = false;
+                Timer.IsCounting = true;
             }
 
-            if (Globals.lastrun != DateTime.Now.DayOfYear)
+            if (_lastRun != DateTime.Now.DayOfYear)
             {
                 //checks
                 await dailydm();
@@ -276,12 +284,12 @@ namespace GeckoBot.Commands
             FileUtils.checkForExistance();
 
             //loads file in same way as described above
-            Globals.dmUsers.Clear();
+            DmUsers.Clear();
             string[] temp = FileUtils.Load(@"..\..\Cache\gecko3.gek").Split(",");
 
             foreach (string a in temp)
             {
-                Globals.dmUsers.Add(ulong.Parse(a));
+                DmUsers.Add(ulong.Parse(a));
             }
 
             //generates statement to send
@@ -297,14 +305,14 @@ namespace GeckoBot.Commands
                 $"Today is {date.ToString("d")}. Day {date.DayOfYear} of the year {date.Year} (gecko #{final})");
 
             //changes geckobot's profile to new gecko
-            Utils.changeProfile(
+            Utils.Utils.changeProfile(
                 Context.Client, 
                 DriveUtils.ImagePath(date.DayOfYear - 1, false));
 
             //updates last run counter
-            Globals.lastrun = DateTime.Now.DayOfYear;
+            _lastRun = DateTime.Now.DayOfYear;
 
-            FileUtils.Save(Globals.lastrun.ToString(), @"..\..\Cache\gecko4.gek");
+            FileUtils.Save(_lastRun.ToString(), @"..\..\Cache\gecko4.gek");
         }
 
         public async Task dmGroup(string path, string content)
@@ -317,7 +325,7 @@ namespace GeckoBot.Commands
             bool isBirthday = date.DayOfYear == 288;
 
             //DMs everybody on the list
-            foreach (ulong a in Globals.dmUsers)
+            foreach (ulong a in DmUsers)
             {
                 //gets user from id
                 IUser b = client.GetUser(a);

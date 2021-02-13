@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Discord.Commands;
+using GeckoBot.Utils;
 
 namespace GeckoBot.Commands
 {
@@ -13,7 +14,7 @@ namespace GeckoBot.Commands
         public async Task flip(string text, string text2)
         {
             //joins text with dark magic
-            string final = "؜" + Utils.emoteReplace(text) + "\n" + Utils.emoteReplace(text2) + "؜؜؜";
+            string final = "؜" + EmoteUtils.emoteReplace(text) + "\n" + EmoteUtils.emoteReplace(text2) + "؜؜؜";
 
             //sends a placeholder message
             var Message1 = await ReplyAsync("ahaaha", allowedMentions: Globals.allowed);
@@ -27,7 +28,7 @@ namespace GeckoBot.Commands
         public async Task edit(string text, string text2)
         {
             //joins text with dark magic
-            string final = "؜" + Utils.emoteReplace(text2) + "؜؜؜؜؜؜؜؜؜؜؜؜" + Utils.emoteReplace(text);
+            string final = "؜" + EmoteUtils.emoteReplace(text2) + "؜؜؜؜؜؜؜؜؜؜؜؜" + EmoteUtils.emoteReplace(text);
 
             //sends a placeholder message
             var Message1 = await ReplyAsync("ahaaha");

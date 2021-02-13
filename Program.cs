@@ -1,19 +1,11 @@
-﻿using Google.Apis.Auth.OAuth2;
-using Google.Apis.Drive.v3;
-using Google.Apis.Drive.v3.Data;
-using Google.Apis.Services;
-using Google.Apis.Util.Store;
+﻿using Google.Apis.Drive.v3;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using GeckoBot.Utils;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GeckoBot
@@ -79,8 +71,8 @@ namespace GeckoBot
                 if (!System.Text.RegularExpressions.Regex.IsMatch(temp, @"(?<!\\)\`"))
                 {
                     var result = await _commands.ExecuteAsync(context, argPos, _services);
-                    if (!result.IsSuccess) await message.Channel.SendMessageAsync(result.ErrorReason, false, null, null, Globals.allowed);
-                    if (result.Error.Equals(CommandError.UnmetPrecondition)) await message.Channel.SendMessageAsync(result.ErrorReason, false, null, null, Globals.allowed);
+                    if (!result.IsSuccess) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
+                    if (result.Error.Equals(CommandError.UnmetPrecondition)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
                 }
             }
             else if (message.HasStringPrefix("\\`", ref argPos))
@@ -89,8 +81,8 @@ namespace GeckoBot
                 if (!System.Text.RegularExpressions.Regex.IsMatch(temp, @"(?<!\\)\`"))
                 {
                     var result = await _commands.ExecuteAsync(context, argPos, _services);
-                    if (!result.IsSuccess) await message.Channel.SendMessageAsync(result.ErrorReason, false, null, null, Globals.allowed);
-                    if (result.Error.Equals(CommandError.UnmetPrecondition)) await message.Channel.SendMessageAsync(result.ErrorReason, false, null, null, Globals.allowed);
+                    if (!result.IsSuccess) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
+                    if (result.Error.Equals(CommandError.UnmetPrecondition)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
                 }
             }
         }

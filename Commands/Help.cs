@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using GeckoBot.Utils;
 
 namespace GeckoBot.Commands
 {
@@ -11,7 +12,7 @@ namespace GeckoBot.Commands
         [Summary("Identifies the current version of geckobot.")]
         public async Task identify()
         {
-            await ReplyAsync("geckobot" + Globals.names[Globals.currentValue]);
+            await ReplyAsync("geckobot" + Globals.names[Globals.CurrentName]);
         }
 
         [Command("links")]
@@ -40,7 +41,7 @@ namespace GeckoBot.Commands
             //embed
             var embed = new EmbedBuilder
             {
-            Title = "geckobot" + Globals.names[Globals.currentValue] + System.Environment.NewLine + "1/31/2020 instruction manual"
+            Title = "geckobot" + Globals.names[Globals.CurrentName] + System.Environment.NewLine + "1/31/2020 instruction manual"
             };
 
             //changes based on sections
