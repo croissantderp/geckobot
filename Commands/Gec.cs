@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
@@ -73,18 +74,11 @@ namespace GeckoBot.Commands
                 string[] temp = FileUtils.Load(@"..\..\Cache\gecko3.gek").Split(",");
 
                 //adds info to list
-                foreach (string a in temp)
-                {
-                    DailyDM.DmUsers.Add(ulong.Parse(a));
-                }
+                DailyDM.DmUsers.AddRange(temp.Select(ulong.Parse));
             }
 
             List<string> names = new List<string>();
-
-            foreach(ulong a in DailyDM.DmUsers)
-            {
-                names.Add(Context.Client.GetUser(a).Username);
-            }
+            names.AddRange(DailyDM.DmUsers.Select(user => Context.Client.GetUser(user).Username));
 
             //buils an embed
             var embed = new EmbedBuilder

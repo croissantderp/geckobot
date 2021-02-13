@@ -52,7 +52,7 @@ namespace GeckoBot.Commands
             results = "numbs: " + string.Join(" ", 
                 number2.Select(p => p.ToString())) + "\nresults: " + 
                       string.Join(" ", 
-                          key2.Select(p => p.ToString())) + "\nmatches: " + matches.ToString();
+                          key2.Select(p => p.ToString())) + "\nmatches: " + matches;
             await ReplyAsync(results);
         }
 
@@ -103,7 +103,7 @@ namespace GeckoBot.Commands
             {
                 await ReplyAsync($"<@!{Context.User.Id}> wins!");
             }
-            else if (number == 2)
+            else
             {
                 await ReplyAsync($"<@!{user.Id}> wins!");
             }

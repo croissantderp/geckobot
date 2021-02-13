@@ -65,14 +65,8 @@ namespace GeckoBot.Commands
             //clears
             BugList.Clear();
 
-            //gets info
-            string[] temp = FileUtils.Load(@"..\..\Cache\gecko1.gek").Split(",");
-
             //adds info to list
-            foreach (string a in temp)
-            {
-                BugList.Add(a);
-            }
+            BugList.AddRange(FileUtils.Load(@"..\..\Cache\gecko1.gek").Split(","));
         }
     }
 }

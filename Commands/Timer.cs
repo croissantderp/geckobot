@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -33,19 +34,13 @@ namespace GeckoBot.Commands
         [Summary("Sets an alarm which will be sent after the specified length of time (in hh:mm:ss format).")]
         public async Task startTimer(string message, string time)
         {
-            //parses time in hh:mm:ss format
-            string[] times1 = time.Split(":");
-            int[] times2 = new int[3];
-            for (int i = 0; i < 3; i++)
-            {
-                times2[i] = int.Parse(times1[i]);
-            }
+            int[] times1 = parseTime(time);
 
             //gets user
             IUser user = Context.User;
 
             //starts a timer with desired amount of time
-            System.Timers.Timer t = new(((times2[0] * 60 * 60) + (times2[1] * 60) + times2[2])* 1000);
+            System.Timers.Timer t = new(((times1[0] * 60 * 60) + (times1[1] * 60) + times1[2])* 1000);
             t.Elapsed += async (sender, e) => await timerUp(user, message, t);
             t.Start();
 
@@ -58,22 +53,10 @@ namespace GeckoBot.Commands
         [Summary("Sets an alarm which will be sent on the specified date and time (in hh:mm:ss format).")]
         public async Task alarm(string message, string date, string time)
         {
-            string[] date1 = date.Split("/");
-            int[] date2 = new int[3];
-            for (int i = 0; i < 3; i++)
-            {
-                date2[i] = int.Parse(date1[i]);
-            }
+            int[] date1 = parseDate(date);
+            int[] times1 = parseTime(time);
 
-            //parses time in hh:mm:ss format
-            string[] times1 = time.Split(":");
-            int[] times2 = new int[3];
-            for (int i = 0; i < 3; i++)
-            {
-                times2[i] = int.Parse(times1[i]);
-            }
-
-            DateTime target = new DateTime(date2[2], date2[0], date2[1], times2[0], times2[1], times2[2]);
+            DateTime target = new DateTime(date1[2], date1[0], date1[1], times1[0], times1[1], times1[2]);
 
             TimeSpan final = target - DateTime.Now;
 
@@ -90,7 +73,7 @@ namespace GeckoBot.Commands
         }
 
         //the task that is activated when time is up
-        public async Task timerUp(IUser user, string message, System.Timers.Timer timer2)
+        private async Task timerUp(IUser user, string message, System.Timers.Timer timer2)
         {
             //dms user
             await user.SendMessageAsync(EmoteUtils.emoteReplace(message));
@@ -112,36 +95,24 @@ namespace GeckoBot.Commands
                 string[] finalMessage = message.Split("[time]");
 
                 //parses time in hh:mm:ss format
-                string[] times1 = time.Split(":");
-                int[] times2 = new int[3];
-                for (int i = 0; i < 3; i++)
-                {
-                    times2[i] = int.Parse(times1[i]);
-                }
-
-                int hour = times2[0];
-                int minute = times2[1];
-                int second = times2[2];
-
-                int days = 0;
-
+                int[] parsedTime = parseTime(time);
+                
+                int hour = parsedTime[0];
+                int minute = parsedTime[1];
+                int second = parsedTime[2];
+                
                 //final time when timer runs out
                 DateTime finalTime;
 
                 if (!isTimer)
                 {
-                    string[] date1 = date.Split("/");
-                    int[] date2 = new int[3];
-                    for (int i = 0; i < 3; i++)
-                    {
-                        date2[i] = int.Parse(date1[i]);
-                    }
+                    int[] parsedDate = parseDate(date);
 
-                    finalTime = new DateTime(date2[2], date2[0], date2[1], hour, minute, second);
+                    finalTime = new DateTime(parsedDate[2], parsedDate[0], parsedDate[1], hour, minute, second);
                 }
                 else
                 {
-                    days = int.Parse(date);
+                    int days = int.Parse(date);
 
                     //turns input time into a time span
                     TimeSpan timeLeft = new(days, hour, minute, second);
@@ -268,6 +239,24 @@ namespace GeckoBot.Commands
             //terminates timer
             _terminate = true;
             await ReplyAsync("countdown terminated");
+        }
+        
+        //parses time in hh:mm:ss format
+        private int[] parseTime(string unparsed)
+        {
+            return unparsed
+                .Split(":")
+                .Select(int.Parse)
+                .ToArray();
+        }
+        
+        //parses date in mm/dd/yyyy format
+        private int[] parseDate(string unparsed)
+        {
+            return unparsed
+                .Split("/")
+                .Select(int.Parse)
+                .ToArray();
         }
     }
 }

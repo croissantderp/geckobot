@@ -70,10 +70,7 @@ namespace GeckoBot.Commands
 
                 //number of 0s in the number
                 int Zeros = 0;
-
-                //temp string array
-                string[] temp3 = new string[2];
-
+                
                 //divides by 10
                 for (int i = 0; i < numberList[0].Length; i++)
                 {
@@ -119,8 +116,10 @@ namespace GeckoBot.Commands
         [Summary("Tells you how many significant figures your number has.")]
         public async Task sigfigbase(decimal number)
         {
+            var figs = figures(number);
+            
             //constructs reply
-            await ReplyAsync(string.Join("", figures(number)[0] + figures(number)[1] + " " + figures(number)[2]));
+            await ReplyAsync(string.Join("", figs[0] + figs[1] + " " + figs[2]));
         }
 
         //rounds values (found off of stack overflow I don't know how it works)

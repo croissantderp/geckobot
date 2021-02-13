@@ -54,7 +54,7 @@ namespace GeckoBot.Commands
                 else
                 {
                     //sets timer to amount of time until next hour plus a little bit
-                    System.Timers.Timer timer = new System.Timers.Timer((61 - minutes) * 60 * 1000);
+                    System.Timers.Timer timer = new((61 - minutes) * 60 * 1000);
                     timer.Elapsed += async (sender, e) => await trueStart(timer);
                     timer.Start();
 
@@ -300,10 +300,7 @@ namespace GeckoBot.Commands
             //generates statement to send
             DateTime date = DateTime.Today;
             string final = (date.DayOfYear - 1).ToString();
-
-            //gets client
-            DiscordSocketClient client = Context.Client;
-
+            
             //DMs everybody on the list
             await dmGroup(
                 DriveUtils.ImagePath(date.DayOfYear - 1, false),
