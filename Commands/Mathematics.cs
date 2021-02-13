@@ -4,6 +4,7 @@ using Discord.Commands;
 
 namespace GeckoBot.Commands
 {
+    [Summary("Basic math commands.")]
     public class Mathematics : ModuleBase<SocketCommandContext>
     {
         //maf

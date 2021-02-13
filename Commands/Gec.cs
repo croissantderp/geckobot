@@ -8,6 +8,7 @@ using Google.Apis.Drive.v3;
 
 namespace GeckoBot.Commands
 {
+    [Summary("Gecko commands.")]
     public class Gec : ModuleBase<SocketCommandContext>
     {
         // Force cache a gecko image

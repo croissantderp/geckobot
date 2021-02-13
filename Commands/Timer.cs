@@ -219,12 +219,13 @@ namespace GeckoBot.Commands
                     Globals.terminate = false;
                 }
             }
+            // Shouldn't other catch statements also log errors in Bugs or is Bugs specifically targeted towards timer errors?
             catch(Exception ex)
             {
-                Globals.bugs.Add(ex.ToString());
+                Bugs.BugList.Add(ex.ToString());
 
                 //saves info
-                FileUtils.Save(string.Join(",", Globals.bugs.ToArray()), @"..\..\Cache\gecko1.gek");
+                FileUtils.Save(string.Join(",", Bugs.BugList.ToArray()), @"..\..\Cache\gecko1.gek");
             }
         }
 

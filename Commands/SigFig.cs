@@ -8,10 +8,11 @@ namespace GeckoBot.Commands
 {
     //significant figures
     [Group("sigfig")]
+    [Summary("Math commands with significant figures.")]
     public class SigFig : ModuleBase<SocketCommandContext>
     {
         
-        public string[] figures(decimal number)
+        private string[] figures(decimal number)
         {
             //converts number to a string
             string yes = number.ToString();

@@ -4,6 +4,7 @@ using Discord.Commands;
 namespace GeckoBot.Commands
 {
     [Group("edit")]
+    [Summary("Commands for doing tricks with the discord edited tag.")]
     public class Edit : ModuleBase<SocketCommandContext>
     {
         //flips the edited tag on messages

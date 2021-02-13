@@ -61,9 +61,6 @@ namespace GeckoBot
 
         public static List<ulong> undeletable = new();
 
-        //bug list
-        public static List<string> bugs = new();
-
         //last time bot was run and daily geckoimage was sent
         public static int lastrun = DateTime.Now.DayOfYear;
 

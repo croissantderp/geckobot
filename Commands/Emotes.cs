@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace GeckoBot.Commands
 {
+    [Summary("Cross server emote commands.")]
     public class Emotes : ModuleBase<SocketCommandContext>
     {
         //sends message

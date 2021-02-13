@@ -7,6 +7,7 @@ using GeckoBot.Preconditions;
 namespace GeckoBot.Commands
 {
     [RequireGeckobotAdmin]
+    [Summary("Admin only GeckoBot commands.")]
     public class Admin : ModuleBase<SocketCommandContext>
     {
         //termination command
