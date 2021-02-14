@@ -34,13 +34,11 @@ namespace GeckoBot.Commands
         [Summary("Sets an alarm which will be sent after the specified length of time (in hh:mm:ss format).")]
         public async Task startTimer(string message, string time)
         {
-            int[] times1 = parseTime(time);
-
             //gets user
             IUser user = Context.User;
 
             //starts a timer with desired amount of time
-            System.Timers.Timer t = new(((times1[0] * 60 * 60) + (times1[1] * 60) + times1[2])* 1000);
+            System.Timers.Timer t = new(parseTime(time).TotalMilliseconds);
             t.Elapsed += async (sender, e) => await timerUp(user, message, t);
             t.Start();
 
@@ -53,12 +51,7 @@ namespace GeckoBot.Commands
         [Summary("Sets an alarm which will be sent on the specified date and time (in hh:mm:ss format).")]
         public async Task alarm(string message, string date, string time)
         {
-            int[] date1 = parseDate(date);
-            int[] times1 = parseTime(time);
-
-            DateTime target = new DateTime(date1[2], date1[0], date1[1], times1[0], times1[1], times1[2]);
-
-            TimeSpan final = target - DateTime.Now;
+            TimeSpan final = parseDate(date) + parseTime(time) - DateTime.Now;
 
             //gets user
             IUser user = Context.User;
@@ -95,43 +88,35 @@ namespace GeckoBot.Commands
                 string[] finalMessage = message.Split("[time]");
 
                 //parses time in hh:mm:ss format
-                int[] parsedTime = parseTime(time);
-                
-                int hour = parsedTime[0];
-                int minute = parsedTime[1];
-                int second = parsedTime[2];
-                
+                TimeSpan parsedTime = parseTime(time);
+
                 //final time when timer runs out
                 DateTime finalTime;
 
                 if (!isTimer)
                 {
-                    int[] parsedDate = parseDate(date);
-
-                    finalTime = new DateTime(parsedDate[2], parsedDate[0], parsedDate[1], hour, minute, second);
+                    finalTime = parseDate(date) + parsedTime;
                 }
                 else
                 {
                     int days = int.Parse(date);
 
                     //turns input time into a time span
-                    TimeSpan timeLeft = new(days, hour, minute, second);
+                    TimeSpan timeLeft = parsedTime.Add(new TimeSpan(days, 0, 0, 0));
 
                     //final time when timer runs out
                     finalTime = DateTime.Now + timeLeft;
                 }
 
                 string[] endMessage = finalMessage[1].Split("[end]");
-
-                //gets target channel
-                IMessageChannel channel = Context.Client.GetChannel(ulong.Parse(target)) as IMessageChannel;
-
+                
                 //gets duration for first message
                 TimeSpan duration = finalTime - DateTime.Now;
 
                 TimeSpan duration2 = TimeSpan.FromSeconds(Math.Round(duration.TotalSeconds));
 
-                var message2 = await channel.SendMessageAsync(EmoteUtils.emoteReplace(finalMessage[0]) + duration2 + EmoteUtils.emoteReplace(endMessage[0]));
+                var message2 = await (Context.Client.GetChannel(ulong.Parse(target)) as IMessageChannel).SendMessageAsync(
+                    EmoteUtils.emoteReplace(finalMessage[0]) + duration2 + EmoteUtils.emoteReplace(endMessage[0]));
 
                 //initializes things
                 await ReplyAsync("countdown initialized");
@@ -242,21 +227,31 @@ namespace GeckoBot.Commands
         }
         
         //parses time in hh:mm:ss format
-        private int[] parseTime(string unparsed)
+        private TimeSpan parseTime(string unparsed)
         {
-            return unparsed
+            var parsed = unparsed
                 .Split(":")
                 .Select(int.Parse)
                 .ToArray();
+
+            return new TimeSpan(
+                parsed[0], 
+                parsed[1], 
+                parsed[2]);
         }
         
         //parses date in mm/dd/yyyy format
-        private int[] parseDate(string unparsed)
+        private DateTime parseDate(string unparsed)
         {
-            return unparsed
+            var parsed = unparsed
                 .Split("/")
                 .Select(int.Parse)
                 .ToArray();
+
+            return new DateTime(
+                parsed[2], 
+                parsed[0], 
+                parsed[1]);
         }
     }
 }

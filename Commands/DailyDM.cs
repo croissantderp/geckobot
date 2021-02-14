@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -165,21 +166,9 @@ namespace GeckoBot.Commands
         [Summary("Signs you up for daily dm.")]
         public async Task dmgec(bool yes)
         {
-            FileUtils.checkForExistance();
-
             if (yes)
             {
-                //clears
-                DmUsers.Clear();
-
-                //gets info
-                string[] temp = FileUtils.Load(@"..\..\Cache\gecko3.gek").Split(",");
-
-                //adds info to list
-                foreach (string a in temp)
-                {
-                    DmUsers.Add(ulong.Parse(a));
-                }
+                RefreshDmGroup();
 
                 //gets current user
                 IUser user = Context.User;
@@ -195,7 +184,7 @@ namespace GeckoBot.Commands
                     DmUsers.Add(user.Id);
 
                     //saves info
-                    FileUtils.Save(string.Join(",", DmUsers.ToArray()), @"..\..\Cache\gecko3.gek");
+                    FileUtils.Save(string.Join(",", DmUsers), @"..\..\Cache\gecko3.gek");
 
                     //DMs the user
                     await user.SendMessageAsync("hi, daily gecko updates have been set up, cancel by '\\`dm false'");
@@ -204,13 +193,7 @@ namespace GeckoBot.Commands
             }
             else
             {
-                //loads things the same way as above
-                DmUsers.Clear();
-                string[] temp = FileUtils.Load(@"..\..\Cache\gecko3.gek").Split(",");
-                foreach (string a in temp)
-                {
-                    DmUsers.Add(ulong.Parse(a));
-                }
+                RefreshDmGroup();
                 
                 //gets current user
                 IUser user = Context.User;
@@ -236,7 +219,7 @@ namespace GeckoBot.Commands
         }
 
         //actually starts the timer
-        private void Start()
+        public void Start()
         {
             //one hour looping timer for checking
             System.Timers.Timer timer = new(1000*60*60);
@@ -286,16 +269,7 @@ namespace GeckoBot.Commands
         //sends daily dm
         async Task dailydm()
         {
-            FileUtils.checkForExistance();
-
-            //loads file in same way as described above
-            DmUsers.Clear();
-            string[] temp = FileUtils.Load(@"..\..\Cache\gecko3.gek").Split(",");
-
-            foreach (string a in temp)
-            {
-                DmUsers.Add(ulong.Parse(a));
-            }
+            RefreshDmGroup();
 
             //generates statement to send
             DateTime date = DateTime.Today;
@@ -342,6 +316,20 @@ namespace GeckoBot.Commands
                     await b.SendMessageAsync("happy birthday geckobot :cake:");
                 }
             }
+        }
+        
+        // Updates the DmUsers list from the file
+        private static void RefreshDmGroup()
+        {
+            FileUtils.checkForExistance();
+            
+            //clears
+            DmUsers.Clear();
+
+            //gets info
+            string content = FileUtils.Load(@"..\..\Cache\gecko3.gek");
+            if (content != "") 
+                DmUsers.AddRange(content.Split(",").Select(ulong.Parse));
         }
     }
 }

@@ -1,10 +1,14 @@
 ﻿using Google.Apis.Drive.v3;
 using System;
+using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using GeckoBot.Commands;
 using GeckoBot.Utils;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,6 +21,8 @@ namespace GeckoBot
         
         static void Main(string[] args)
         {
+            new DailyDM().Start();
+
             new Program().RunBotAsync().GetAwaiter().GetResult();
         }
         public DiscordSocketClient _client;
