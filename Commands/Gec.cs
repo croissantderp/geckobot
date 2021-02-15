@@ -177,13 +177,15 @@ namespace GeckoBot.Commands
             DriveService driveService = DriveUtils.AuthenticateServiceAccount(
                 "geckobotfileretriever@geckobot.iam.gserviceaccount.com", 
                 "../../../GeckoBot-af43fa71833e.json");
+
             var listRequest = driveService.Files.List();
             //listRequest.Fields = "nextPageToken, files(id, name)";
             listRequest.PageSize = 1; // Only fetch one
             listRequest.OrderBy = "name desc"; // Name descending gets the highest number gecko
-            listRequest.Q = "mimeType contains 'image' and sharedWithMe"; // Filter out folders or other non image types
+            listRequest.Q = "mimeType contains 'image' and not name contains 'b'"; // Filter out folders or other non image types
 
             IList<Google.Apis.Drive.v3.Data.File> files = listRequest.Execute().Files;
+
             HighestGecko = int.Parse(Regex.Replace(files[0].Name, @"_.+", ""));
         }
     }
