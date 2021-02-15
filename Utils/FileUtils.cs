@@ -56,13 +56,13 @@ namespace GeckoBot.Utils
                 if (!File.Exists(path))
                 {
                     File.Create(path);
-                }
-                
-                // Initialize cache 4 with current datetime
-                if (cache == 4)
-                {
-                    using StreamWriter file = new (path);
-                    file.Write(System.DateTime.Now.DayOfYear.ToString());
+
+                    // Initialize cache 4 with current datetime
+                    if (cache == 4)
+                    {
+                        using StreamWriter file = new(path);
+                        file.Write(System.DateTime.Now.DayOfYear.ToString());
+                    }
                 }
             }
         }

@@ -76,7 +76,9 @@ namespace GeckoBot.Commands
                 embedBuilder.Title = "Command List:";
                 embedBuilder.Description = string.Join(", ", desc);
             }
-            
+
+            embedBuilder.WithColor(180, 212, 85);
+
             await ReplyAsync(embed: embedBuilder.Build());
         }
         
@@ -92,7 +94,7 @@ namespace GeckoBot.Commands
 
         //instructions
         [Command("what do you")]
-        [Summary("Old help command.")]
+        [Summary("a quick guide on every command, meant for quick reads")]
         public async Task instructions(string section)
         {
             //if info is found

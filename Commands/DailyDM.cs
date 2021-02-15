@@ -14,7 +14,9 @@ namespace GeckoBot.Commands
     public class DailyDM : ModuleBase<SocketCommandContext>
     {
         private static System.Timers.Timer dmTimer = new(); //the primary timer for dms
-        
+
+        private static System.Timers.Timer dmTimer2 = new(); //the secondary timer for dms
+
         private static int _lastRun = DateTime.Now.DayOfYear; //last time bot was run and daily geckoimage was sent
         private static DateTime _lastCheck = DateTime.Now;
         
@@ -42,11 +44,8 @@ namespace GeckoBot.Commands
             }
             else
             {
-                //now
-                DateTime time = DateTime.Now;
-
                 //getting minutes
-                int minutes = time.Minute;
+                int minutes = DateTime.Now.Minute;
 
                 if (Timer.IsCounting)
                 {
@@ -58,6 +57,8 @@ namespace GeckoBot.Commands
                     System.Timers.Timer timer = new((61 - minutes) * 60 * 1000);
                     timer.Elapsed += async (sender, e) => await trueStart(timer);
                     timer.Start();
+
+                    dmTimer2 = timer;
 
                     //checks
                     await check();
@@ -75,12 +76,31 @@ namespace GeckoBot.Commands
             }
         }
 
+        public void initiatethings()
+        {
+            //sets timer to amount of time until next hour plus a little bit
+            System.Timers.Timer timer = new((61 - DateTime.Now.Minute) * 60 * 1000);
+            timer.Elapsed += async (sender, e) => await trueStart(timer);
+            timer.Start();
+
+            dmTimer2 = timer;
+
+            Timer.IsCounting = true;
+
+            if (!Timer.EverStarted)
+            {
+                SystemEvents.PowerModeChanged += PowerEvents;
+                Timer.EverStarted = true;
+            }
+        }
+
         public async void PowerEvents(object sender, PowerModeChangedEventArgs e)
         {
             if (!Globals.isSleep)
             {
                 Timer.timer.Stop();
                 dmTimer.Stop();
+                dmTimer2.Stop();
 
                 await Context.Client.SetGameAsync("shhh! geckobot is sleeping");
 
@@ -90,6 +110,7 @@ namespace GeckoBot.Commands
             {
                 Timer.timer.Start();
                 dmTimer.Start();
+                dmTimer2.Start();
 
                 _lastRun = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek"));
 
@@ -253,6 +274,8 @@ namespace GeckoBot.Commands
                 System.Timers.Timer timer2 = new((61 - minutes) * 60 * 1000);
                 timer2.Elapsed += async (sender, e) => await trueStart(timer2);
                 timer2.Start();
+
+                dmTimer2 = timer2;
 
                 //sets some variables so stats show up
                 Timer.Started = false;

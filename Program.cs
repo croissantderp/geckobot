@@ -21,7 +21,7 @@ namespace GeckoBot
         
         static void Main(string[] args)
         {
-            new DailyDM().Start();
+            new DailyDM().initiatethings();
 
             new Program().RunBotAsync().GetAwaiter().GetResult();
         }
