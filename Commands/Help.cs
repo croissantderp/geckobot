@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -7,6 +9,9 @@ namespace GeckoBot.Commands
 {
     public class Help : ModuleBase<SocketCommandContext>
     {
+        // Receive the CommandService via dependency injection
+        public CommandService _commands { get; set; }
+        
         //identifies the version of geckobot
         [Command("id")]
         [Summary("Identifies the current version of geckobot.")]
@@ -29,10 +34,65 @@ namespace GeckoBot.Commands
 
             await ReplyAsync(embed: embed.Build());
         }
+        
+        [Command("help")]
+        [Summary("Dynamic help command.")]
+        public async Task help(string target = null)
+        {
+            List<CommandInfo> commands = _commands.Commands.ToList();
+            List<ModuleInfo> modules = _commands.Modules.ToList();
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            
+            // If there was an argument given, send info about that argument
+            if (target != null)
+            {
+                var command = commands.Find(cmd => cmd.Name == target);
+                var module = modules.Find(m => m.Name == target);
+                
+                if (command != null) // Try matching a command first
+                {
+                    embedBuilder.Title = FormatCommand(command);
+                    embedBuilder.Description = command.Summary;
+                    embedBuilder.AddField("Module:", command.Module.Name);
+                }
+                else if (module != null) // If not a command, check modules
+                {
+                    embedBuilder.Title = module.Name;
+                    embedBuilder.Description = module.Summary;
+                    
+                    embedBuilder.AddField("Commands:", 
+                        string.Join(", ", module.Commands.Select(FormatCommand)));
+                }
+                else // Otherwise, nothing was found
+                {
+                    await ReplyAsync("Target not found.");
+                    return;
+                }
+            } 
+            else // If no argument was given, send a list of commands
+            {
+                List<string> desc = commands.Select(FormatCommand).ToList();
+
+                embedBuilder.Title = "Command List:";
+                embedBuilder.Description = string.Join(", ", desc);
+            }
+            
+            await ReplyAsync(embed: embedBuilder.Build());
+        }
+        
+        // Formats the command by adding the module prefix to the command name
+        private static string FormatCommand(CommandInfo command)
+        {
+            ModuleInfo module = command.Module;
+
+            string space = command.Name != "" && module.Group != "" ? " " : ""; // Unfortunate but oh well
+
+            return $"{module.Group}{space}{command.Name}";
+        }
 
         //instructions
         [Command("what do you")]
-        [Summary("Help command.")]
+        [Summary("Old help command.")]
         public async Task instructions(string section)
         {
             //if info is found
