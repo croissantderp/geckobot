@@ -94,7 +94,7 @@ namespace GeckoBot.Commands
 
         //instructions
         [Command("what do you")]
-        [Summary("a quick guide on every command, meant for quick reads")]
+        [Summary("a quick guide on every command, meant for quick reads. sections: do? | general | gecko | random | sigfig | e | embed | edit | za_warudo | count | admin")]
         public async Task instructions(string section)
         {
             //if info is found
@@ -114,7 +114,8 @@ namespace GeckoBot.Commands
                                          "(highly recommended to have developer mode on to easily use)" + System.Environment.NewLine +
                                          "if there's a problem, ping my owner croissantderp#4167 " + System.Environment.NewLine + System.Environment.NewLine +
                                          "links: [trello](https://trello.com/invite/b/cFS33M13/8fddf3ac42bd0fe419e482c6f4414e01/gecko-bot-todo) [github](https://github.com/croissantderp/geckobot) [invite](https://discord.com/oauth2/authorize?client_id=766064505079726140&scope=bot&permissions=379968)" + System.Environment.NewLine + System.Environment.NewLine + 
-                                         "'\\`what do you do?' help command, sections (replace 'do?' with these): general | gecko | random | sigfig | e | embed | edit | za_warudo | count | admin" + System.Environment.NewLine + System.Environment.NewLine +
+                                         "'\\`what do you [section]' quick start guide, sections: do? | general | gecko | random | sigfig | e | embed | edit | za_warudo | count | admin" + System.Environment.NewLine + System.Environment.NewLine +
+                                         "'\\`help [command]' cool help command" + System.Environment.NewLine + System.Environment.NewLine +
                                          "**In order to not make admins angery, consider using a spam channel for these commands as they are lengthy.**"
                                          );
                     break;

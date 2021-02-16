@@ -79,7 +79,7 @@ namespace GeckoBot.Commands
         public void initiatethings()
         {
             //sets timer to amount of time until next hour plus a little bit
-            System.Timers.Timer timer = new((61 - DateTime.Now.Minute) * 60 * 1000);
+            System.Timers.Timer timer = new((61 - DateTime.Now.Minute)* 60 * 1000);
             timer.Elapsed += async (sender, e) => await trueStart(timer);
             timer.Start();
 
@@ -141,8 +141,16 @@ namespace GeckoBot.Commands
 
             if (!Timer.CounterStarted)
             {
-                await ReplyAsync("hourly check started");
-                Timer.CounterStarted = true;
+                try
+                {
+                    Timer.CounterStarted = true;
+                    await ReplyAsync("hourly check started");
+                }
+                catch
+                {
+
+                    Timer.CounterStarted = true;
+                }
             }
 
             timer.Stop();

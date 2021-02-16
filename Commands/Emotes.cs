@@ -139,12 +139,12 @@ namespace GeckoBot.Commands
         //emote react function
         [Command("re")]
         [Summary("Reacts to a message with the specified emotes.")]
-        public async Task ReactCustomAsync(IMessageChannel channel, string message, string emote)
+        public async Task ReactCustomAsync(string channel, string message, string emote)
         {
             EmoteUtils.RefreshEmoteDict();
             
             //parses message id provided and gets message from channel
-            var message2 = await channel.GetMessageAsync(ulong.Parse(message));
+            var message2 = await (Context.Client.GetChannel(ulong.Parse(channel)) as IMessageChannel).GetMessageAsync(ulong.Parse(message));
 
             //splits based on $
             string[] yesnt = emote.Split("$");
