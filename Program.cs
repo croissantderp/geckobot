@@ -19,10 +19,11 @@ namespace GeckoBot
         static readonly string[] Scopes = { DriveService.Scope.DriveReadonly };
         static string ApplicationName = "GeckoBot";
         
+        public static DailyDM ddm = new DailyDM();
+
         static void Main(string[] args)
         {
-            new DailyDM().initiatethings();
-
+            ddm.initiatethings();
             new Program().RunBotAsync().GetAwaiter().GetResult();
         }
         public DiscordSocketClient _client;
@@ -48,6 +49,8 @@ namespace GeckoBot
             await _client.LoginAsync(TokenType.Bot, token);
 
             await _client.StartAsync();
+
+            ddm._client = _client;
 
             await Task.Delay(-1);
         }

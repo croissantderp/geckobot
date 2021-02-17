@@ -106,11 +106,13 @@ namespace GeckoBot.Commands
 
                 foreach (IEmote c in b)
                 {
+                    bool isAnim = System.Text.RegularExpressions.Regex.IsMatch(c.ToString(), @"^<a:");
+                    
                     //gets number of total characters in the emote name
                     int count = c.ToString().Length;
 
                     //shortened name of the emote
-                    string name = c.ToString().Remove(count - 20, 20).Remove(0, 2);
+                    string name = c.ToString().Remove(count - 20, 20).Remove(0, (isAnim ? 3 : 2));
 
                     //if the emote dictionary already contains a key or emote contains banned characters
                     if (!EmoteDict.ContainsKey(name))
@@ -124,11 +126,11 @@ namespace GeckoBot.Commands
                         EmoteDict.Add(name, cstring);
 
                         //adds to counter
-                        emotesAdded += 1;
+                        emotesAdded++;
                     }
                 }
             }
-
+            
             //converts dictionary to string and saves
             FileUtils.Save(Globals.DictToString(EmoteDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko2.gek");
 

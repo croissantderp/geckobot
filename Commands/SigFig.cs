@@ -92,6 +92,11 @@ namespace GeckoBot.Commands
                         //counts total number of sigfigs
                         SigNum = Value.ToString(new string('#', 339)).Length;
 
+                        if (Value.ToString(new string('#', 339)).Contains("-"))
+                        {
+                            SigNum--;
+                        }
+
                         //adds zeros to end of number
                         for (int j = 0; j < Zeros; j++)
                         {
@@ -119,7 +124,7 @@ namespace GeckoBot.Commands
             var figs = figures(number);
             
             //constructs reply
-            await ReplyAsync(string.Join("", figs[0] + figs[1] + " " + figs[2]));
+            await ReplyAsync(figs[0] + figs[1] + " " + figs[2]);
         }
 
         //rounds values (found off of stack overflow I don't know how it works)
@@ -242,7 +247,7 @@ namespace GeckoBot.Commands
             {
                 decimal e = decimal.Parse(final.ToString() + string.Join("", extra));
 
-                await ReplyAsync(string.Join("", figures(e)[0] + figures(e)[1] + " " + figures(e)[2]));
+                await ReplyAsync(figures(e)[0] + figures(e)[1] + " " + figures(e)[2]);
             }
         }
 
@@ -325,13 +330,13 @@ namespace GeckoBot.Commands
             if (!isDecimal)
             {
                 int final2 = (int)final;
-                await ReplyAsync(string.Join("", figures(final2)[0] + figures(final2)[1] + " " + figures(final2)[2]));
+                await ReplyAsync(figures(final2)[0] + figures(final2)[1] + " " + figures(final2)[2]);
             }
             else
             {
                 decimal e = decimal.Parse(final.ToString() + string.Join("", extra));
 
-                await ReplyAsync(string.Join("", figures(e)[0] + figures(e)[1] + " " + figures(e)[2]));
+                await ReplyAsync(figures(e)[0] + figures(e)[1] + " " + figures(e)[2]);
             }
         }
 
@@ -383,7 +388,7 @@ namespace GeckoBot.Commands
             }
             else
             {
-                await ReplyAsync(string.Join("", figures(e)[0] + figures(e)[1] + " " + figures(e)[2]));
+                await ReplyAsync(figures(e)[0] + figures(e)[1] + " " + figures(e)[2]);
             }
         }
 
@@ -434,7 +439,7 @@ namespace GeckoBot.Commands
             }
             else
             {
-                await ReplyAsync(string.Join("", figures(e)[0] + figures(e)[1] + " " + figures(e)[2]));
+                await ReplyAsync(figures(e)[0] + figures(e)[1] + " " + figures(e)[2]);
             }
         }
     }

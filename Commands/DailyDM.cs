@@ -13,6 +13,9 @@ namespace GeckoBot.Commands
 {
     public class DailyDM : ModuleBase<SocketCommandContext>
     {
+        // Receive the client via dependency injection
+        public DiscordSocketClient _client { get; set; }
+
         private static System.Timers.Timer dmTimer = new(); //the primary timer for dms
 
         private static System.Timers.Timer dmTimer2 = new(); //the secondary timer for dms
@@ -49,13 +52,12 @@ namespace GeckoBot.Commands
 
                 if (Timer.IsCounting)
                 {
-                    await ReplyAsync("hourly check already scheduled, will start in t - " + (61 - minutes) + " minutes");
+                    await ReplyAsync("hourly check already scheduled, will start in t - " + (60 - minutes) + " minutes");
                 }
                 else
                 {
                     //sets timer to amount of time until next hour plus a little bit
-                    System.Timers.Timer timer = new((61 - minutes) * 60 * 1000);
-                    timer.Elapsed += async (sender, e) => await trueStart(timer);
+                    System.Timers.Timer timer = new((60 - minutes) * 60 * 1000 + 1000);
                     timer.Start();
 
                     dmTimer2 = timer;
@@ -65,7 +67,7 @@ namespace GeckoBot.Commands
 
                     Timer.IsCounting = true;
 
-                    await ReplyAsync("hourly check will start in t - " + (61 - minutes) + " minutes");
+                    await ReplyAsync("hourly check will start in t - " + (60 - minutes) + " minutes");
                 }
 
                 if (!Timer.EverStarted)
@@ -79,19 +81,36 @@ namespace GeckoBot.Commands
         public void initiatethings()
         {
             //sets timer to amount of time until next hour plus a little bit
-            System.Timers.Timer timer = new((61 - DateTime.Now.Minute)* 60 * 1000);
-            timer.Elapsed += async (sender, e) => await trueStart(timer);
+            System.Timers.Timer timer = new((60 - DateTime.Now.Minute)* 60 * 1000 + 1000);
+            timer.Elapsed += async (sender, e) => await trueStart(timer, false);
             timer.Start();
 
             dmTimer2 = timer;
 
             Timer.IsCounting = true;
 
+            if (_lastRun != DateTime.Now.DayOfYear)
+            {
+                //checks
+                daily().RunSynchronously();
+            }
+
+            //sets timer to amount of time until next hour plus a little bit
+            System.Timers.Timer timer2 = new(10000);
+            timer2.Elapsed += async (sender, e) => await wait(timer2);
+            timer2.Start();
+
             if (!Timer.EverStarted)
             {
                 SystemEvents.PowerModeChanged += PowerEvents;
                 Timer.EverStarted = true;
             }
+        }
+
+        public async Task wait(System.Timers.Timer timer)
+        {
+            await _client.SetGameAsync("`what do you do?");
+            timer.Stop();
         }
 
         public async void PowerEvents(object sender, PowerModeChangedEventArgs e)
@@ -101,8 +120,6 @@ namespace GeckoBot.Commands
                 Timer.timer.Stop();
                 dmTimer.Stop();
                 dmTimer2.Stop();
-
-                await Context.Client.SetGameAsync("shhh! geckobot is sleeping");
 
                 Globals.isSleep = true;
             }
@@ -120,14 +137,12 @@ namespace GeckoBot.Commands
                     await daily();
                 }
 
-                await Context.Client.SetGameAsync("`what do you do?");
-
                 Globals.isSleep = false;
             }
         }
 
         //actually starts timer
-        public async Task trueStart(System.Timers.Timer timer)
+        public async Task trueStart(System.Timers.Timer timer, bool reply)
         {
             Start();
 
@@ -141,15 +156,10 @@ namespace GeckoBot.Commands
 
             if (!Timer.CounterStarted)
             {
-                try
+                Timer.CounterStarted = true;
+                if (reply)
                 {
-                    Timer.CounterStarted = true;
                     await ReplyAsync("hourly check started");
-                }
-                catch
-                {
-
-                    Timer.CounterStarted = true;
                 }
             }
 
@@ -187,7 +197,7 @@ namespace GeckoBot.Commands
 
             await dailydm();
 
-            await ReplyAsync("checked and force updated");
+            await ReplyAsync("force updated");
         }
 
         //sets up daily dms
@@ -273,14 +283,14 @@ namespace GeckoBot.Commands
             _lastCheck = DateTime.Now;
 
             //if timer is misaligned with hour, realign it
-            if (minutes > 1)
+            if (minutes > 0)
             {
                 //stops current timer
                 dmTimer.Stop();
 
                 //sets timer to amount of time until next hour plus a little bit
-                System.Timers.Timer timer2 = new((61 - minutes) * 60 * 1000);
-                timer2.Elapsed += async (sender, e) => await trueStart(timer2);
+                System.Timers.Timer timer2 = new((60 - minutes) * 60 * 1000 + 1000);
+                timer2.Elapsed += async (sender, e) => await trueStart(timer2, false);
                 timer2.Start();
 
                 dmTimer2 = timer2;
@@ -313,7 +323,7 @@ namespace GeckoBot.Commands
 
             //changes geckobot's profile to new gecko
             Utils.Utils.changeProfile(
-                Context.Client, 
+                _client, 
                 DriveUtils.ImagePath(date.DayOfYear - 1, false));
 
             //updates last run counter
@@ -324,7 +334,7 @@ namespace GeckoBot.Commands
 
         private async Task dmGroup(string path, string content)
         {
-            DiscordSocketClient client = Context.Client;
+            DiscordSocketClient client = _client;
 
             DateTime date = DateTime.Today;
 
