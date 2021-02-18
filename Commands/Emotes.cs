@@ -179,6 +179,49 @@ namespace GeckoBot.Commands
             }
         }
 
+        //emote react function
+        [Command("fr")]
+        [Summary("Reacts to a message with the specified emotes using a link as input")]
+        public async Task fReactCustomAsync(string input, string emote)
+        {
+            input = input.Remove(0, 29);
+            string[] final = input.Split("/");
+
+            EmoteUtils.RefreshEmoteDict();
+
+            //parses message id provided and gets message from channel
+            var message2 = await (Context.Client.GetChannel(ulong.Parse(final[1])) as IMessageChannel).GetMessageAsync(ulong.Parse(final[2]));
+
+            //splits based on $
+            string[] yesnt = emote.Split("$");
+
+            foreach (string em in yesnt)
+            {
+                //if the emote dictionary contains the key
+                if (EmoteDict.ContainsKey(em))
+                {
+                    var emote2 = Emote.Parse(EmoteDict[em]);
+                    await message2.AddReactionAsync(emote2);
+                }
+                else
+                {
+                    //tries to parse emotes 2 different ways
+                    try
+                    {
+                        var emote2 = Emote.Parse(em);
+                        await message2.AddReactionAsync(emote2);
+                    }
+                    catch
+                    {
+                        var emote2 = new Emoji(em);
+                        await message2.AddReactionAsync(emote2);
+                    }
+                }
+
+                //adds check emote after done
+                await Context.Message.AddReactionAsync(new Emoji("✅"));
+            }
+        }
         //admin save function
         [RequireGeckobotAdmin]
         [Command("aes")]

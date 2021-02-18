@@ -32,6 +32,31 @@ namespace GeckoBot.Commands
                 "channel id: " + final[1] + "\n" + 
                 "message id: " + final[2], allowedMentions: Globals.allowed);
         }
+
+        [Command("message content")]
+        [Summary("gets ids from a message link")]
+        public async Task getMessageContent(string input)
+        {
+            input = input.Remove(0, 29);
+            string[] final = input.Split("/");
+
+            var channel = Context.Client.GetChannel(ulong.Parse(final[1])) as IMessageChannel;
+
+            var message = await channel.GetMessageAsync(ulong.Parse(final[2]));
+
+            //embed
+            var embed = new EmbedBuilder
+            {
+                Description = message.Content,
+                Author = new EmbedAuthorBuilder().WithName(message.Author.ToString()).WithIconUrl(message.Author.GetAvatarUrl())
+            };
+
+            embed.WithTimestamp(message.Timestamp);
+
+            embed.WithColor(180, 212, 85);
+
+            await ReplyAsync("", embed: embed.Build(), allowedMentions: Globals.allowed);
+        }
     }
 
     [Group("find")]
@@ -49,11 +74,31 @@ namespace GeckoBot.Commands
         [Summary("generates a message link from given ids")]
         public async Task getMessage(string input, string input2)
         {
-            var channel = Context.Client.GetChannel(ulong.Parse(input)) as IMessageChannel;
-
             var channel2 = Context.Client.GetChannel(ulong.Parse(input)) as IGuildChannel;
 
-            await ReplyAsync("https://discord.com/channels/" + channel2.GuildId + "/" + channel.Id + "/" + input2, allowedMentions: Globals.allowed);
+            await ReplyAsync("https://discord.com/channels/" + channel2.GuildId + "/" + input + "/" + input2, allowedMentions: Globals.allowed);
+        }
+
+        [Command("message content")]
+        [Summary("gets ids from channel adn message ids")]
+        public async Task getMessageContent(string input, string input2)
+        {
+            var channel = Context.Client.GetChannel(ulong.Parse(input)) as IMessageChannel;
+
+            var message = await channel.GetMessageAsync(ulong.Parse(input2));
+
+            //embed
+            var embed = new EmbedBuilder
+            {
+                Description = message.Content,
+                Author = new EmbedAuthorBuilder().WithName(message.Author.ToString()).WithIconUrl(message.Author.GetAvatarUrl())
+            };
+
+            embed.WithTimestamp(message.Timestamp);
+
+            embed.WithColor(180, 212, 85);
+
+            await ReplyAsync("", embed: embed.Build(), allowedMentions: Globals.allowed);
         }
 
         [Command("user")]
