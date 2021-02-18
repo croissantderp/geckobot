@@ -180,7 +180,7 @@ namespace GeckoBot.Commands
         }
 
         //emote react function
-        [Command("fr")]
+        [Command("fe")]
         [Summary("Reacts to a message with the specified emotes using a link as input")]
         public async Task fReactCustomAsync(string input, string emote)
         {

@@ -169,7 +169,7 @@ namespace GeckoBot.Commands
                         "'\\`e [string]' is the simple send function" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`ge [string]' is reverse lookup, where the emote string is the item you want to find the key for" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`re [channel id] [message id] [emote string (note: only emotes)]' is react function" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`fr [message link] [emote string (note: only emotes)]' is react function using links" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`fe [message link] [emote string (note: only emotes)]' is react function using links" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`te [channel id or 'dm'] [emote string]' is targeted send where the channel id is the target channel" + System.Environment.NewLine + System.Environment.NewLine +
                         "(escape an emote or '$' by prefacing it with '\\\\')"
                     );
@@ -207,16 +207,22 @@ namespace GeckoBot.Commands
                     break;
                 case "find":
                     embed.AddField("**timer and alarm**",
-                        "'\\`channel [channel id]' gets a channel" + System.Environment.NewLine + System.Environment.NewLine + 
-                        "'\\`message [channel id] [message id]' generates a link for the message" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`user [user id]' gets info about a user"
+                        "'\\`find channel [channel id]' gets a channel" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`find message [channel id] [message id]' generates a link for the message" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`find message content [channel id] [message id]' finds content of a message using ids" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`find user [user id]' gets info about a user" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`find emote [emote id]' gets an emote from id" 
                     );
                     break;
 
                 case "get":
                     embed.AddField("**timer and alarm**",
-                        "'\\`channel' gets various id from a #channel" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`message' gets various ids from a message link"
+                        "'\\`get channel' gets various id from a #channel" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`get message content [link]' finds content of a message using links" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`get message [link]' gets various ids from a message link" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`get user [mention]' gets info about a user using mention" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`get emote [emote name or emote]' gets an emote in it's text form" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`get all emote [emote name] [page]' gets all emotes of a certain name organized in pages of 5"
                     );
                     break;
                 case "count":
