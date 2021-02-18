@@ -94,7 +94,7 @@ namespace GeckoBot.Commands
 
         //instructions
         [Command("what do you")]
-        [Summary("a quick guide on every command, meant for quick reads. sections: do? | general | gecko | random | sigfig | e | embed | edit | za_warudo | count | admin")]
+        [Summary("a quick guide on every command, meant for quick reads. sections: | do? | general | gecko | random | sigfig | e | embed | edit | za_warudo | find | get | admin | count")]
         public async Task instructions(string section)
         {
             //if info is found
@@ -113,8 +113,8 @@ namespace GeckoBot.Commands
                     embed.Description = ("my prefix is \\`." + System.Environment.NewLine +
                                          "(highly recommended to have developer mode on to easily use)" + System.Environment.NewLine +
                                          "if there's a problem, ping my owner croissantderp#4167 " + System.Environment.NewLine + System.Environment.NewLine +
-                                         "links: [trello](https://trello.com/invite/b/cFS33M13/8fddf3ac42bd0fe419e482c6f4414e01/gecko-bot-todo) [github](https://github.com/croissantderp/geckobot) [invite](https://discord.com/oauth2/authorize?client_id=766064505079726140&scope=bot&permissions=379968)" + System.Environment.NewLine + System.Environment.NewLine + 
-                                         "'\\`what do you [section]' quick start guide, sections: do? | general | gecko | random | sigfig | e | embed | edit | za_warudo | count | admin" + System.Environment.NewLine + System.Environment.NewLine +
+                                         "links: [trello](https://trello.com/invite/b/cFS33M13/8fddf3ac42bd0fe419e482c6f4414e01/gecko-bot-todo) [github](https://github.com/croissantderp/geckobot) [invite](https://discord.com/oauth2/authorize?client_id=766064505079726140&scope=bot&permissions=379968)" + System.Environment.NewLine + System.Environment.NewLine +
+                                         "'\\`what do you [section]' quick start guide, sections: | **do?** | **general** | **gecko** | **random** | **sigfig** | **e** | **embed** | **edit** | **za_warudo** | **find** | **get** | **admin** | **count** |" + System.Environment.NewLine + System.Environment.NewLine +
                                          "'\\`help [command]' cool help command" + System.Environment.NewLine + System.Environment.NewLine +
                                          "**In order to not make admins angery, consider using a spam channel for these commands as they are lengthy.**"
                                          );
@@ -202,6 +202,20 @@ namespace GeckoBot.Commands
                         "'\\`end countdown [passcode]' aborts the countdown" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`pause [passcode]' pauses the countdown" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`unpause [passcode]' unpauses the countdown"
+                    );
+                    break;
+                case "find":
+                    embed.AddField("**timer and alarm**",
+                        "'\\`channel [channel id]' gets a channel" + System.Environment.NewLine + System.Environment.NewLine + 
+                        "'\\`message [channel id] [message id]' generates a link for the message" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`user [user id]' gets info about a user"
+                    );
+                    break;
+
+                case "get":
+                    embed.AddField("**timer and alarm**",
+                        "'\\`channel' gets various id from a #channel" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`message' gets various ids from a message link"
                     );
                     break;
                 case "count":
