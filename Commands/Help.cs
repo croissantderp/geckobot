@@ -46,7 +46,7 @@ namespace GeckoBot.Commands
             // If there was an argument given, send info about that argument
             if (target != null)
             {
-                var command = commands.Find(cmd => cmd.Name == target);
+                var command = commands.Find(cmd => cmd.Aliases.Contains(target) || FormatCommand(cmd) == target);
                 var module = modules.Find(m => m.Name == target);
                 
                 if (command != null) // Try matching a command first
