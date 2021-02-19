@@ -14,10 +14,13 @@ namespace GeckoBot.Commands
         //termination command
         [Command("terminate")]
         [Summary("Terminates the bot process.")]
-        public async Task terminate()
+        public async Task terminate(string name)
         {
-            await ReplyAsync("terminating...");
-            System.Environment.Exit(0);
+            if (name == Globals.names[0] || name == "all")
+            {
+                await ReplyAsync("terminating...");
+                System.Environment.Exit(0);
+            }
         }
         
         //temporary command to set name

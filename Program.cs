@@ -11,6 +11,7 @@ using Discord.WebSocket;
 using GeckoBot.Commands;
 using GeckoBot.Utils;
 using Microsoft.Extensions.DependencyInjection;
+using System.Text.RegularExpressions;
 
 namespace GeckoBot
 {
@@ -77,7 +78,7 @@ namespace GeckoBot
             if (message.HasStringPrefix("`", ref argPos))
             {
                 string temp = message.Content.Remove(0,1);
-                if (!System.Text.RegularExpressions.Regex.IsMatch(temp, @"(?<!\\)\`"))
+                if (!Regex.IsMatch(temp, @"(?<!\\)\`"))
                 {
                     var result = await _commands.ExecuteAsync(context, argPos, _services);
                     if (!result.IsSuccess) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
@@ -87,12 +88,19 @@ namespace GeckoBot
             else if (message.HasStringPrefix("\\`", ref argPos))
             {
                 string temp = message.Content.Remove(0, 2);
-                if (!System.Text.RegularExpressions.Regex.IsMatch(temp, @"(?<!\\)\`"))
+                if (!Regex.IsMatch(temp, @"(?<!\\)\`"))
                 {
                     var result = await _commands.ExecuteAsync(context, argPos, _services);
                     if (!result.IsSuccess) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
                     if (result.Error.Equals(CommandError.UnmetPrecondition)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
                 }
+            }
+            else if (Regex.IsMatch(message.Content, @"(?<!\\)\`ie"))
+            {
+                int temp = Regex.Split(message.Content, @"(?<!\\)\`ie")[0].Length + 1;
+                var result = await _commands.ExecuteAsync(context, temp, _services);
+                if (!result.IsSuccess) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
+                if (result.Error.Equals(CommandError.UnmetPrecondition)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
             }
         }
     }

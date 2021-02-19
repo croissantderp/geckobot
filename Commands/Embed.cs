@@ -66,7 +66,7 @@ namespace GeckoBot.Commands
             embed.WithColor(r,g,b);
 
             //adds author of message
-            embed.WithAuthor(Context.User);
+            embed.WithAuthor(Context.User).WithThumbnailUrl(Context.User.GetAvatarUrl());
 
             //assigns footer
             embed.WithFooter(footer => footer.Text = footer2);

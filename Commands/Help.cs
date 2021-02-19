@@ -171,6 +171,7 @@ namespace GeckoBot.Commands
                         "'\\`re [channel id] [message id] [emote string (note: only emotes)]' is react function" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`fe [message link] [emote string (note: only emotes)]' is react function using links" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`te [channel id or 'dm'] [emote string]' is targeted send where the channel id is the target channel" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`ie [emote string]' is inline send, you can insert this anywhere in a message and it will treat everything after it as a command" + System.Environment.NewLine + System.Environment.NewLine +
                         "(escape an emote or '$' by prefacing it with '\\\\')"
                     );
                     embed.AddField("**e system manage:**",
@@ -206,7 +207,7 @@ namespace GeckoBot.Commands
                     );
                     break;
                 case "find":
-                    embed.AddField("**timer and alarm**",
+                    embed.AddField("**finds**",
                         "'\\`find channel [channel id]' gets a channel" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`find message [channel id] [message id]' generates a link for the message" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`find message content [channel id] [message id]' finds content of a message using ids" + System.Environment.NewLine + System.Environment.NewLine +
@@ -216,7 +217,7 @@ namespace GeckoBot.Commands
                     break;
 
                 case "get":
-                    embed.AddField("**timer and alarm**",
+                    embed.AddField("**gets**",
                         "'\\`get channel' gets various id from a #channel" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`get message content [link]' finds content of a message using links" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`get message [link]' gets various ids from a message link" + System.Environment.NewLine + System.Environment.NewLine +
@@ -233,14 +234,14 @@ namespace GeckoBot.Commands
                 case "admin":
                     embed.AddField("**admin**",
                         "ask a geckobot admin to do something" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`terminate' terminates the current instance of geckobot" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`set [passcode] [original name of instance you want to change] [name to change it to]' changes the name of geckobot to something in a predetermined matrix" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`change [passcode] [value to change] [name to change it to]' changes names in predetermined matrix" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`profile [passcode] [local filepath]' to change the bot's profile" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`aes [passcode] [key] [anything]' to save as a undeletable emote" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`aer [passcode] [key]' to remove an undeletable emote" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`bugs [passcode]' shows current bug reports" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`clear bugs [passcode]' clears all bug reports"
+                        "'\\`terminate [name of isntance]' terminates the current instance of geckobot, put all as name to terminate every instance" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`set [original name of instance you want to change] [name to change it to]' changes the name of geckobot to something in a predetermined matrix" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`change [value to change] [name to change it to]' changes names in predetermined matrix" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`profile [local filepath]' to change the bot's profile" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`aes [key] [anything]' to save as a undeletable emote" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`aer [key]' to remove an undeletable emote" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`bugs' shows current bug reports" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`clear bugs' clears all bug reports"
                         );
                     break;
                 default:

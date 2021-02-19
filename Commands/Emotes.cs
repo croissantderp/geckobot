@@ -45,6 +45,14 @@ namespace GeckoBot.Commands
             await ReplyAsync(EmoteUtils.emoteReplace(yes), allowedMentions: Globals.allowed);
         }
 
+        //simple retrieval function
+        [Command("ie")]
+        [Summary("Sends a message with words replaced by emotes from the dictionary but you can use this command inline")]
+        public async Task ie(string yes)
+        {
+            await ReplyAsync(EmoteUtils.emoteReplace(yes), allowedMentions: Globals.allowed);
+        }
+
         //finds emote
         [Command("ge")]
         [Summary("Looks up a key in the dictionary given the value; the reverse of `e.")]

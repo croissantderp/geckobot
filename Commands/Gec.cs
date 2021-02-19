@@ -50,7 +50,10 @@ namespace GeckoBot.Commands
             var embed = new EmbedBuilder
             {
                 Title = "gecko collection",
-                Description = ("[see the gecko collection here](https://drive.google.com/drive/folders/1Omwv0NNV0k_xlECZq3d4r0MbSbuHC_Og?usp=sharing)")
+                Description = (
+                "[see the gecko collection here](https://drive.google.com/drive/folders/1Omwv0NNV0k_xlECZq3d4r0MbSbuHC_Og?usp=sharing)\n" +
+                "[submit a geckoimage here](https://forms.gle/CeNkM2aHcdrcidvX6)]\n" +
+                "[about](https://docs.google.com/document/d/1cBOt6IL3leouEg90WItw769HLBea5JD1_8bIoKC7A9s/edit?usp=sharing)\n")
             };
 
             embed.WithColor(180, 212, 85);
@@ -90,24 +93,6 @@ namespace GeckoBot.Commands
             embed.WithColor(180, 212, 85);
 
             await ReplyAsync("", embed: embed.Build(), allowedMentions: Globals.allowed);
-        }
-
-        [Command("submit")]
-        [Summary("Links the gecko submission form.")]
-        public async Task submit()
-        {
-            //buils an embed
-            var embed = new EmbedBuilder
-            {
-                Title = "gecko submissions",
-                Description = ("[submit a geckoimage here](https://forms.gle/CeNkM2aHcdrcidvX6)")
-            };
-
-            embed.WithColor(180, 212, 85);
-
-            var embed2 = embed.Build();
-
-            await ReplyAsync(embed: embed2);
         }
 
         //sends a random geckoimage
