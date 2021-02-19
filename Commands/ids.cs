@@ -17,8 +17,8 @@ namespace GeckoBot.Commands
         [Summary("gets channel id")]
         public async Task getChannel(IChannel channel)
         {
-            await ReplyAsync("guild id: `" + (channel as IGuildChannel).GuildId + "`\n" + 
-                "channel id: `" + channel.Id.ToString() + "`", allowedMentions: Globals.allowed);
+            await ReplyAsync("guild id: \n`" + (channel as IGuildChannel).GuildId + "`\n" + 
+                "channel id: \n`" + channel.Id.ToString() + "`", allowedMentions: Globals.allowed);
         }
 
         [Command("message")]
@@ -28,9 +28,9 @@ namespace GeckoBot.Commands
             input = input.Remove(0, 29);
             string[] final = input.Split("/");
 
-            await ReplyAsync("guild id: `" + final[0] + "`\n" + 
-                "channel id: `" + final[1] + "`\n" + 
-                "message id: `" + final[2] + "`", allowedMentions: Globals.allowed);
+            await ReplyAsync("guild id: \n`" + final[0] + "`\n" + 
+                "channel id: \n`" + final[1] + "`\n" + 
+                "message id: \n`" + final[2] + "`", allowedMentions: Globals.allowed);
         }
 
         [Command("message content")]
@@ -62,7 +62,7 @@ namespace GeckoBot.Commands
         [Summary("gets info about a user using a mention")]
         public async Task getUser(IUser user)
         {
-            await ReplyAsync("user id: `" + user.Id.ToString() + "`", allowedMentions: new AllowedMentions(Discord.AllowedMentionTypes.None));
+            await ReplyAsync("user id: \n`" + user.Id.ToString() + "`", allowedMentions: new AllowedMentions(Discord.AllowedMentionTypes.None));
         }
 
         [Command("emote")]
@@ -113,7 +113,7 @@ namespace GeckoBot.Commands
                     {
                         if (pageCounter == page)
                         {
-                            final.Add(e.ToString() + " `" + e.ToString() + "`\n");
+                            final.Add(e.ToString() + ":\n`" + e.ToString() + "`\n");
                         }
                         if (counter >= 5)
                         {
@@ -139,7 +139,7 @@ namespace GeckoBot.Commands
     }
 
     [Group("find")]
-    [Summary("finds various stuff")]
+    [Summary("finds various stuff, usually from ids")]
     public class find : ModuleBase<SocketCommandContext>
     {
         [Command("channel")]
@@ -159,7 +159,7 @@ namespace GeckoBot.Commands
         }
 
         [Command("message content")]
-        [Summary("gets ids from channel adn message ids")]
+        [Summary("gets ids from channel and message ids")]
         public async Task findMessageContent(string input, string input2)
         {
             var channel = Context.Client.GetChannel(ulong.Parse(input)) as IMessageChannel;

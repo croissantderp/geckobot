@@ -43,9 +43,10 @@ namespace GeckoBot.Utils
             // gecko2 stores the emote dictionary
             // gecko3 stores the list of users who have signed up for the daily dm
             // gecko4 stores the last time the daily dm was executed
+            // gecko5 stores rate dictionary
             List<int> caches = new()
             {
-                1, 2, 3, 4
+                1, 2, 3, 4, 5
             };
             
             //checks if files exist

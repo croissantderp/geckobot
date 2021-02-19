@@ -94,7 +94,7 @@ namespace GeckoBot.Commands
 
         //instructions
         [Command("what do you")]
-        [Summary("a quick guide on every command, meant for quick reads. sections: | do? | general | gecko | random | sigfig | e | embed | edit | za_warudo | find | get | admin | count")]
+        [Summary("a quick guide on every command, meant for quick reads. sections: | do? | general | gecko | random | sigfig | e | embed | edit | za_warudo | find | get | poll | admin | count")]
         public async Task instructions(string section)
         {
             //if info is found
@@ -114,7 +114,7 @@ namespace GeckoBot.Commands
                                          "(highly recommended to have developer mode on to easily use)" + System.Environment.NewLine +
                                          "if there's a problem, ping my owner croissantderp#4167 " + System.Environment.NewLine + System.Environment.NewLine +
                                          "links: [trello](https://trello.com/invite/b/cFS33M13/8fddf3ac42bd0fe419e482c6f4414e01/gecko-bot-todo) [github](https://github.com/croissantderp/geckobot) [invite](https://discord.com/oauth2/authorize?client_id=766064505079726140&scope=bot&permissions=379968)" + System.Environment.NewLine + System.Environment.NewLine +
-                                         "'\\`what do you [section]' quick start guide, sections: | **do?** | **general** | **gecko** | **random** | **sigfig** | **e** | **embed** | **edit** | **za_warudo** | **find** | **get** | **admin** | **count** |" + System.Environment.NewLine + System.Environment.NewLine +
+                                         "'\\`what do you [section]' quick start guide, sections: | **do?** | **general** | **gecko** | **random** | **sigfig** | **e** | **embed** | **edit** | **za_warudo** | **find** | **get** | **poll** | **admin** | **count** |" + System.Environment.NewLine + System.Environment.NewLine +
                                          "'\\`help [command]' cool help command" + System.Environment.NewLine + System.Environment.NewLine +
                                          "**In order to not make admins angery, consider using a spam channel for these commands as they are lengthy.**"
                                          );
@@ -215,7 +215,6 @@ namespace GeckoBot.Commands
                         "'\\`find emote [emote id]' gets an emote from id" 
                     );
                     break;
-
                 case "get":
                     embed.AddField("**gets**",
                         "'\\`get channel' gets various id from a #channel" + System.Environment.NewLine + System.Environment.NewLine +
@@ -224,6 +223,14 @@ namespace GeckoBot.Commands
                         "'\\`get user [mention]' gets info about a user using mention" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`get emote [emote name or emote]' gets an emote in it's text form" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`get all emote [emote name] [page]' gets all emotes of a certain name organized in pages of 5"
+                    );
+                    break;
+                case "poll":
+                    embed.AddField("**poll**",
+                        "'\\`create [poll name]' creates a poll" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`vote [poll name] [fraction in ##/##]' votes on a poll" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`remove [poll name]' removes polls, only creator of a poll can remove it" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`results' gets current results of a poll"
                     );
                     break;
                 case "count":
@@ -241,7 +248,8 @@ namespace GeckoBot.Commands
                         "'\\`aes [key] [anything]' to save as a undeletable emote" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`aer [key]' to remove an undeletable emote" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`bugs' shows current bug reports" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`clear bugs' clears all bug reports"
+                        "'\\`clear bugs' clears all bug reports" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`fremove [poll name]' force removes a specified poll"
                         );
                     break;
                 default:
