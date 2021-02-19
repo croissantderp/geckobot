@@ -146,7 +146,7 @@ namespace GeckoBot.Commands
         [Summary("finds channel from an id")]
         public async Task findChannel(string input)
         {
-            await ReplyAsync("<#" + input + ">", allowedMentions: Globals.allowed);
+            await ReplyAsync("<#" + input + "> \n`<#" + input + ">`", allowedMentions: Globals.allowed);
         }
 
         [Command("message")]
@@ -186,7 +186,7 @@ namespace GeckoBot.Commands
         {
             var user = Context.Client.GetUser(ulong.Parse(input));
 
-            await ReplyAsync(user.ToString() + " " + MentionUtils.MentionUser(user.Id), allowedMentions: new AllowedMentions(Discord.AllowedMentionTypes.None));
+            await ReplyAsync(user.ToString() + "\n" + MentionUtils.MentionUser(user.Id) + "\n`" + MentionUtils.MentionUser(user.Id) + "`", allowedMentions: new AllowedMentions(Discord.AllowedMentionTypes.None));
         }
 
         [Command("emote")]
