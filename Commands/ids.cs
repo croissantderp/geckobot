@@ -73,7 +73,7 @@ namespace GeckoBot.Commands
             {
                 IEmote emote2 = Emote.Parse(emote);
                 
-                await ReplyAsync(emote2.ToString() + "\n emote id: \n`" + emote2.ToString() + "`");
+                await ReplyAsync(emote2.ToString() + "\n emote id: \n`" + emote2.ToString() + "`", allowedMentions: new AllowedMentions(Discord.AllowedMentionTypes.None));
             }
             catch
             {
@@ -83,12 +83,12 @@ namespace GeckoBot.Commands
                     {
                         if (e.Name == emote)
                         {
-                            await ReplyAsync(e.ToString() + "\n emote id: \n`" + e.ToString() + "`");
+                            await ReplyAsync(e.ToString() + "\n emote id: \n`" + e.ToString() + "`", allowedMentions: new AllowedMentions(Discord.AllowedMentionTypes.None));
                             return;
                         }
                     }
                 }
-                await ReplyAsync("emote not found");
+                await ReplyAsync("emote not found", allowedMentions: new AllowedMentions(Discord.AllowedMentionTypes.None));
             }
         }
 
@@ -100,9 +100,10 @@ namespace GeckoBot.Commands
 
             int counter = 0;
 
+
             int pageCounter = 1;
 
-            final.Add("page " + page + " of results for " + emote + "\n");
+            final.Add("temp");
 
             foreach (IGuild a in Context.Client.Guilds)
             {
@@ -123,13 +124,16 @@ namespace GeckoBot.Commands
                     }
                 }
             }
+
+            final[0] = "page " + page + " of " + pageCounter + " of results for " + emote + "\n";
+
             if (final.Count > 1)
             {
-                await ReplyAsync(string.Join("", final));
+                await ReplyAsync(string.Join("", final), allowedMentions: new AllowedMentions(Discord.AllowedMentionTypes.None));
             }
             else
             {
-                await ReplyAsync("emote not found or no more results");
+                await ReplyAsync(pageCounter > 1 ? "no more results, only " + pageCounter + " pages" : "emote not found");
             }
         }
     }
@@ -194,7 +198,7 @@ namespace GeckoBot.Commands
                 try
                 {
                     var emote2 = await a.GetEmoteAsync(ulong.Parse(emote));
-                    await ReplyAsync(emote2.ToString() + "\n emote id: \n`" + emote2.ToString() + "`");
+                    await ReplyAsync(emote2.ToString() + "\n emote id: \n`" + emote2.ToString() + "`", allowedMentions: new AllowedMentions(Discord.AllowedMentionTypes.None));
                     return;
                 }
                 catch
