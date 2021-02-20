@@ -57,7 +57,7 @@ namespace GeckoBot.Commands
             string[] fractions = fraction.Split("/");
             int[] fractionNums = { int.Parse(fractions[0]) , int.Parse(fractions[1]) };
 
-            if (fractionNums[0] > fractionNums[1])
+            if (fractionNums[0] > fractionNums[1] || fractionNums[0] < 0)
             {
                 await ReplyAsync("invalid fraction");
                 return;
