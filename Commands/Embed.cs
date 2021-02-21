@@ -10,20 +10,8 @@ namespace GeckoBot.Commands
         //custom embed builder
         [Command("embed")]
         [Summary("Builds an embed from the provided arguments.")]
-        public async Task embed(string title, string field, string footer2, string hex)
+        public async Task embed(string title, string field, string thumbnail = null, string footer2 = null, string hex = null)
         {
-            //converts hex to rgb
-            if (hex.IndexOf('#') != -1)
-            {
-                hex = hex.Replace("#", "");
-            }
-
-            int r, g, b = 0;
-
-            r = int.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.AllowHexSpecifier);
-            g = int.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.AllowHexSpecifier);
-            b = int.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.AllowHexSpecifier);
-
             //starts embed building procedure
             var embed = new EmbedBuilder
             {
@@ -62,15 +50,37 @@ namespace GeckoBot.Commands
                 }
             }
 
-            //adds color
-            embed.WithColor(r,g,b);
+            if (hex != null)
+            {
+                //converts hex to rgb
+                if (hex.IndexOf('#') != -1)
+                {
+                    hex = hex.Replace("#", "");
+                }
+
+                int r, g, b = 0;
+
+                r = int.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.AllowHexSpecifier);
+                g = int.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.AllowHexSpecifier);
+                b = int.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.AllowHexSpecifier);
+
+                //adds color
+                embed.WithColor(r, g, b);
+            }
 
             //adds author of message
-            embed.WithAuthor(Context.User).WithThumbnailUrl(Context.User.GetAvatarUrl());
+            embed.WithAuthor(Context.User);
 
-            //assigns footer
-            embed.WithFooter(footer => footer.Text = footer2);
+            if (thumbnail != null)
+            {
+                embed.WithThumbnailUrl(thumbnail);
+            }
 
+            if (footer2 != null)
+            {
+                //assigns footer
+                embed.WithFooter(footer => footer.Text = footer2);
+            }
             //assigns time
             embed.WithCurrentTimestamp();
 

@@ -49,9 +49,9 @@ namespace GeckoBot.Commands
         //alarm
         [Command("alarm")]
         [Summary("Sets an alarm which will be sent on the specified date and time (in hh:mm:ss format).")]
-        public async Task alarm(string message, string date, string time)
+        public async Task alarm(string message, string time, string date = null)
         {
-            TimeSpan final = parseDate(date) + parseTime(time) - DateTime.Now;
+            TimeSpan final = (date != null ? parseDate(date) : DateTime.Today) + parseTime(time) - DateTime.Now;
 
             //gets user
             IUser user = Context.User;

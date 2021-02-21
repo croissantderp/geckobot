@@ -114,7 +114,7 @@ namespace GeckoBot.Commands
                                          "(highly recommended to have developer mode on to easily use)" + System.Environment.NewLine +
                                          "if there's a problem, ping my owner croissantderp#4167 " + System.Environment.NewLine + System.Environment.NewLine +
                                          "links: [trello](https://trello.com/invite/b/cFS33M13/8fddf3ac42bd0fe419e482c6f4414e01/gecko-bot-todo) [github](https://github.com/croissantderp/geckobot) [invite](https://discord.com/oauth2/authorize?client_id=766064505079726140&scope=bot&permissions=379968)" + System.Environment.NewLine + System.Environment.NewLine +
-                                         "'\\`what do you [section]' quick start guide, sections: | **do?** | **general** | **gecko** | **random** | **sigfig** | **e** | **embed** | **edit** | **za_warudo** | **find** | **get** | **poll** | **admin** | **count** |" + System.Environment.NewLine + System.Environment.NewLine +
+                                         "'\\`what do you [section]' quick start guide (inputs prefaced by (?) are optional), sections: | **do?** | **general** | **gecko** | **random** | **sigfig** | **e** | **embed** | **edit** | **za_warudo** | **find** | **get** | **poll** | **admin** | **count** |" + System.Environment.NewLine + System.Environment.NewLine +
                                          "'\\`help [command]' cool help command" + System.Environment.NewLine + System.Environment.NewLine +
                                          "**In order to not make admins angery, consider using a spam channel for these commands as they are lengthy.**"
                                          );
@@ -137,12 +137,14 @@ namespace GeckoBot.Commands
                         "'\\`gec' shows the daily gecko image" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`rgec' shwos a random gecko" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`fgec [int]' finds a gecko where int is the gecko#" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`ogec [int]' finds an alternate gecko where int is the gecko#" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`ogec [int]' finds an alternate gecko where int is the gecko#"
+                    );
+                    embed.AddField("**daily dm:**",
                         "'\\`dm [true/false]' activates daily gecko nonifs where true is to sign up and false is to cancel" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`gecko gang' shows who is in the gecko gang (people who have signed up for daily dms)" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`start' starts the timer for geckobot daily functions" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`last checked' shows when the bot last checked" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`check [passcode for force-checking]' checks if it is a new day, use a blank space surrounded by quotes for regular checking"
+                        "'\\`check' checks if it is a new day"
                     );
                     break;
                 case "random":
@@ -176,7 +178,7 @@ namespace GeckoBot.Commands
                     );
                     embed.AddField("**e system manage:**",
                         "can save anything including emotes which can be used globally." + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`es [key to save as] [anything]' is the simple save function" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`es [key to save as] [any string]' is the simple save function" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`er [key]' will remove a key and related info" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`ess' is super save and saves all the emotes of every server the bot can use" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`el' will send the list of all the saved keys and items" + System.Environment.NewLine + System.Environment.NewLine +
@@ -186,7 +188,7 @@ namespace GeckoBot.Commands
                 case "embed":
                     embed.AddField("**embed builder:**",
                         "build an embed without breaking discord tos!" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`embed [title of embed] [fields, fields are separated by '$$' title and description are separated by '%%'] [footer] [hexidecimal color]' got that? Good, you will be quized on this" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`embed [title of embed] [fields, fields are separated by '$$' title and description are separated by '%%'] (?)[thumbnail url] (?)[footer] (?)[hexidecimal color]' got that? Good, you will be quized on this" + System.Environment.NewLine + System.Environment.NewLine +
                         "it supports hyperlink markdown, example: '\\[hyperlink markdown](https://example.com)' would make [hyperlink markdown](https://example.com)"
                     );
                     break;
@@ -200,7 +202,7 @@ namespace GeckoBot.Commands
                 case "za_warudo":
                     embed.AddField("**timer and alarm**",
                         "'\\`timer [message to send after timer] [amount of time in hh:mm:ss format]' sets an timer" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`alarm [message to send after alarm] [alarm date in mm/dd/yyyy] [alarm time in (24 hr style) hh:mm:ss format]' sets an alarm" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`alarm [message to send after alarm] [alarm time in (24 hr style) hh:mm:ss format] (?)[alarm date in mm/dd/yyyy]' sets an alarm" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`countdown' [passcode] [target channel id] [is it a timer or alarm (true/false)]] [message, insert '[time]' wherever you want the time to show up and insert [end] to divide the main message from what message to show at the end ][date in mm/dd/yyyy for alarm or number of days for timer] [time, either time until, or alarm time]' visible timer feature, creates a viewable updating countdown, ask a geckobot admin to make one because only one instance can exist at a time and it's expensive. " + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`end countdown [passcode]' aborts the countdown" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`pause [passcode]' pauses the countdown" + System.Environment.NewLine + System.Environment.NewLine +
@@ -223,7 +225,7 @@ namespace GeckoBot.Commands
                         "'\\`get message [link]' gets various ids from a message link" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`get user [mention]' gets info about a user using mention" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`get emote [emote name or emote]' gets an emote in it's text form" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`get all emote [emote name] [page]' gets all emotes of a certain name organized in pages of 5"
+                        "'\\`get all emote [emote name] (?)[page]' gets all emotes of a certain name organized in pages of 5, defaults to page 1"
                     );
                     break;
                 case "poll":
@@ -251,7 +253,8 @@ namespace GeckoBot.Commands
                         "'\\`aer [key]' to remove an undeletable emote" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`bugs' shows current bug reports" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`clear bugs' clears all bug reports" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`fremove [poll name]' force removes a specified poll"
+                        "'\\`fremove [poll name]' force removes a specified poll" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`fcheck' forces bot to update"
                         );
                     break;
                 default:
