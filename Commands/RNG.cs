@@ -6,6 +6,7 @@ using Discord.Commands;
 
 namespace GeckoBot.Commands
 {
+    [Summary("A bunch of commands that utilize the random feature.")]
     public class RNG : ModuleBase<SocketCommandContext>
     {
         //random number generator
@@ -16,6 +17,31 @@ namespace GeckoBot.Commands
             Random random = new Random();
             int number = random.Next(min, max + 1);
             await ReplyAsync(number.ToString());
+        }
+
+        //generates a random order of characters
+        [Command("fek")]
+        [Summary("Generates a random string.")]
+        public async Task fek(string length = null)
+        {
+            //generates random
+            Random random = new Random();
+
+            //generate random length of the word
+            int charNum = length != null ? int.Parse(length) : random.Next(2, 10);
+
+            string[] charFinal = new string[charNum];
+
+            //generates random characters
+            for (int i = 0; i < charNum; i++)
+            {
+                int num = random.Next(0, 26);
+                char let = (char)('a' + num);
+                charFinal[i] = let.ToString();
+            }
+
+            //joins characters and sends
+            await ReplyAsync(string.Join("", charFinal));
         }
 
         //how to stonks

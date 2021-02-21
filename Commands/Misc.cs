@@ -5,6 +5,7 @@ using GeckoBot.Utils;
 
 namespace GeckoBot.Commands
 {
+    [Summary("Miscellaneous commands.")]
     public class Misc : ModuleBase<SocketCommandContext>
     {
         //creates new files if there are none

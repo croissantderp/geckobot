@@ -5,6 +5,7 @@ using GeckoBot.Utils;
 
 namespace GeckoBot.Commands
 {
+    [Summary("Embed building.")]
     public class Embed : ModuleBase<SocketCommandContext>
     {
         //custom embed builder

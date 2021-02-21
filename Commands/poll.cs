@@ -12,7 +12,8 @@ using System.Text.RegularExpressions;
 
 namespace GeckoBot.Commands
 {
-    public class poll : ModuleBase<SocketCommandContext>
+    [Summary("Ask others about things.")]
+    public class Poll : ModuleBase<SocketCommandContext>
     {
         //emote dictionary
         public static Dictionary<string, string> rateDict = new();

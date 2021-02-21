@@ -6,6 +6,7 @@ using Discord.Commands;
 
 namespace GeckoBot.Commands
 {
+    [Summary("Music generation.")]
     public class Music : ModuleBase<SocketCommandContext>
     {
         //music generation function

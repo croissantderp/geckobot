@@ -11,6 +11,7 @@ using Microsoft.Win32;
 
 namespace GeckoBot.Commands
 {
+    [Summary("Commands relating to the daily message system.")]
     public class DailyDM : ModuleBase<SocketCommandContext>
     {
         // Receive the client via dependency injection

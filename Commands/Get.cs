@@ -10,7 +10,7 @@ using GeckoBot.Utils;
 namespace GeckoBot.Commands
 {
     [Group("get")]
-    [Summary("gets various stuff")]
+    [Summary("Gets information about things you are stalking")]
     public class get : ModuleBase<SocketCommandContext>
     {
         [Command("channel")]

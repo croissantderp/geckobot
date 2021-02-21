@@ -12,6 +12,7 @@ using Microsoft.Win32;
 
 namespace GeckoBot.Commands
 {
+    [Summary("Commands having to do with time.")]
     public class Timer : ModuleBase<SocketCommandContext>
     {
         public static System.Timers.Timer timer = new();

@@ -7,6 +7,7 @@ using GeckoBot.Utils;
 
 namespace GeckoBot.Commands
 {
+    [Summary("Help with geckobot.")]
     public class Help : ModuleBase<SocketCommandContext>
     {
         // Receive the CommandService via dependency injection
@@ -152,7 +153,8 @@ namespace GeckoBot.Commands
                         "'\\`rng [min value] [max value]' to generate a random number." + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`generate [number of measures in sequence]' generate random music" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`lottery' tries a 1/100^6 lottery" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`contest [opponent name]' pits you in a contest with opponent given"
+                        "'\\`contest [opponent name]' pits you in a contest with opponent given" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`fek (?)[length of word]' generates a random word, defaults to a random length between 2 and 10"
                     );
                     embed.AddField("**number guessing game**",
                         "'\\`g new [min value] [max value]' to generate a new number." + System.Environment.NewLine + System.Environment.NewLine +

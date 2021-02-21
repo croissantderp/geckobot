@@ -10,7 +10,7 @@ using Google.Apis.Drive.v3;
 
 namespace GeckoBot.Commands
 {
-    [Summary("Gecko commands.")]
+    [Summary("Integration of the [gecko collection](https://drive.google.com/drive/folders/1Omwv0NNV0k_xlECZq3d4r0MbSbuHC_Og?usp=sharing).")]
     public class Gec : ModuleBase<SocketCommandContext>
     {
         private static int HighestGecko;

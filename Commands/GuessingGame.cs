@@ -6,6 +6,7 @@ namespace GeckoBot.Commands
 {
     //number guessing game
     [Group("g")]
+    [Summary("A number guessing game.")]
     public class GuessingGame : ModuleBase<SocketCommandContext>
     {
         //guessing game variables
