@@ -137,7 +137,7 @@ namespace GeckoBot.Utils
                 return CheckCache(name) ?? throw new Exception("Drive download failed!");
             }
             
-            throw new Exception("File not found!");
+            throw new Exception("File " + name + " not found!");
         }
     }
 }

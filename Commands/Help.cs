@@ -179,7 +179,8 @@ namespace GeckoBot.Commands
                         "'\\`es [key to save as] [anything]' is the simple save function" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`er [key]' will remove a key and related info" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`ess' is super save and saves all the emotes of every server the bot can use" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`el' will send the list of all the saved keys and items"
+                        "'\\`el' will send the list of all the saved keys and items" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`ea' will get the amount of items in the system"
                     );
                     break;
                 case "embed":
@@ -230,7 +231,8 @@ namespace GeckoBot.Commands
                         "'\\`create [poll name]' creates a poll" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`vote [poll name] [fraction in ##/##]' votes on a poll" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`remove [poll name]' removes polls, only creator of a poll can remove it" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`results' gets current results of a poll"
+                        "'\\`results [poll name]' gets current results of a poll" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`poll list' gets all polls"
                     );
                     break;
                 case "count":

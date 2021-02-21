@@ -77,7 +77,16 @@ namespace GeckoBot.Commands
         {
             await Context.Channel.SendFileAsync(@"..\..\Cache\gecko2.gek");
         }
-        
+
+        //sends the file for emote storage
+        [Command("ea")]
+        [Summary("gets length of emote list")]
+        public async Task ea()
+        {
+            EmoteUtils.RefreshEmoteDict();
+            await ReplyAsync("there are " + EmoteDict.Count.ToString() + " objects stored");
+        }
+
         //removal function
         [Command("er")]
         [Summary("Removes a key from the dictionary.")]

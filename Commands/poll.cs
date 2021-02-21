@@ -12,7 +12,7 @@ using System.Text.RegularExpressions;
 
 namespace GeckoBot.Commands
 {
-    public class rate : ModuleBase<SocketCommandContext>
+    public class poll : ModuleBase<SocketCommandContext>
     {
         //emote dictionary
         public static Dictionary<string, string> rateDict = new();
@@ -24,6 +24,13 @@ namespace GeckoBot.Commands
                 .Select(part => Regex.Split(part, @"\s(?<!\\)\⁊\s"))
                 .Where(part => part.Length == 2)
                 .ToDictionary(sp => sp[0], sp => sp[1]);
+        }
+
+        [Command("poll list")]
+        [Summary("sends the poll list")]
+        public async Task plist()
+        {
+            await Context.Channel.SendFileAsync(@"..\..\Cache\gecko5.gek");
         }
 
         //sends message
@@ -99,7 +106,7 @@ namespace GeckoBot.Commands
 
             string[] fractions = parts[0].Split("/");
 
-            string final = String.Format("Value: {0:P2}.", float.Parse(fractions[0]) / float.Parse(fractions[1]));
+            string final = String.Format("{0:P2}.", float.Parse(fractions[0]) / float.Parse(fractions[1]));
 
             await ReplyAsync("rating on \"" + poll + "\": " + final, allowedMentions: Globals.allowed);
         }
