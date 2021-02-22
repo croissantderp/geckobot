@@ -165,13 +165,23 @@ namespace GeckoBot.Commands
 
             var listRequest = driveService.Files.List();
             //listRequest.Fields = "nextPageToken, files(id, name)";
-            listRequest.PageSize = 1; // Only fetch one
-            listRequest.OrderBy = "name desc"; // Name descending gets the highest number gecko
-            listRequest.Q = "mimeType contains 'image' and not name contains 'b'"; // Filter out folders or other non image types
+            while (true)
+            {
+                listRequest.PageSize = 100; // Only fetch one
+                listRequest.OrderBy = "name desc"; // Name descending gets the highest number gecko
+                listRequest.Q = "mimeType contains 'image'"; // and not name contains 'b'"; // Filter out folders or other non image types
 
-            IList<Google.Apis.Drive.v3.Data.File> files = listRequest.Execute().Files;
+                IList<Google.Apis.Drive.v3.Data.File> files = listRequest.Execute().Files;
 
-            _highestGecko = int.Parse(Regex.Replace(files[0].Name, @"_.+", ""));
+                foreach (Google.Apis.Drive.v3.Data.File a in files)
+                {
+                    if (Regex.IsMatch(a.Name, @"^\d"))
+                    {
+                        _highestGecko = int.Parse(Regex.Replace(a.Name, @"_.+", ""));
+                        return;
+                    }
+                }
+            }
         }
     }
 }
