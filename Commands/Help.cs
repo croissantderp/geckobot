@@ -38,11 +38,11 @@ namespace GeckoBot.Commands
         
         [Command("help")]
         [Summary("Dynamic help command.")]
-        public async Task help(string target = null)
+        public async Task help([Remainder]string target = null)
         {
             List<CommandInfo> commands = _commands.Commands.ToList();
             List<ModuleInfo> modules = _commands.Modules.ToList();
-            EmbedBuilder embedBuilder = new EmbedBuilder();
+            EmbedBuilder embedBuilder = new ();
             
             // If there was an argument given, send info about that argument
             if (target != null)

@@ -13,7 +13,7 @@ namespace GeckoBot.Commands
     [Summary("Integration of the [gecko collection](https://drive.google.com/drive/folders/1Omwv0NNV0k_xlECZq3d4r0MbSbuHC_Og?usp=sharing).")]
     public class Gec : ModuleBase<SocketCommandContext>
     {
-        private static int HighestGecko;
+        private static int _highestGecko;
         
         // Force cache a gecko image
         // This functionality is accomplished by fgec already, consider removing
@@ -104,7 +104,7 @@ namespace GeckoBot.Commands
             
             //gets random value
             Random random = new Random();
-            int numb = random.Next(0, HighestGecko + 1);
+            int numb = random.Next(0, _highestGecko + 1);
             string final = DriveUtils.addZeros(numb);
 
             //sends file
@@ -147,7 +147,7 @@ namespace GeckoBot.Commands
         public async Task hgec()
         {
             refreshHighestGec();
-            int num = HighestGecko;
+            int num = _highestGecko;
             
             //sends file
             await Context.Channel.SendFileAsync(
@@ -171,7 +171,7 @@ namespace GeckoBot.Commands
 
             IList<Google.Apis.Drive.v3.Data.File> files = listRequest.Execute().Files;
 
-            HighestGecko = int.Parse(Regex.Replace(files[0].Name, @"_.+", ""));
+            _highestGecko = int.Parse(Regex.Replace(files[0].Name, @"_.+", ""));
         }
     }
 }

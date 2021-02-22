@@ -16,7 +16,7 @@ namespace GeckoBot.Commands
         
         [Command("report")]
         [Summary("Reports a bug.")]
-        public async Task report(string reason)
+        public async Task report([Remainder]string reason)
         {
             RefreshBugs();
 

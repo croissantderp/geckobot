@@ -37,7 +37,7 @@ namespace GeckoBot.Commands
         //sends message
         [Command("create")]
         [Summary("creates a poll")]
-        public async Task create(string poll)
+        public async Task create([Remainder]string poll)
         {
             RefreshRateDict();
 
@@ -80,7 +80,7 @@ namespace GeckoBot.Commands
                 return;
             }
 
-            parts[1] += Context.User.Id.ToString() + ",";
+            parts[1] += Context.User.Id + ",";
 
             string[] finalFracParts = parts[0].Split("/");
             finalFracParts[0] = (int.Parse(finalFracParts[0]) + fractionNums[0]).ToString();
@@ -99,7 +99,7 @@ namespace GeckoBot.Commands
 
         [Command("results")]
         [Summary("see results of a poll")]
-        public async Task results(string poll)
+        public async Task results([Remainder]string poll)
         {
             RefreshRateDict();
 
@@ -114,7 +114,7 @@ namespace GeckoBot.Commands
 
         [Command("remove")]
         [Summary("removes polls, only creator of poll can remove")]
-        public async Task remove(string poll)
+        public async Task remove([Remainder]string poll)
         {
             RefreshRateDict();
 
@@ -134,7 +134,7 @@ namespace GeckoBot.Commands
         [RequireGeckobotAdmin]
         [Command("fremove")]
         [Summary("force removes polls, requires geckobot admin")]
-        public async Task fremove(string poll)
+        public async Task fremove([Remainder]string poll)
         {
             RefreshRateDict();
 

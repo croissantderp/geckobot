@@ -19,7 +19,7 @@ namespace GeckoBot.Commands
         //sends message
         [Command("te")]
         [Summary("Sends a message with words replaced by emotes from the dictionary to the target channel.")]
-        public async Task send(string target, string message)
+        public async Task send(string target, [Remainder]string message)
         {
             if (target == "dm")
             {
@@ -40,7 +40,7 @@ namespace GeckoBot.Commands
         //simple retrieval function
         [Command("e")]
         [Summary("Sends a message with words replaced by emotes from the dictionary.")]
-        public async Task e(string yes)
+        public async Task e([Remainder]string yes)
         {
             await ReplyAsync(EmoteUtils.emoteReplace(yes), allowedMentions: Globals.allowed);
         }
@@ -48,7 +48,7 @@ namespace GeckoBot.Commands
         //simple retrieval function
         [Command("ie")]
         [Summary("Sends a message with words replaced by emotes from the dictionary but you can use this command inline")]
-        public async Task ie(string yes)
+        public async Task ie([Remainder]string yes)
         {
             await ReplyAsync(EmoteUtils.emoteReplace(yes), allowedMentions: Globals.allowed);
         }
@@ -56,7 +56,7 @@ namespace GeckoBot.Commands
         //finds emote
         [Command("ge")]
         [Summary("Looks up a key in the dictionary given the value; the reverse of `e.")]
-        public async Task ge(string input)
+        public async Task ge([Remainder]string input)
         {
             EmoteUtils.RefreshEmoteDict();
             if (EmoteDict.ContainsValue(input))
@@ -90,7 +90,7 @@ namespace GeckoBot.Commands
         //removal function
         [Command("er")]
         [Summary("Removes a key from the dictionary.")]
-        public async Task er(string yes1)
+        public async Task er([Remainder]string yes1)
         {
             await EmoteRemove(yes1, false);
         }
@@ -98,7 +98,7 @@ namespace GeckoBot.Commands
         //save function
         [Command("es")]
         [Summary("Saves a key to the dictionary.")]
-        public async Task es(string yes1, string yes)
+        public async Task es(string yes1, [Remainder]string yes)
         {
             await EmoteSave(yes1, yes, false);
         }

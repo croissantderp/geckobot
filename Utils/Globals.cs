@@ -9,7 +9,7 @@ namespace GeckoBot.Utils
     //global variables
     public class Globals
     {
-        public static Discord.AllowedMentions allowed = new (Discord.AllowedMentionTypes.Users);
+        public static readonly Discord.AllowedMentions allowed = new (Discord.AllowedMentionTypes.Users);
 
         //dictionary to string
         public static string DictToString<T, V>(IEnumerable<KeyValuePair<T, V>> items, string format)

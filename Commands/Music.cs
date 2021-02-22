@@ -15,7 +15,7 @@ namespace GeckoBot.Commands
         public async Task generate(int length)
         {
             //rAnDoM
-            Random random = new Random();
+            Random random = new ();
             
             //generated a bunch of random values from generation dictionaries
             int measures = length;
@@ -91,14 +91,10 @@ namespace GeckoBot.Commands
                     noteNames.Add("| ");
                 }
 
-                if (judge2 == 1)
-                {
-                    dure = random.Next(1, timeRemain + 1);
-                }
-                else
-                {
-                    dure = random.Next(1, (timeRemain + 1) / 2);
-                }
+                dure = judge2 == 1
+                    ? random.Next(1, timeRemain + 1)
+                    : random.Next(1, (timeRemain + 1) / 2);
+                
                 
                 noteNames.Add(Notes[number] + $" **{dure}**");
 

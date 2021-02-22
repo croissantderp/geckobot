@@ -18,7 +18,7 @@ namespace GeckoBot.Commands
         public async Task getChannel(IChannel channel)
         {
             await ReplyAsync("guild id: \n`" + (channel as IGuildChannel).GuildId + "`\n" + 
-                "channel id: \n`" + channel.Id.ToString() + "`", allowedMentions: Globals.allowed);
+                "channel id: \n`" + channel.Id + "`", allowedMentions: Globals.allowed);
         }
 
         [Command("message")]
@@ -62,7 +62,7 @@ namespace GeckoBot.Commands
         [Summary("gets info about a user using a mention")]
         public async Task getUser(IUser user)
         {
-            await ReplyAsync("user id: \n`" + user.Id.ToString() + "`", allowedMentions: new AllowedMentions(Discord.AllowedMentionTypes.None));
+            await ReplyAsync("user id: \n`" + user.Id + "`", allowedMentions: new AllowedMentions(Discord.AllowedMentionTypes.None));
         }
 
         [Command("emote")]
@@ -73,7 +73,7 @@ namespace GeckoBot.Commands
             {
                 IEmote emote2 = Emote.Parse(emote);
                 
-                await ReplyAsync(emote2.ToString() + "\n emote id: \n`" + emote2.ToString() + "`", allowedMentions: new AllowedMentions(Discord.AllowedMentionTypes.None));
+                await ReplyAsync(emote2 + "\n emote id: \n`" + emote2 + "`", allowedMentions: new AllowedMentions(AllowedMentionTypes.None));
             }
             catch
             {
@@ -83,12 +83,12 @@ namespace GeckoBot.Commands
                     {
                         if (e.Name == emote)
                         {
-                            await ReplyAsync(e.ToString() + "\n emote id: \n`" + e.ToString() + "`", allowedMentions: new AllowedMentions(Discord.AllowedMentionTypes.None));
+                            await ReplyAsync(e + "\n emote id: \n`" + e + "`", allowedMentions: new AllowedMentions(AllowedMentionTypes.None));
                             return;
                         }
                     }
                 }
-                await ReplyAsync("emote not found", allowedMentions: new AllowedMentions(Discord.AllowedMentionTypes.None));
+                await ReplyAsync("emote not found", allowedMentions: new AllowedMentions(AllowedMentionTypes.None));
             }
         }
 

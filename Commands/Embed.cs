@@ -59,7 +59,7 @@ namespace GeckoBot.Commands
                     hex = hex.Replace("#", "");
                 }
 
-                int r, g, b = 0;
+                int r, g, b;
 
                 r = int.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.AllowHexSpecifier);
                 g = int.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.AllowHexSpecifier);

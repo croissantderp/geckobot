@@ -22,13 +22,13 @@ namespace GeckoBot.Commands
         //generates a random order of characters
         [Command("fek")]
         [Summary("Generates a random string.")]
-        public async Task fek(string length = null)
+        public async Task fek(int length = 0)
         {
             //generates random
             Random random = new Random();
 
             //generate random length of the word
-            int charNum = length != null ? int.Parse(length) : random.Next(2, 10);
+            int charNum = length != 0 ? length : random.Next(2, 10);
 
             string[] charFinal = new string[charNum];
 

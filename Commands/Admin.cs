@@ -14,7 +14,7 @@ namespace GeckoBot.Commands
         //termination command
         [Command("terminate")]
         [Summary("Terminates the bot process.")]
-        public async Task terminate(string name)
+        public async Task terminate([Remainder]string name = "all")
         {
             if (name == Globals.names[0] || name == "all")
             {
@@ -41,7 +41,7 @@ namespace GeckoBot.Commands
         //temporary command to set name
         [Command("change")]
         [Summary("Changes geckobot's internal name to the specified string.")]
-        public async Task change(int value, string newName)
+        public async Task change(int value, [Remainder]string newName)
         {
             if (value != 0)
             {
@@ -66,7 +66,7 @@ namespace GeckoBot.Commands
 
         [Command("name")]
         [Summary("Sets geckobot's name")]
-        public async Task name(string name)
+        public async Task name([Remainder]string name)
         {
             Utils.Utils.changeName(Context.Client, name);
             await ReplyAsync("name changed");
