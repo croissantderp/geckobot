@@ -94,12 +94,13 @@ namespace GeckoBot.Commands
 
         [Command("all emote")]
         [Summary("gets all emotes organized into pages of 5")]
-        public async Task getAllEmote(string emote, string page = null)
+        public async Task getAllEmote(string emote, int page = 1)
         {
             List<string> final = new ();
 
             int counter = 0;
 
+            int total = 0;
 
             int pageCounter = 1;
 
@@ -111,21 +112,22 @@ namespace GeckoBot.Commands
                 {
                     if (e.Name == emote)
                     {
-                        if (pageCounter == (page != null ? int.Parse(page) : 1))
-                        {
-                            final.Add(e.ToString() + ":\n`" + e.ToString() + "`\n");
-                        }
                         if (counter >= 5)
                         {
                             pageCounter++;
                             counter = 0;
                         }
+                        if (pageCounter == page)
+                        {
+                            final.Add(e.ToString() + ":\n`" + e.ToString() + "`\n");
+                        }
                         counter++;
+                        total++;
                     }
                 }
             }
 
-            final[0] = "page " + (page != null ? page : 1) + " of " + pageCounter + " of results for " + emote + "\n";
+            final[0] = "page " + page + " of " + pageCounter + " of results for " + emote + " (result " + (page * 5 - 4) + " - " + (page != pageCounter ? (page * 5) : page * 5 - 5 + (total % 5)) + " of " + total + ")" + "\n";
 
             if (final.Count > 1)
             {
