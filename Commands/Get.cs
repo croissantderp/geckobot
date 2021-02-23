@@ -28,9 +28,12 @@ namespace GeckoBot.Commands
             input = input.Remove(0, 29);
             string[] final = input.Split("/");
 
+            var user = ( await (Context.Client.GetChannel(ulong.Parse(final[1])) as IMessageChannel).GetMessageAsync(ulong.Parse(final[2])) as IUserMessage).Author;
+
             await ReplyAsync("guild id: \n`" + final[0] + "`\n" + 
                 "channel id: \n`" + final[1] + "`\n" + 
-                "message id: \n`" + final[2] + "`", allowedMentions: Globals.allowed);
+                "message id: \n`" + final[2] + "`\n" +
+                "author: \n`" + user + ", id: " + user.Id + "`", allowedMentions: Globals.allowed);
         }
 
         [Command("message content")]
@@ -48,7 +51,7 @@ namespace GeckoBot.Commands
             var embed = new EmbedBuilder
             {
                 Description = message.Content,
-                Author = new EmbedAuthorBuilder().WithName(message.Author.ToString()).WithIconUrl(message.Author.GetAvatarUrl())
+                Author = new EmbedAuthorBuilder().WithName(message.Author.ToString() + " (" + message.Author.Id + ")").WithIconUrl(message.Author.GetAvatarUrl())
             };
 
             embed.WithTimestamp(message.Timestamp);
@@ -157,7 +160,10 @@ namespace GeckoBot.Commands
         {
             var channel2 = Context.Client.GetChannel(ulong.Parse(input)) as IGuildChannel;
 
-            await ReplyAsync("https://discord.com/channels/" + channel2.GuildId + "/" + input + "/" + input2, allowedMentions: Globals.allowed);
+            var user = (await (channel2 as IMessageChannel).GetMessageAsync(ulong.Parse(input2)) as IUserMessage).Author;
+
+            await ReplyAsync("https://discord.com/channels/" + channel2.GuildId + "/" + input + "/" + input2 + "\n" + 
+                "author: \n`" + user + ", id: " + user.Id + "`", allowedMentions: Globals.allowed);
         }
 
         [Command("message content")]
@@ -172,7 +178,7 @@ namespace GeckoBot.Commands
             var embed = new EmbedBuilder
             {
                 Description = message.Content,
-                Author = new EmbedAuthorBuilder().WithName(message.Author.ToString()).WithIconUrl(message.Author.GetAvatarUrl())
+                Author = new EmbedAuthorBuilder().WithName(message.Author.ToString() + " (" + message.Author.Id + ")").WithIconUrl(message.Author.GetAvatarUrl())
             };
 
             embed.WithTimestamp(message.Timestamp);

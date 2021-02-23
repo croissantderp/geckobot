@@ -167,7 +167,7 @@ namespace GeckoBot.Commands
             //listRequest.Fields = "nextPageToken, files(id, name)";
             while (true)
             {
-                listRequest.PageSize = 100; // Only fetch one
+                listRequest.PageSize = 100; // Only fetch one hundred
                 listRequest.OrderBy = "name desc"; // Name descending gets the highest number gecko
                 listRequest.Q = "mimeType contains 'image'"; // and not name contains 'b'"; // Filter out folders or other non image types
 
