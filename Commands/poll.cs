@@ -18,7 +18,7 @@ namespace GeckoBot.Commands
         //emote dictionary
         public static Dictionary<string, string> rateDict = new();
 
-        //loads emote dictionary as string and converts it back into dictionary
+        //loads poll dictionary as string and converts it back into dictionary
         public static void RefreshRateDict()
         {
             rateDict = Regex.Split(FileUtils.Load(@"..\..\Cache\gecko5.gek"), @"\s(?<!\\)ҩ\s")

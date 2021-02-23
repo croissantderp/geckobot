@@ -95,7 +95,7 @@ namespace GeckoBot.Commands
 
         //instructions
         [Command("what do you")]
-        [Summary("a quick guide on every command, meant for quick reads. sections: | do? | general | gecko | random | sigfig | e | embed | edit | za_warudo | find | get | poll | admin | count")]
+        [Summary("a quick guide on every command, meant for quick reads. sections: | do? | general | gecko | random | sigfig | e | c | embed | edit | za_warudo | find | get | poll | admin | count")]
         public async Task instructions(string section)
         {
             //if info is found
@@ -115,7 +115,7 @@ namespace GeckoBot.Commands
                                          "(highly recommended to have developer mode on to easily use)" + System.Environment.NewLine +
                                          "if there's a problem, ping my owner croissantderp#4167 " + System.Environment.NewLine + System.Environment.NewLine +
                                          "links: [trello](https://trello.com/invite/b/cFS33M13/8fddf3ac42bd0fe419e482c6f4414e01/gecko-bot-todo) [github](https://github.com/croissantderp/geckobot) [invite](https://discord.com/oauth2/authorize?client_id=766064505079726140&scope=bot&permissions=379968)" + System.Environment.NewLine + System.Environment.NewLine +
-                                         "'\\`what do you [section]' quick start guide (inputs prefaced by (?) are optional), sections: | **do?** | **general** | **gecko** | **random** | **sigfig** | **e** | **embed** | **edit** | **za_warudo** | **find** | **get** | **poll** | **admin** | **count** |" + System.Environment.NewLine + System.Environment.NewLine +
+                                         "'\\`what do you [section]' quick start guide (inputs prefaced by (?) are optional), sections: | **do?** | **general** | **gecko** | **random** | **sigfig** | **e** | **c** | **embed** | **edit** | **za_warudo** | **find** | **get** | **poll** | **admin** | **count** |" + System.Environment.NewLine + System.Environment.NewLine +
                                          "'\\`help [command]' cool help command" + System.Environment.NewLine + System.Environment.NewLine +
                                          "**In order to not make admins angery, consider using a spam channel for these commands as they are lengthy.**"
                                          );
@@ -237,6 +237,14 @@ namespace GeckoBot.Commands
                         "'\\`remove [poll name]' removes polls, only creator of a poll can remove it" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`results [poll name]' gets current results of a poll" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`poll list' gets all polls"
+                    );
+                    break;
+                case "c":
+                    embed.AddField("**c**",
+                        "'\\`c [custom command name] [fields seperated by $]' uses a custom command" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`cs [custom command name] [command structure, fields for replacement are marked by $]' creates a custom command" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`cr [custom command name]' removes custom commands" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`cl' gets a lsit of all custom commandsl"
                     );
                     break;
                 case "count":
