@@ -13,13 +13,13 @@ using System.Text.RegularExpressions;
 namespace GeckoBot.Commands
 {
     [Summary("Epic custom commands.")]
-    public class customCommand : ModuleBase<SocketCommandContext>
+    public class CustomCommand : ModuleBase<SocketCommandContext>
     {
         //emote dictionary
-        public static Dictionary<string, string> cDict = new ();
+        private static Dictionary<string, string> cDict = new ();
 
         //loads emote dictionary as string and converts it back into dictionary
-        public static void RefreshCDict()
+        private static void RefreshCDict()
         {
             cDict = Regex.Split(FileUtils.Load(@"..\..\Cache\gecko6.gek"), @"\s(?<!\\)ҩ\s")
                 .Select(part => Regex.Split(part, @"\s(?<!\\)\⁊\s"))
