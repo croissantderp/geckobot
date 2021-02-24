@@ -38,7 +38,11 @@ namespace GeckoBot.Commands
         
         [Command("help")]
         [Summary("Dynamic help command.")]
-        public async Task help([Remainder]string target = null)
+        public async Task help(
+            [Remainder]
+            [Summary("The specific command or module to send info about.")]
+            string target = null
+            )
         {
             List<CommandInfo> commands = _commands.Commands.ToList();
             List<ModuleInfo> modules = _commands.Modules.ToList();
@@ -52,17 +56,24 @@ namespace GeckoBot.Commands
                 
                 if (command != null) // Try matching a command first
                 {
-                    embedBuilder.Title = FormatCommand(command);
-                    embedBuilder.Description = command.Summary;
-                    embedBuilder.AddField("Module:", command.Module.Name);
+                    var fields = command.Parameters;
+                    
+                    embedBuilder.Title = FormatCommand(command); // Command name
+                    embedBuilder.Description = command.Summary; // Command description
+                    
+                    embedBuilder.AddField("Usage:", 
+                        $"{command.Name} {string.Join(" ", fields.Select(FormatParameter))}"); // Command usage
+                    embedBuilder.AddField("Parameters:",
+                        string.Join("\n", fields.Select(FormatParameterLong))); // Detailed parameter explanations
+                    embedBuilder.AddField("Module:", command.Module.Name); // Parent module
                 }
                 else if (module != null) // If not a command, check modules
                 {
-                    embedBuilder.Title = module.Name;
-                    embedBuilder.Description = module.Summary;
+                    embedBuilder.Title = module.Name; // Module name
+                    embedBuilder.Description = module.Summary; // Module description
                     
                     embedBuilder.AddField("Commands:", 
-                        string.Join(", ", module.Commands.Select(FormatCommand)));
+                        string.Join(", ", module.Commands.Select(FormatCommand))); // Children commands
                 }
                 else // Otherwise, nothing was found
                 {
@@ -91,6 +102,20 @@ namespace GeckoBot.Commands
             string space = command.Name != "" && module.Group != "" ? " " : ""; // Unfortunate but oh well
 
             return $"{module.Group}{space}{command.Name}";
+        }
+        
+        // Formats the parameter by adding type and default value to the parameter name
+        private static string FormatParameter(ParameterInfo param)
+        {
+            string defaultValue = param.IsOptional ? $" = {param.DefaultValue ?? "null"}" : "";
+            
+            return $"[{param.Type.Name} {param.Name}{defaultValue}]";
+        }
+        
+        // A longer version of FormatParameter that includes the summary, used in the Parameters embed section
+        private static string FormatParameterLong(ParameterInfo param)
+        {
+            return $"{param.Name}: {param.Summary}";
         }
 
         //instructions
