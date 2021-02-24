@@ -66,8 +66,19 @@ namespace GeckoBot.Commands
 
             for (int i = 0; i < amount; i++)
             {
-                final = rgx.Replace(final, " " + inserts[i] + " ", 1);
+                final = rgx.Replace(final, "" + inserts[i] + "", 1);
             }
+
+            await ReplyAsync(EmoteUtils.removeforbidden(final), allowedMentions: Globals.allowed);
+        }
+
+        [Command("cf")]
+        [Summary("See the custom command fields.")]
+        public async Task cf(string title)
+        {
+            RefreshCDict();
+
+            string final = Regex.Replace(cDict[title], @"(?<!\\)\$", "[field]");
 
             await ReplyAsync(EmoteUtils.removeforbidden(final), allowedMentions: Globals.allowed);
         }
@@ -77,6 +88,12 @@ namespace GeckoBot.Commands
         public async Task cr([Remainder] string title)
         {
             RefreshCDict();
+
+            if (!cDict.ContainsKey(title))
+            {
+                await ReplyAsync("command not found");
+                return;
+            }
 
             cDict.Remove(title);
 

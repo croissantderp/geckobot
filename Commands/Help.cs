@@ -128,13 +128,13 @@ namespace GeckoBot.Commands
                         "'\\`id' displays current instance of geckobot." + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`report' logs a bug" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`delete [channel id] [message id]' can delete messages sent by geckobot" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`links' returns a list of helpful links"
+                        "'\\`links' returns a list of helpful links" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`ice cream' returns the link to the ice cream cards drive folder"
                         );
                     break;
                 case "gecko":
                     embed.AddField("**gecko images:**",
-                        "'\\`GecColle' returns a link to the geckoimage archive, or [go here](https://drive.google.com/drive/folders/1Omwv0NNV0k_xlECZq3d4r0MbSbuHC_Og?usp=sharing)" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`submit' returns a link to submit a gecko, or [go here](https://forms.gle/CeNkM2aHcdrcidvX6)" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`GecColle' returns a link to the geckoimage archive and more, or [go here](https://drive.google.com/drive/folders/1Omwv0NNV0k_xlECZq3d4r0MbSbuHC_Og?usp=sharing)" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`gec' shows the daily gecko image" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`rgec' shwos a random gecko" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`fgec [int]' finds a gecko where int is the gecko#" + System.Environment.NewLine + System.Environment.NewLine +
@@ -244,6 +244,7 @@ namespace GeckoBot.Commands
                         "'\\`c [custom command name] [fields seperated by $]' uses a custom command" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`cs [custom command name] [command structure, fields for replacement are marked by $]' creates a custom command" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`cr [custom command name]' removes custom commands" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`cf [custom command name]' see the fields of a custom command" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`cl' gets a lsit of all custom commandsl"
                     );
                     break;

@@ -87,13 +87,10 @@ namespace GeckoBot
             }
             else if (message.HasStringPrefix("\\`", ref argPos))
             {
-                string temp = message.Content.Remove(0, 2);
-                if (!Regex.IsMatch(temp, @"(?<!\\)\`"))
-                {
-                    var result = await _commands.ExecuteAsync(context, argPos, _services);
-                    if (!result.IsSuccess) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
-                    //if (result.Error.Equals(CommandError.UnmetPrecondition)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
-                }
+                var result = await _commands.ExecuteAsync(context, argPos, _services);
+                if (!result.IsSuccess) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
+                //if (result.Error.Equals(CommandError.UnmetPrecondition)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
+
             }
             else if (Regex.IsMatch(message.Content, @"(?<!\\)\`ie"))
             {

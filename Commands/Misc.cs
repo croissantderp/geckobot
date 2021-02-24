@@ -20,7 +20,28 @@ namespace GeckoBot.Commands
             //adds reaction
             await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
-        
+
+        //sends a message with a link to the gecko collection
+        [Command("ice cream")]
+        [Summary("Links the ice cream cards Google Drive folder.")]
+        public async Task iceCream()
+        {
+            //buils an embed
+            var embed = new EmbedBuilder
+            {
+                Title = "gecko collection",
+                Description = (
+                "[see the ice cream cards here](https://drive.google.com/drive/folders/1O7SVg5D0n8t3gOjkArjhhH7_YllcwAXA?usp=sharing)"
+                )
+            };
+
+            embed.WithColor(180, 212, 85);
+
+            var embed2 = embed.Build();
+
+            await ReplyAsync(embed: embed2);
+        }
+
         // This is probably a bad idea
         // Also, there's probably a better way of deleting large bot messages than using a delete command
         [Command("delete")]
