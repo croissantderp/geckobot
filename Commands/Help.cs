@@ -63,8 +63,9 @@ namespace GeckoBot.Commands
                     
                     embedBuilder.AddField("Usage:", 
                         $"{command.Name} {string.Join(" ", fields.Select(FormatParameter))}"); // Command usage
-                    embedBuilder.AddField("Parameters:",
-                        string.Join("\n", fields.Select(FormatParameterLong))); // Detailed parameter explanations
+                    if (fields.Count > 0)
+                        embedBuilder.AddField("Parameters:",
+                            string.Join("\n", fields.Select(FormatParameterLong))); // Detailed parameter explanations
                     embedBuilder.AddField("Module:", command.Module.Name); // Parent module
                 }
                 else if (module != null) // If not a command, check modules
