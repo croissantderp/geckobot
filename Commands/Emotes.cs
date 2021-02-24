@@ -19,7 +19,7 @@ namespace GeckoBot.Commands
         //sends message
         [Command("te")]
         [Summary("Sends a message with words replaced by emotes from the dictionary to the target channel.")]
-        public async Task send(string target, [Remainder]string message)
+        public async Task send([Summary("The channel id.")] string target, [Summary("The message content.")] [Remainder]string message)
         {
             if (target == "dm")
             {
@@ -40,7 +40,7 @@ namespace GeckoBot.Commands
         //simple retrieval function
         [Command("e")]
         [Summary("Sends a message with words replaced by emotes from the dictionary.")]
-        public async Task e([Remainder]string yes)
+        public async Task e([Summary("The message content.")] [Remainder]string yes)
         {
             await ReplyAsync(EmoteUtils.emoteReplace(yes), allowedMentions: Globals.allowed);
         }
@@ -48,7 +48,7 @@ namespace GeckoBot.Commands
         //simple retrieval function
         [Command("ie")]
         [Summary("Sends a message with words replaced by emotes from the dictionary but you can use this command inline")]
-        public async Task ie([Remainder]string yes)
+        public async Task ie([Summary("The message content.")] [Remainder]string yes)
         {
             await ReplyAsync(EmoteUtils.emoteReplace(yes), allowedMentions: Globals.allowed);
         }
@@ -56,7 +56,7 @@ namespace GeckoBot.Commands
         //finds emote
         [Command("ge")]
         [Summary("Looks up a key in the dictionary given the value; the reverse of `e.")]
-        public async Task ge([Remainder]string input)
+        public async Task ge([Summary("The value to get the key for.")] [Remainder]string input)
         {
             EmoteUtils.RefreshEmoteDict();
             if (EmoteDict.ContainsValue(input))
@@ -90,7 +90,7 @@ namespace GeckoBot.Commands
         //removal function
         [Command("er")]
         [Summary("Removes a key from the dictionary.")]
-        public async Task er([Remainder]string yes1)
+        public async Task er([Summary("The key to remove.")] [Remainder]string yes1)
         {
             await EmoteRemove(yes1, false);
         }
@@ -98,7 +98,7 @@ namespace GeckoBot.Commands
         //save function
         [Command("es")]
         [Summary("Saves a key to the dictionary.")]
-        public async Task es(string yes1, [Remainder]string yes)
+        public async Task es([Summary("The key of the value.")] string yes1, [Summary("The value to add.")] [Remainder]string yes)
         {
             await EmoteSave(yes1, yes, false);
         }
@@ -158,7 +158,7 @@ namespace GeckoBot.Commands
         //emote react function
         [Command("re")]
         [Summary("Reacts to a message with the specified emotes.")]
-        public async Task ReactCustomAsync(string channel, string message, string emote)
+        public async Task ReactCustomAsync([Summary("The channel id of the message.")] string channel, [Summary("The message id of the message to react to.")] string message, [Summary("The emotes to react with, seperated by '$'.")] string emote)
         {
             EmoteUtils.RefreshEmoteDict();
             
@@ -199,7 +199,7 @@ namespace GeckoBot.Commands
         //emote react function
         [Command("fe")]
         [Summary("Reacts to a message with the specified emotes using a link as input")]
-        public async Task fReactCustomAsync(string input, string emote)
+        public async Task fReactCustomAsync([Summary("The message link of the message to react to")] string input, [Summary("The emotes to react with, seperated by '$'")] string emote)
         {
             input = input.Remove(0, 29);
             string[] final = input.Split("/");
@@ -243,7 +243,7 @@ namespace GeckoBot.Commands
         [RequireGeckobotAdmin]
         [Command("aes")]
         [Summary("Saves a key to the dictionary which cannot be removed by non admins.")]
-        public async Task aes(string yes1, string yes)
+        public async Task aes([Summary("The key of the value.")] string yes1, [Summary("The value to add.")] string yes)
         {
             await EmoteSave(yes1, yes, true);
         }
@@ -252,7 +252,7 @@ namespace GeckoBot.Commands
         [RequireGeckobotAdmin]
         [Command("aer")]
         [Summary("Removes a key from the dictionary with admin access (can remove admin keys).")]
-        public async Task aer(string yes1)
+        public async Task aer([Summary("The key to remove.")] string yes1)
         {
             await EmoteRemove(yes1, true);
         }

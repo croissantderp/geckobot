@@ -12,7 +12,7 @@ namespace GeckoBot.Commands
         //random number generator
         [Command("rng")]
         [Summary("Generates a number between min and max.")]
-        public async Task rng(int min, int max)
+        public async Task rng([Summary("Minimum value of the random number.")] int min, [Summary("Maximum value of the random number.")] int max)
         {
             Random random = new Random();
             int number = random.Next(min, max + 1);
@@ -118,7 +118,7 @@ namespace GeckoBot.Commands
         //contest function
         [Command("contest")]
         [Summary("Launches a contest between you and someone else to see who wins!")]
-        public async Task contest(IUser user)
+        public async Task contest([Summary("The user to hold a contest with.")] IUser user)
         {
             //generates a random number
             Random random = new Random();

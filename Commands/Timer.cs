@@ -32,8 +32,8 @@ namespace GeckoBot.Commands
 
         //timer
         [Command("timer")]
-        [Summary("Sets an alarm which will be sent after the specified length of time (in hh:mm:ss format).")]
-        public async Task startTimer(string message, string time)
+        [Summary("Sets an alarm which will be sent after the specified length of time.")]
+        public async Task startTimer([Summary("The message to send when time is up.")] string message, [Summary("The time in hh:mm:ss.")] string time)
         {
             //gets user
             IUser user = Context.User;
@@ -50,7 +50,7 @@ namespace GeckoBot.Commands
         //alarm
         [Command("alarm")]
         [Summary("Sets an alarm which will be sent on the specified date and time (in hh:mm:ss format).")]
-        public async Task alarm(string message, string time, string date = null)
+        public async Task alarm([Summary("The message to send when time is up.")] string message, [Summary("The time in hh:mm:ss.")] string time, [Summary("Optional date in mm/dd/yyyy.")] string date = null)
         {
             TimeSpan final = (date != null ? parseDate(date) : DateTime.Today) + parseTime(time) - DateTime.Now;
 
@@ -80,7 +80,7 @@ namespace GeckoBot.Commands
         [RequireGeckobotAdmin]
         [Command("countdown")]
         [Summary("Sets a countdown which will be updated every 3 seconds.")]
-        public async Task vt(string target, bool isTimer, string message, string date, string time)
+        public async Task vt([Summary("The target channel id.")] string target, [Summary("If the countdown will be a timer.")] bool isTimer, [Summary("The message, put '[time]' to insert time, and put '[end]' to show what to show when the countdown ends.")] string message, [Summary("Date for alarms or days for timer.")] string date, [Summary("The time in hh:mm:ss.")] string time)
         {
             //only one timer may exist at a time because of resource problems
             if (!_timerExists)
@@ -195,6 +195,14 @@ namespace GeckoBot.Commands
             // Shouldn't other catch statements also log errors in Bugs or is Bugs specifically targeted towards timer errors?
             catch(Exception ex)
             {
+                FileUtils.checkForExistance();
+
+                //clears
+                Bugs.BugList.Clear();
+
+                //adds info to list
+                Bugs.BugList.AddRange(FileUtils.Load(@"..\..\Cache\gecko1.gek").Split(","));
+
                 Bugs.BugList.Add(ex.ToString());
 
                 //saves info

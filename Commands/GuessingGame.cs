@@ -17,7 +17,7 @@ namespace GeckoBot.Commands
         //generates new number
         [Command("new")]
         [Summary("Starts a new game from the min and max provided.")]
-        public async Task newNumber(int min, int max)
+        public async Task newNumber([Summary("Minimum value of new random value.")] int min, [Summary("Maximum value of new random value.")] int max)
         {
             //generates number based on min and max value
             Random random = new();
@@ -36,7 +36,7 @@ namespace GeckoBot.Commands
 
         [Command("")]
         [Summary("Guesses the picked number.")]
-        public async Task attempt(int value)
+        public async Task attempt([Summary("The value to guess.")] int value)
         {
             _attempts += 1;
 

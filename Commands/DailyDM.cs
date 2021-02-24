@@ -204,7 +204,7 @@ namespace GeckoBot.Commands
         //sets up daily dms
         [Command("dm")]
         [Summary("Signs you up for daily dm.")]
-        public async Task dmgec(bool yes)
+        public async Task dmgec([Summary("Bool whether you want to sign up or not.")] bool yes)
         {
             if (yes)
             {

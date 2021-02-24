@@ -11,7 +11,7 @@ namespace GeckoBot.Commands
         //flips the edited tag on messages
         [Command("flip")]
         [Summary("Adds an inverted edited tag to a message.")]
-        public async Task flip(string text, string text2)
+        public async Task flip([Summary("Part of the message before the edited tag.")] string text, [Summary("Part of the message after the edited tag.")] string text2)
         {
             //joins text with dark magic
             string final = "؜" + EmoteUtils.emoteReplace(text) + "\n" + EmoteUtils.emoteReplace(text2) + "؜؜؜";
@@ -25,7 +25,7 @@ namespace GeckoBot.Commands
 
         [Command("")]
         [Summary("Adds an edited tag between the two string arguments.")]
-        public async Task edit(string text, string text2)
+        public async Task edit([Summary("Part of message before newline.")] string text, [Summary("Part of message after newline.")] string text2)
         {
             //joins text with dark magic
             string final = "؜" + EmoteUtils.emoteReplace(text2) + "؜؜؜؜؜؜؜؜؜؜؜؜" + EmoteUtils.emoteReplace(text);

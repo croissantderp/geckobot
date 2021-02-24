@@ -12,7 +12,7 @@ namespace GeckoBot.Commands
         //music generation function
         [Command("generate")]
         [Summary("Generates a tune based on measure count.")]
-        public async Task generate(int length)
+        public async Task generate([Summary("The number of measures.")] int length)
         {
             //rAnDoM
             Random random = new ();

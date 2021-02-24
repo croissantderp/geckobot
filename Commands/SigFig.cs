@@ -119,7 +119,7 @@ namespace GeckoBot.Commands
         //general sigfig command
         [Command("")]
         [Summary("Tells you how many significant figures your number has.")]
-        public async Task sigfigbase(decimal number)
+        public async Task sigfigbase([Summary("The number to show sigfigs.")] decimal number)
         {
             var figs = figures(number);
             
@@ -165,7 +165,7 @@ namespace GeckoBot.Commands
         //sigfig add
         [Command("add")]
         [Summary("Adds two numbers with sigfigs in mind.")]
-        public async Task sigAdd(decimal number1, decimal number2)
+        public async Task sigAdd([Summary("First number.")] decimal number1, [Summary("Number to add to the first number.")] decimal number2)
         {
             decimal finalNum = number1 + number2;
             decimal final = 0;
@@ -254,7 +254,7 @@ namespace GeckoBot.Commands
         //sigfig subtract
         [Command("subtract")]
         [Summary("Subtracts two numbers with sigfigs in mind.")]
-        public async Task sigSubtract(decimal number1, decimal number2)
+        public async Task sigSubtract([Summary("First number.")] decimal number1, [Summary("Number to subtract from first number.")] decimal number2)
         {
             decimal finalNum = number1 - number2;
             decimal final = 0;
@@ -343,7 +343,7 @@ namespace GeckoBot.Commands
         //sigfig multiply
         [Command("multiply")]
         [Summary("Multiplies two numbers with sigfigs in mind.")]
-        public async Task sigMultiply(decimal number1, decimal number2)
+        public async Task sigMultiply([Summary("First number.")] decimal number1, [Summary("Number to multiply first number by.")] decimal number2)
         {
             decimal finalNum = number1 * number2;
 
@@ -395,7 +395,7 @@ namespace GeckoBot.Commands
         //sigfig divide
         [Command("divide")]
         [Summary("Divides two numbers with sigfigs in mind.")]
-        public async Task sigDivide(decimal number1, decimal number2)
+        public async Task sigDivide([Summary("First number.")] decimal number1, [Summary("Number to divide first number by.")] decimal number2)
         {
             decimal finalNum = number1 / number2;
             int accuracy1 = int.Parse(figures(number1)[2]);

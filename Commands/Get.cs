@@ -15,7 +15,7 @@ namespace GeckoBot.Commands
     {
         [Command("channel")]
         [Summary("gets channel id")]
-        public async Task getChannel(IChannel channel)
+        public async Task getChannel([Summary("A channel, either name or the #channel of it.")] IChannel channel)
         {
             await ReplyAsync("guild id: \n`" + (channel as IGuildChannel).GuildId + "`\n" + 
                 "channel id: \n`" + channel.Id + "`", allowedMentions: Globals.allowed);
@@ -23,7 +23,7 @@ namespace GeckoBot.Commands
 
         [Command("message")]
         [Summary("gets ids from a message link")]
-        public async Task getMessage(string input)
+        public async Task getMessage([Summary("A message link.")] string input)
         {
             input = input.Remove(0, 29);
             string[] final = input.Split("/");
@@ -38,7 +38,7 @@ namespace GeckoBot.Commands
 
         [Command("message content")]
         [Summary("gets ids from a message link")]
-        public async Task getMessageContent(string input)
+        public async Task getMessageContent([Summary("A message link.")] string input)
         {
             input = input.Remove(0, 29);
             string[] final = input.Split("/");
@@ -63,7 +63,7 @@ namespace GeckoBot.Commands
 
         [Command("user")]
         [Summary("gets info about a user using a mention")]
-        public async Task getUser(IUser user)
+        public async Task getUser([Summary("A @ mention")] IUser user)
         {
             await ReplyAsync("user id: \n`" + user.Id + "`", allowedMentions: new AllowedMentions(Discord.AllowedMentionTypes.None));
         }
@@ -97,7 +97,7 @@ namespace GeckoBot.Commands
 
         [Command("all emote")]
         [Summary("gets all emotes organized into pages of 5")]
-        public async Task getAllEmote(string emote, int page = 1)
+        public async Task getAllEmote([Summary("The emote name.")] string emote, [Summary("The page of results.")] int page = 1)
         {
             List<string> final = new ();
 
@@ -149,14 +149,14 @@ namespace GeckoBot.Commands
     {
         [Command("channel")]
         [Summary("finds channel from an id")]
-        public async Task findChannel(string input)
+        public async Task findChannel([Summary("The channel id.")] string input)
         {
             await ReplyAsync("<#" + input + "> \n`<#" + input + ">`", allowedMentions: Globals.allowed);
         }
 
         [Command("message")]
         [Summary("generates a message link from given ids")]
-        public async Task findMessage(string input, string input2)
+        public async Task findMessage([Summary("The channel id of the message.")] string input, [Summary("The message id")] string input2)
         {
             var channel2 = Context.Client.GetChannel(ulong.Parse(input)) as IGuildChannel;
 
@@ -168,7 +168,7 @@ namespace GeckoBot.Commands
 
         [Command("message content")]
         [Summary("gets ids from channel and message ids")]
-        public async Task findMessageContent(string input, string input2)
+        public async Task findMessageContent([Summary("The channel id of the message.")] string input, [Summary("The message id")] string input2)
         {
             var channel = Context.Client.GetChannel(ulong.Parse(input)) as IMessageChannel;
 
@@ -190,7 +190,7 @@ namespace GeckoBot.Commands
 
         [Command("user")]
         [Summary("gets info about a user using id")]
-        public async Task findUser(string input)
+        public async Task findUser([Summary("The user id.")] string input)
         {
             var user = Context.Client.GetUser(ulong.Parse(input));
 
@@ -199,7 +199,7 @@ namespace GeckoBot.Commands
 
         [Command("emote")]
         [Summary("gets an emote using id (takes a while)")]
-        public async Task findEmote(string emote)
+        public async Task findEmote([Summary("The emote id.")] string emote)
         {
             foreach (IGuild a in Context.Client.Guilds)
             {

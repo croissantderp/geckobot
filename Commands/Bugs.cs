@@ -16,7 +16,7 @@ namespace GeckoBot.Commands
         
         [Command("report")]
         [Summary("Reports a bug.")]
-        public async Task report([Remainder]string reason)
+        public async Task report([Summary("The content to put in teh bug report")] [Remainder]string reason)
         {
             RefreshBugs();
 
@@ -57,8 +57,8 @@ namespace GeckoBot.Commands
         }
     
         // Refresh bugs list
-        // Is this necessary?
-        private void RefreshBugs()
+        // yes
+        public void RefreshBugs()
         {
             FileUtils.checkForExistance();
             

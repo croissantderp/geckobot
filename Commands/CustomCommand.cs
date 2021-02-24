@@ -29,7 +29,7 @@ namespace GeckoBot.Commands
 
         [Command("cs")]
         [Summary("Creates a custom command.")]
-        public async Task cs(string title, [Remainder] string content)
+        public async Task cs([Summary("The name of the custom command.")] string title, [Summary("The command content, fields are marked by '$'.")] [Remainder] string content)
         {
             if (!Regex.IsMatch(content, @"(?<!\\)\$"))
             {
@@ -49,7 +49,7 @@ namespace GeckoBot.Commands
 
         [Command("c")]
         [Summary("Use a custom command.")]
-        public async Task c(string title, [Remainder] string content)
+        public async Task c([Summary("The name of the custom command")] string title, [Summary("The fields of the command, seperate with '$'.")] [Remainder] string content)
         {
             RefreshCDict();
             int amount = Regex.Matches(cDict[title], @"(?<!\\)\$").Count;
@@ -74,7 +74,7 @@ namespace GeckoBot.Commands
 
         [Command("cf")]
         [Summary("See the custom command fields.")]
-        public async Task cf(string title)
+        public async Task cf([Summary("The name of the custom command to find.")] string title)
         {
             RefreshCDict();
 
@@ -85,7 +85,7 @@ namespace GeckoBot.Commands
 
         [Command("cr")]
         [Summary("Remove a custom command.")]
-        public async Task cr([Remainder] string title)
+        public async Task cr([Summary("The name of the custom command to remove.")] [Remainder] string title)
         {
             RefreshCDict();
 

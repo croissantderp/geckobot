@@ -14,7 +14,7 @@ namespace GeckoBot.Commands
         //termination command
         [Command("terminate")]
         [Summary("Terminates the bot process.")]
-        public async Task terminate([Remainder]string name = "all")
+        public async Task terminate([Summary("The name of the instance to terminate, use all for all instances.")][Remainder]string name = "all")
         {
             if (name == Globals.names[0] || name == "all")
             {
@@ -26,7 +26,7 @@ namespace GeckoBot.Commands
         //temporary command to set name
         [Command("set")]
         [Summary("Sets geckobot's internal name from the array of names.")]
-        public async Task set(string name, int value)
+        public async Task set([Summary("The name of the instance to change.")] string name, [Summary("The value of the internal name array to change the instance name to.")] int value)
         {
             if (name == Top.SecretName)
             {
@@ -41,7 +41,7 @@ namespace GeckoBot.Commands
         //temporary command to set name
         [Command("change")]
         [Summary("Changes geckobot's internal name to the specified string.")]
-        public async Task change(int value, [Remainder]string newName)
+        public async Task change([Summary("The value of the internal name array to change.")] int value, [Summary("The new name to change that name to.")][Remainder]string newName)
         {
             if (value != 0)
             {
@@ -58,7 +58,7 @@ namespace GeckoBot.Commands
         //temporary command to set profile
         [Command("profile")]
         [Summary("Sets geckobot's profile to the specified image path.")]
-        public async Task profile(string path)
+        public async Task profile([Summary("The local path of the image.")] string path)
         {
             Utils.Utils.changeProfile(Context.Client, path);
             await ReplyAsync("profile changed");
@@ -66,7 +66,7 @@ namespace GeckoBot.Commands
 
         [Command("name")]
         [Summary("Sets geckobot's name")]
-        public async Task name([Remainder]string name)
+        public async Task name([Summary("The name to change the in-dicord name to.")] [Remainder]string name)
         {
             Utils.Utils.changeName(Context.Client, name);
             await ReplyAsync("name changed");

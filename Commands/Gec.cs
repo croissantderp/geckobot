@@ -116,7 +116,7 @@ namespace GeckoBot.Commands
         //finds a gecko
         [Command("fgec")]
         [Summary("Sends the specified gecko.")]
-        public async Task fgec(int value)
+        public async Task fgec([Summary("The value of the gecko.")] int value)
         {
             //converts int to string
             string final = DriveUtils.addZeros(value);
@@ -130,7 +130,7 @@ namespace GeckoBot.Commands
         //finds a gecko
         [Command("ogec")]
         [Summary("Sends an alternate of a gecko")]
-        public async Task ogec(int value)
+        public async Task ogec([Summary("The value of the gecko.")] int value)
         {
             //converts int to string
             string final = DriveUtils.addZeros(value);

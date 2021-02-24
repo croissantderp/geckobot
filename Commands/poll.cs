@@ -37,7 +37,7 @@ namespace GeckoBot.Commands
         //sends message
         [Command("create")]
         [Summary("creates a poll")]
-        public async Task create([Remainder]string poll)
+        public async Task create([Summary("The content of the poll.")] [Remainder]string poll)
         {
             RefreshRateDict();
 
@@ -58,7 +58,7 @@ namespace GeckoBot.Commands
         //sends message
         [Command("vote")]
         [Summary("votes on a poll")]
-        public async Task vote(string poll, string fraction)
+        public async Task vote([Summary("The content of the poll to vote on.")] string poll, [Summary("The fraction to submit in ##/## (denominator has to be greatest and numerator has to be positive).")] string fraction)
         {
             RefreshRateDict();
 
@@ -99,7 +99,7 @@ namespace GeckoBot.Commands
 
         [Command("results")]
         [Summary("see results of a poll")]
-        public async Task results([Remainder]string poll)
+        public async Task results([Summary("The content of the poll to see results for.")] [Remainder]string poll)
         {
             RefreshRateDict();
 
@@ -114,7 +114,7 @@ namespace GeckoBot.Commands
 
         [Command("remove")]
         [Summary("removes polls, only creator of poll can remove")]
-        public async Task remove([Remainder]string poll)
+        public async Task remove([Summary("The content of the poll to remove.")] [Remainder]string poll)
         {
             RefreshRateDict();
 
@@ -134,7 +134,7 @@ namespace GeckoBot.Commands
         [RequireGeckobotAdmin]
         [Command("fremove")]
         [Summary("force removes polls, requires geckobot admin")]
-        public async Task fremove([Remainder]string poll)
+        public async Task fremove([Summary("The content of the poll to remove.")] [Remainder]string poll)
         {
             RefreshRateDict();
 

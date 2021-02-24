@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using GeckoBot.Utils;
+using System.Text.RegularExpressions;
 
 namespace GeckoBot.Commands
 {
@@ -11,7 +12,7 @@ namespace GeckoBot.Commands
         //custom embed builder
         [Command("embed")]
         [Summary("Builds an embed from the provided arguments.")]
-        public async Task embed(string title, string field, string thumbnail = null, string footer2 = null, string hex = null)
+        public async Task embed([Summary("Title of the embed.")] string title, [Summary("Fields seperated by '$$', title and and descriptions seperated by '%%'.")] string field, [Summary("Optional thumbnail url.")] string thumbnail = null, [Summary("Optional footer.")] string footer2 = null, [Summary("Optional color in hexidecimal.")] string hex = null)
         {
             //starts embed building procedure
             var embed = new EmbedBuilder
@@ -20,12 +21,12 @@ namespace GeckoBot.Commands
             };
 
             //splits fields by $$
-            string[] fields = field.Split("$$");
+            string[] fields = Regex.Split(field, @"(?<!\\)\$\$");
 
             foreach(string a in fields)
             {
                 //splits subfields by %%
-                string[] subfields = a.Split("%%");
+                string[] subfields = Regex.Split(a, @"(?<!\\)\%\%");
 
                 //checks lengths of subfields
                 if (subfields.Length == 1)

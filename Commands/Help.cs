@@ -122,7 +122,7 @@ namespace GeckoBot.Commands
         //instructions
         [Command("what do you")]
         [Summary("a quick guide on every command, meant for quick reads. sections: | do? | general | gecko | random | sigfig | e | c | embed | edit | za_warudo | find | get | poll | admin | count")]
-        public async Task instructions(string section)
+        public async Task instructions([Summary("The category of command.")]string section)
         {
             //if info is found
             bool found = true;
