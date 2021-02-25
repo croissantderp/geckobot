@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
+using System.Text.RegularExpressions;
 
 namespace GeckoBot.Commands
 {
@@ -37,10 +38,31 @@ namespace GeckoBot.Commands
             {
                 //adds the decimal point to the list
                 Decimal.Add(".");
+                string zeros = "";
+
+                //gets zeros before
+                while (true)
+                {
+                    if (Regex.IsMatch(numberArray[1], @"^0"))
+                    {
+                        numberArray[1] = numberArray[1].Remove(0, 1);
+                        zeros += "0";
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                //adds zeros
+                Decimal.Add(zeros);
+
                 //adds ** which bolds text
                 Decimal.Add("**");
+
                 //adds the number
                 Decimal.Add(numberArray[1]);
+
                 Decimal.Add("**");
 
                 //if there are numbers before the decimal
@@ -56,7 +78,7 @@ namespace GeckoBot.Commands
                 else
                 {
                     //counts total number of sigfigs
-                    SigNum = Decimal[2].Length;
+                    SigNum = Decimal[3].Length;
                 }
             }
             //if decimal does not exist
