@@ -13,13 +13,10 @@ namespace GeckoBot.Commands
     public class SigFig : ModuleBase<SocketCommandContext>
     {
         
-        private string[] figures(decimal number)
+        private string[] figures(string number)
         {
-            //converts number to a string
-            string yes = number.ToString();
-
             //splits the number into two strings, one of the digits before the decimal, one of them after
-            string[] numberArray = yes.Split(".");
+            string[] numberArray = number.Split(".");
 
             //a list of the numbers after the decimal point
             List<string> Decimal = new ();
@@ -40,34 +37,26 @@ namespace GeckoBot.Commands
                 Decimal.Add(".");
                 string zeros = "";
 
-                //gets zeros before
-                while (true)
+                if (numberArray[1] == "")
                 {
-                    if (Regex.IsMatch(numberArray[1], @"^0"))
-                    {
-                        numberArray[1] = numberArray[1].Remove(0, 1);
-                        zeros += "0";
-                    }
-                    else
-                    {
-                        break;
-                    }
+                    //adds ** which bolds text
+                    Decimal.Add(numberArray[1]);
+
+                    //bolds everythings
+                    numberList.Add("**");
+                    numberList.Insert(0, "**");
+
+                    //counts total number of sigfigs
+                    SigNum = numberList[1].Length + Decimal[1].Length;
                 }
-
-                //adds zeros
-                Decimal.Add(zeros);
-
-                //adds ** which bolds text
-                Decimal.Add("**");
-
-                //adds the number
-                Decimal.Add(numberArray[1]);
-
-                Decimal.Add("**");
-
                 //if there are numbers before the decimal
-                if (numberList[0] != ("0") && numberList[0] != ("-0"))
+                else if (numberList[0] != ("0") && numberList[0] != ("-0"))
                 {
+                    //adds ** which bolds text
+                    Decimal.Add("**");
+                    Decimal.Add(numberArray[1]);
+                    Decimal.Add("**");
+
                     //bolds everythings
                     numberList.Add("**");
                     numberList.Insert(0, "**");
@@ -77,6 +66,31 @@ namespace GeckoBot.Commands
                 }
                 else
                 {
+                    //gets zeros before
+                    while (true)
+                    {
+                        if (numberArray[1][0] == '0')
+                        {
+                            numberArray[1] = numberArray[1].Remove(0, 1);
+                            zeros += "0";
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    //adds zeros
+                    Decimal.Add(zeros);
+
+                    //adds ** which bolds text
+                    Decimal.Add("**");
+
+                    //adds the number
+                    Decimal.Add(numberArray[1]);
+
+                    Decimal.Add("**");
+
                     //counts total number of sigfigs
                     SigNum = Decimal[3].Length;
                 }
@@ -141,7 +155,7 @@ namespace GeckoBot.Commands
         //general sigfig command
         [Command("")]
         [Summary("Tells you how many significant figures your number has.")]
-        public async Task sigfigbase([Summary("The number to show sigfigs.")] decimal number)
+        public async Task sigfigbase([Summary("The number to show sigfigs.")] string number)
         {
             var figs = figures(number);
             
@@ -192,8 +206,8 @@ namespace GeckoBot.Commands
             decimal finalNum = number1 + number2;
             decimal final = 0;
 
-            int accuracy1 = int.Parse(figures(number1)[2]);
-            int accuracy2 = int.Parse(figures(number2)[2]);
+            int accuracy1 = int.Parse(figures(number1.ToString())[2]);
+            int accuracy2 = int.Parse(figures(number2.ToString())[2]);
 
             bool isDecimal = false;
 
@@ -263,13 +277,13 @@ namespace GeckoBot.Commands
             if (!isDecimal)
             {
                 int final2 = (int)final;
-                await ReplyAsync(string.Join("", figures(final2)[0] + figures(final2)[1] + " " + figures(final2)[2]));
+                await ReplyAsync(string.Join("", figures(final2.ToString())[0] + figures(final2.ToString())[1] + " " + figures(final2.ToString())[2]));
             }
             else
             {
                 decimal e = decimal.Parse(final.ToString() + string.Join("", extra));
 
-                await ReplyAsync(figures(e)[0] + figures(e)[1] + " " + figures(e)[2]);
+                await ReplyAsync(figures(e.ToString())[0] + figures(e.ToString())[1] + " " + figures(e.ToString())[2]);
             }
         }
 
@@ -280,8 +294,8 @@ namespace GeckoBot.Commands
         {
             decimal finalNum = number1 - number2;
             decimal final = 0;
-            int accuracy1 = int.Parse(figures(number1)[2]);
-            int accuracy2 = int.Parse(figures(number2)[2]);
+            int accuracy1 = int.Parse(figures(number1.ToString())[2]);
+            int accuracy2 = int.Parse(figures(number2.ToString())[2]);
 
             bool isDecimal = false;
 
@@ -352,13 +366,13 @@ namespace GeckoBot.Commands
             if (!isDecimal)
             {
                 int final2 = (int)final;
-                await ReplyAsync(figures(final2)[0] + figures(final2)[1] + " " + figures(final2)[2]);
+                await ReplyAsync(figures(final2.ToString())[0] + figures(final2.ToString())[1] + " " + figures(final2.ToString())[2]);
             }
             else
             {
                 decimal e = decimal.Parse(final.ToString() + string.Join("", extra));
 
-                await ReplyAsync(figures(e)[0] + figures(e)[1] + " " + figures(e)[2]);
+                await ReplyAsync(figures(e.ToString())[0] + figures(e.ToString())[1] + " " + figures(e.ToString())[2]);
             }
         }
 
@@ -369,8 +383,8 @@ namespace GeckoBot.Commands
         {
             decimal finalNum = number1 * number2;
 
-            int accuracy1 = int.Parse(figures(number1)[2]);
-            int accuracy2 = int.Parse(figures(number2)[2]);
+            int accuracy1 = int.Parse(figures(number1.ToString())[2]);
+            int accuracy2 = int.Parse(figures(number2.ToString())[2]);
 
             decimal final = 0;
 
@@ -406,11 +420,11 @@ namespace GeckoBot.Commands
             if (e.ToString().Length > accuracy1 + 1 || e.ToString().Length > accuracy2 + 1)
             {
                 double f = double.Parse(final.ToString() + string.Join("", extra));
-                await ReplyAsync(string.Join("", figures((decimal)f)[0] + figures((decimal)f)[1] + " " + figures((decimal)f)[2]));
+                await ReplyAsync(string.Join("", figures(f.ToString())[0] + figures(f.ToString())[1] + " " + figures(f.ToString())[2]));
             }
             else
             {
-                await ReplyAsync(figures(e)[0] + figures(e)[1] + " " + figures(e)[2]);
+                await ReplyAsync(figures(e.ToString())[0] + figures(e.ToString())[1] + " " + figures(e.ToString())[2]);
             }
         }
 
@@ -420,8 +434,8 @@ namespace GeckoBot.Commands
         public async Task sigDivide([Summary("First number.")] decimal number1, [Summary("Number to divide first number by.")] decimal number2)
         {
             decimal finalNum = number1 / number2;
-            int accuracy1 = int.Parse(figures(number1)[2]);
-            int accuracy2 = int.Parse(figures(number2)[2]);
+            int accuracy1 = int.Parse(figures(number1.ToString())[2]);
+            int accuracy2 = int.Parse(figures(number2.ToString())[2]);
 
             decimal final = 0;
 
@@ -457,11 +471,11 @@ namespace GeckoBot.Commands
             if (e.ToString().Length > accuracy1 + 1 || e.ToString().Length > accuracy2 + 1)
             {
                 double f = double.Parse(final.ToString() + string.Join("", extra));
-                await ReplyAsync(string.Join("", figures((decimal)f)[0] + figures((decimal)f)[1] + " " + figures((decimal)f)[2]));
+                await ReplyAsync(string.Join("", figures(f.ToString())[0] + figures(f.ToString())[1] + " " + figures(f.ToString())[2]));
             }
             else
             {
-                await ReplyAsync(figures(e)[0] + figures(e)[1] + " " + figures(e)[2]);
+                await ReplyAsync(figures(e.ToString())[0] + figures(e.ToString())[1] + " " + figures(e.ToString())[2]);
             }
         }
     }

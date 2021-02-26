@@ -137,7 +137,7 @@ namespace GeckoBot.Commands
             switch (section)
             {
                 case "do?":
-                    embed.Description = ("my prefix is \\`." + System.Environment.NewLine +
+                    embed.Description = ("my prefix is \\` and \\`i for inline commands." + System.Environment.NewLine +
                                          "(highly recommended to have developer mode on to easily use)" + System.Environment.NewLine +
                                          "if there's a problem, ping my owner croissantderp#4167 " + System.Environment.NewLine + System.Environment.NewLine +
                                          "links: [trello](https://trello.com/invite/b/cFS33M13/8fddf3ac42bd0fe419e482c6f4414e01/gecko-bot-todo) [github](https://github.com/croissantderp/geckobot) [invite](https://discord.com/oauth2/authorize?client_id=766064505079726140&scope=bot&permissions=379968)" + System.Environment.NewLine + System.Environment.NewLine +
@@ -201,7 +201,6 @@ namespace GeckoBot.Commands
                         "'\\`re [channel id] [message id] [emote string (note: only emotes)]' is react function" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`fe [message link] [emote string (note: only emotes)]' is react function using links" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`te [channel id or 'dm'] [emote string]' is targeted send where the channel id is the target channel" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`ie [emote string]' is inline send, you can insert this anywhere in a message and it will treat everything after it as a command" + System.Environment.NewLine + System.Environment.NewLine +
                         "(escape an emote or '$' by prefacing it with '\\\\')"
                     );
                     embed.AddField("**e system manage:**",

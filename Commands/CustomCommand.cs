@@ -58,6 +58,7 @@ namespace GeckoBot.Commands
             if (inserts.Length != amount)
             {
                 await ReplyAsync("there are " + amount + " fields in this command");
+                return;
             }
 
             Regex rgx = new Regex(@"(?<!\\)\$");

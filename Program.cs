@@ -92,12 +92,17 @@ namespace GeckoBot
                 //if (result.Error.Equals(CommandError.UnmetPrecondition)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
 
             }
-            else if (Regex.IsMatch(message.Content, @"(?<!\\)\`ie"))
+            else if (Regex.IsMatch(message.Content, @"(?<!\\)\`i"))
             {
-                int temp = Regex.Split(message.Content, @"(?<!\\)\`ie")[0].Length + 1;
-                var result = await _commands.ExecuteAsync(context, temp, _services);
-                if (!result.IsSuccess) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
-                //if (result.Error.Equals(CommandError.UnmetPrecondition)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
+                var temp2 = Regex.Split(message.Content, @"(?<!\\)\`i");
+                int temp = temp2[0].Length + 2;
+                if (!Regex.IsMatch(temp2[1], @"(?<!\\)\`"))
+                {
+                    var result = await _commands.ExecuteAsync(context, temp, _services);
+                    if (!result.IsSuccess) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
+                    //if (result.Error.Equals(CommandError.UnmetPrecondition)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
+
+                }
             }
         }
     }
