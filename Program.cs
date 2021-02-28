@@ -81,14 +81,14 @@ namespace GeckoBot
                 if (!Regex.IsMatch(temp, @"(?<!\\)\`"))
                 {
                     var result = await _commands.ExecuteAsync(context, argPos, _services);
-                    if (!result.IsSuccess) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
+                    if (!result.IsSuccess && !result.Error.Equals(CommandError.UnknownCommand)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
                     //if (result.Error.Equals(CommandError.UnmetPrecondition)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
                 }
             }
             else if (message.HasStringPrefix("\\`", ref argPos))
             {
                 var result = await _commands.ExecuteAsync(context, argPos, _services);
-                if (!result.IsSuccess) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
+                if (!result.IsSuccess && !result.Error.Equals(CommandError.UnknownCommand)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
                 //if (result.Error.Equals(CommandError.UnmetPrecondition)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
 
             }
@@ -96,12 +96,11 @@ namespace GeckoBot
             {
                 var temp2 = Regex.Split(message.Content, @"(?<!\\)\`i");
                 int temp = temp2[0].Length + 2;
-                if (!Regex.IsMatch(temp2[1], @"(?<!\\)\`"))
+                if (!Regex.IsMatch(temp2[1], @"(?<!\\)\`") && !(Regex.Matches(string.Join("", temp2), @"(?<!\\)\`").Count % 2 == 1))
                 {
                     var result = await _commands.ExecuteAsync(context, temp, _services);
-                    if (!result.IsSuccess) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
+                    if (!result.IsSuccess && !result.Error.Equals(CommandError.UnknownCommand)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
                     //if (result.Error.Equals(CommandError.UnmetPrecondition)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
-
                 }
             }
         }
