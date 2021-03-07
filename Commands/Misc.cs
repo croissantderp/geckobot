@@ -46,7 +46,7 @@ namespace GeckoBot.Commands
         // Also, there's probably a better way of deleting large bot messages than using a delete command
         [Command("delete")]
         [Summary("Delete a geckobot message.")]
-        public async Task delete([Summary("First input, either link or channel id")] string input, [Summary("Second input, message id or leave blank for link.")] string input2)
+        public async Task delete([Summary("First input, either link or channel id")] string input, [Summary("Second input, message id or leave blank for link.")] string input2 = null)
         {
             string channel = "";
             string message = "";
