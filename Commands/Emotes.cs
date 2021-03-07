@@ -150,10 +150,27 @@ namespace GeckoBot.Commands
         //emote react function
         [Command("re")]
         [Summary("Reacts to a message with the specified emotes.")]
-        public async Task ReactCustomAsync([Summary("The channel id of the message.")] string channel, [Summary("The message id of the message to react to.")] string message, [Summary("The emotes to react with, seperated by '$'.")] string emote)
+        public async Task ReactCustomAsync([Summary("The emotes to react with, seperated by '$'")] string emote, [Summary("First input, either link or channel id.")] string input, [Summary("Second input, message id or leave blank for link.")] string input2 = null)
         {
             EmoteUtils.RefreshEmoteDict();
-            
+
+            string channel = "";
+            string message = "";
+
+            if (input2 == null)
+            {
+                input = input.Remove(0, 8);
+                string[] final = input.Split("/");
+
+                channel = final[3];
+                message = final[4];
+            }
+            else
+            {
+                channel = input;
+                message = input2;
+            }
+
             //parses message id provided and gets message from channel
             var message2 = await (Context.Client.GetChannel(ulong.Parse(channel)) as IMessageChannel).GetMessageAsync(ulong.Parse(message));
 
@@ -188,49 +205,6 @@ namespace GeckoBot.Commands
             }
         }
 
-        //emote react function
-        [Command("fe")]
-        [Summary("Reacts to a message with the specified emotes using a link as input")]
-        public async Task fReactCustomAsync([Summary("The message link of the message to react to")] string input, [Summary("The emotes to react with, seperated by '$'")] string emote)
-        {
-            input = input.Remove(0, 29);
-            string[] final = input.Split("/");
-
-            EmoteUtils.RefreshEmoteDict();
-
-            //parses message id provided and gets message from channel
-            var message2 = await (Context.Client.GetChannel(ulong.Parse(final[1])) as IMessageChannel).GetMessageAsync(ulong.Parse(final[2]));
-
-            //splits based on $
-            string[] yesnt = emote.Split("$");
-
-            foreach (string em in yesnt)
-            {
-                //if the emote dictionary contains the key
-                if (EmoteDict.ContainsKey(em))
-                {
-                    var emote2 = Emote.Parse(EmoteDict[em]);
-                    await message2.AddReactionAsync(emote2);
-                }
-                else
-                {
-                    //tries to parse emotes 2 different ways
-                    try
-                    {
-                        var emote2 = Emote.Parse(em);
-                        await message2.AddReactionAsync(emote2);
-                    }
-                    catch
-                    {
-                        var emote2 = new Emoji(em);
-                        await message2.AddReactionAsync(emote2);
-                    }
-                }
-
-                //adds check emote after done
-                await Context.Message.AddReactionAsync(new Emoji("✅"));
-            }
-        }
         //admin save function
         [RequireGeckobotAdmin]
         [Command("aes")]

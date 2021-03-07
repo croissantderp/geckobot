@@ -25,10 +25,10 @@ namespace GeckoBot.Commands
         [Summary("gets ids from a message link")]
         public async Task getMessage([Summary("A message link.")] string input)
         {
-            input = input.Remove(0, 29);
+            input = input.Remove(0, 8);
             string[] final = input.Split("/");
 
-            var user = ( await (Context.Client.GetChannel(ulong.Parse(final[1])) as IMessageChannel).GetMessageAsync(ulong.Parse(final[2])) as IUserMessage).Author;
+            var user = ( await (Context.Client.GetChannel(ulong.Parse(final[3])) as IMessageChannel).GetMessageAsync(ulong.Parse(final[4])) as IUserMessage).Author;
 
             await ReplyAsync("guild id: \n`" + final[0] + "`\n" + 
                 "channel id: \n`" + final[1] + "`\n" + 
@@ -40,12 +40,12 @@ namespace GeckoBot.Commands
         [Summary("gets ids from a message link")]
         public async Task getMessageContent([Summary("A message link.")] string input)
         {
-            input = input.Remove(0, 29);
+            input = input.Remove(0, 8);
             string[] final = input.Split("/");
 
-            var channel = Context.Client.GetChannel(ulong.Parse(final[1])) as IMessageChannel;
+            var channel = Context.Client.GetChannel(ulong.Parse(final[3])) as IMessageChannel;
 
-            var message = await channel.GetMessageAsync(ulong.Parse(final[2]));
+            var message = await channel.GetMessageAsync(ulong.Parse(final[4]));
 
             //embed
             var embed = new EmbedBuilder
@@ -53,6 +53,11 @@ namespace GeckoBot.Commands
                 Description = message.Content,
                 Author = new EmbedAuthorBuilder().WithName(message.Author.ToString() + " (" + message.Author.Id + ")").WithIconUrl(message.Author.GetAvatarUrl())
             };
+
+            if (message.Attachments.Count != 0)
+            {
+                embed.WithImageUrl(message.Attachments.First().Url);
+            }
 
             embed.WithTimestamp(message.Timestamp);
 
@@ -180,6 +185,11 @@ namespace GeckoBot.Commands
                 Description = message.Content,
                 Author = new EmbedAuthorBuilder().WithName(message.Author.ToString() + " (" + message.Author.Id + ")").WithIconUrl(message.Author.GetAvatarUrl())
             };
+
+            if (message.Attachments.Count != 0)
+            {
+                embed.WithImageUrl(message.Attachments.First().Url);
+            }
 
             embed.WithTimestamp(message.Timestamp);
 

@@ -198,8 +198,7 @@ namespace GeckoBot.Commands
                         "can call items with a key, string multiple keys together with $, this also applies to many other functions (e.g. '\\`flip [emote string]')" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`e [string]' is the simple send function" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`ge [string]' is reverse lookup, where the emote string is the item you want to find the key for" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`re [channel id] [message id] [emote string (note: only emotes)]' is react function" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`fe [message link] [emote string (note: only emotes)]' is react function using links" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`re [emote string (note: only emotes)] [channel id or link] [message id or leave blank]' is react function" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`te [channel id or 'dm'] [emote string]' is targeted send where the channel id is the target channel" + System.Environment.NewLine + System.Environment.NewLine +
                         "(escape an emote or '$' by prefacing it with '\\\\')"
                     );

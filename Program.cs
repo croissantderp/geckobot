@@ -75,33 +75,20 @@ namespace GeckoBot
             if (message.Author.IsBot) return;
 
             int argPos = 0;
-            if (message.HasStringPrefix("`", ref argPos))
-            {
-                string temp = message.Content.Remove(0,1);
-                if (!Regex.IsMatch(temp, @"(?<!\\)\`"))
-                {
-                    var result = await _commands.ExecuteAsync(context, argPos, _services);
-                    if (!result.IsSuccess && !result.Error.Equals(CommandError.UnknownCommand)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
-                    //if (result.Error.Equals(CommandError.UnmetPrecondition)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
-                }
-            }
-            else if (message.HasStringPrefix("\\`", ref argPos))
+            if (message.HasStringPrefix("`", ref argPos) || message.HasStringPrefix("\\`", ref argPos))
             {
                 var result = await _commands.ExecuteAsync(context, argPos, _services);
                 if (!result.IsSuccess && !result.Error.Equals(CommandError.UnknownCommand)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
                 //if (result.Error.Equals(CommandError.UnmetPrecondition)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
-
             }
             else if (Regex.IsMatch(message.Content, @"(?<!\\)\`i"))
             {
                 var temp2 = Regex.Split(message.Content, @"(?<!\\)\`i");
-                int temp = temp2[0].Length + 2;
-                if (!Regex.IsMatch(temp2[1], @"(?<!\\)\`") && !(Regex.Matches(string.Join("", temp2), @"(?<!\\)\`").Count % 2 == 1))
-                {
-                    var result = await _commands.ExecuteAsync(context, temp, _services);
-                    if (!result.IsSuccess && !result.Error.Equals(CommandError.UnknownCommand)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
-                    //if (result.Error.Equals(CommandError.UnmetPrecondition)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
-                }
+                argPos = temp2[0].Length + 2;
+
+                var result = await _commands.ExecuteAsync(context, argPos, _services);
+                if (!result.IsSuccess && !result.Error.Equals(CommandError.UnknownCommand)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
+                //if (result.Error.Equals(CommandError.UnmetPrecondition)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
             }
         }
     }
