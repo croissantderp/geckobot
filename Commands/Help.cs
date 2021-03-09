@@ -199,7 +199,7 @@ namespace GeckoBot.Commands
                         "'\\`e [emote string]' is the simple send function" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`ge [emote string]' is reverse lookup, where the emote string is the item you want to find the key for" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`re [emote string] [channel id or link] [message id or leave blank]' is react function" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`te [channel id or 'dm'] [emote string]' is targeted send where the channel id is the target channel" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`te [channel id or 'dm[user id]'] [emote string]' is targeted send where the channel id is the target channel" + System.Environment.NewLine + System.Environment.NewLine +
                         "(escape an emote or '$' by prefacing it with '\\\\')"
                     );
                     embed.AddField("**e system manage:**",
@@ -265,8 +265,8 @@ namespace GeckoBot.Commands
                     break;
                 case "c":
                     embed.AddField("**c**",
-                        "'\\`c [custom command name] [fields seperated by $]' uses a custom command" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`cs [custom command name] [command structure, fields for replacement are marked by $]' creates a custom command" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`c [custom command name] [fields seperated by '$']' uses a custom command" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`cs [custom command name] [command structure, fields for replacement are marked by '[]']' creates a custom command" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`cr [custom command name]' removes custom commands" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`cf [custom command name]' see the fields of a custom command" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`cl' gets a lsit of all custom commandsl"
@@ -285,7 +285,8 @@ namespace GeckoBot.Commands
                         "'\\`change [value to change] [name to change it to]' changes names in predetermined matrix" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`profile [local filepath]' to change the bot's profile" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`aes [key] [anything]' to save as a undeletable emote" + System.Environment.NewLine + System.Environment.NewLine +
-                        "'\\`aer [key]' to remove an undeletable emote" + System.Environment.NewLine + System.Environment.NewLine +
+                        "'\\`aer [key]' to remove an undeletable emote" + System.Environment.NewLine + System.Environment.NewLine + 
+                        "'\\`ate [channel id or 'dm[user id]'] [emote string]' is targeted send where the channel id is the target channel" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`bugs' shows current bug reports" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`clear bugs' clears all bug reports" + System.Environment.NewLine + System.Environment.NewLine +
                         "'\\`fremove [poll name]' force removes a specified poll" + System.Environment.NewLine + System.Environment.NewLine +

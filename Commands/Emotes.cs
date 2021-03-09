@@ -14,16 +14,32 @@ namespace GeckoBot.Commands
     {
         //emote dictionary
         public static Dictionary<string, string> EmoteDict = new();
-        
-        
+
+        //emote dictionary
+        public static List<string> cooldown = new();
+
         //sends message
         [Command("te")]
         [Summary("Sends a message with words replaced by emotes from the dictionary to the target channel.")]
-        public async Task send([Summary("The channel id.")] string target, [Summary("The message content.")] [Remainder]string message)
+        public async Task send([Summary("The channel id, or user id prefaced by 'dm'")] string target, [Summary("The message content.")] [Remainder]string message)
         {
-            if (target == "dm")
+            if (target.Contains("dm"))
             {
-                await Context.User.SendMessageAsync(EmoteUtils.emoteReplace(message));
+                if (cooldown.Contains(target.Remove(0, 2) + Context.User.Id.ToString()))
+                {
+                    await ReplyAsync("this user is still on cooldown!");
+                    return;
+                }
+
+                var user = Context.Client.GetUser(ulong.Parse(target.Remove(0, 2)));
+                await user.SendMessageAsync(Context.User + ": " + EmoteUtils.emoteReplace(message), allowedMentions: Globals.allowed);
+                
+                cooldown.Add(target.Remove(0, 2) + Context.User.Id.ToString());
+
+                //starts a timer with desired amount of time
+                System.Timers.Timer t = new(3600000);
+                t.Elapsed += (sender, e) => cooldownUp(target.Remove(0, 2) + Context.User.Id.ToString(), t);
+                t.Start();
             }
             else
             {
@@ -34,6 +50,40 @@ namespace GeckoBot.Commands
                 var chnl = client.GetChannel(ulong.Parse(target)) as IMessageChannel;
 
                 await chnl.SendMessageAsync(Context.User + ": " + EmoteUtils.emoteReplace(message), allowedMentions: Globals.allowed);
+            }
+
+            await Context.Message.AddReactionAsync(new Emoji("✅"));
+        }
+
+        //the task that is activated when time is up
+        private void cooldownUp(string key, System.Timers.Timer timer2)
+        {
+            cooldown.Remove(key);
+
+            //stops timer
+            timer2.Stop();
+        }
+
+        //sends message
+        [RequireGeckobotAdmin]
+        [Command("ate")]
+        [Summary("Sends a message with words replaced by emotes from the dictionary to the target channel but is anonymous")]
+        public async Task asend([Summary("The channel id, or user id prefaced by 'dm'")] string target, [Summary("The message content.")][Remainder] string message)
+        {
+            if (target.Contains("dm"))
+            {
+                var user = Context.Client.GetUser(ulong.Parse(target.Remove(0,2)));
+                await user.SendMessageAsync(EmoteUtils.emoteReplace(message), allowedMentions: Globals.allowed);
+            }
+            else
+            {
+                //gets current client
+                DiscordSocketClient client = Context.Client;
+
+                //parses channel id provided and gets channel from client
+                var chnl = client.GetChannel(ulong.Parse(target)) as IMessageChannel;
+
+                await chnl.SendMessageAsync(EmoteUtils.emoteReplace(message), allowedMentions: Globals.allowed);
             }
         }
 

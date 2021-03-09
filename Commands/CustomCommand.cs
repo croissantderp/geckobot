@@ -29,9 +29,9 @@ namespace GeckoBot.Commands
 
         [Command("cs")]
         [Summary("Creates a custom command.")]
-        public async Task cs([Summary("The name of the custom command.")] string title, [Summary("The command content, fields are marked by '$'.")] [Remainder] string content)
+        public async Task cs([Summary("The name of the custom command.")] string title, [Summary("The command content, fields are marked by '[]'.")] [Remainder] string content)
         {
-            if (!Regex.IsMatch(content, @"(?<!\\)\$"))
+            if (!Regex.IsMatch(content, @"(?<!\\)\[[^\]]*\]"))
             {
                 await ReplyAsync("please have at least one field");
                 return;
@@ -49,10 +49,10 @@ namespace GeckoBot.Commands
 
         [Command("c")]
         [Summary("Use a custom command.")]
-        public async Task c([Summary("The name of the custom command")] string title, [Summary("The fields of the command, seperate with '$'.")] [Remainder] string content)
+        public async Task c([Summary("The name of the custom command")] string title, [Summary("The fields of the command, seperate fields with '$'.")] [Remainder] string content)
         {
             RefreshCDict();
-            int amount = Regex.Matches(cDict[title], @"(?<!\\)\$").Count;
+            int amount = Regex.Matches(cDict[title], @"(?<!\\)\[[^\]]*\]").Count;
             string[] inserts = Regex.Split(content, @"(?<!\\)\$");
 
             if (inserts.Length != amount)
@@ -61,16 +61,16 @@ namespace GeckoBot.Commands
                 return;
             }
 
-            Regex rgx = new Regex(@"(?<!\\)\$");
+            Regex rgx = new Regex(@"(?<!\\)\[[^\]]*\]");
 
             string final = cDict[title];
 
             for (int i = 0; i < amount; i++)
             {
-                final = rgx.Replace(final, "" + inserts[i] + "", 1);
+                final = rgx.Replace(final, "" + EmoteUtils.emoteReplace(inserts[i]) + "", 1);
             }
 
-            await ReplyAsync(EmoteUtils.removeforbidden(final), allowedMentions: Globals.allowed);
+            await ReplyAsync(EmoteUtils.emoteReplace(final), allowedMentions: Globals.allowed);
         }
 
         [Command("cf")]
@@ -79,9 +79,7 @@ namespace GeckoBot.Commands
         {
             RefreshCDict();
 
-            string final = Regex.Replace(cDict[title], @"(?<!\\)\$", "[field]");
-
-            await ReplyAsync(EmoteUtils.removeforbidden(final), allowedMentions: Globals.allowed);
+            await ReplyAsync(EmoteUtils.emoteReplace(cDict[title]), allowedMentions: Globals.allowed);
         }
 
         [Command("cr")]
