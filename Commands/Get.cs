@@ -13,12 +13,21 @@ namespace GeckoBot.Commands
     [Summary("Gets information about things you are stalking")]
     public class get : ModuleBase<SocketCommandContext>
     {
+        [Command("guild")]
+        [Summary("Gets guild id.")]
+        public async Task getGuild([Summary("A guild.")][Remainder] string input)
+        {
+            var guild = Context.Client.Guilds.Where(a => a.Name == input).First();
+            
+            await ReplyAsync("guild: `" + guild.Name + "`, id: `" + guild.Id + "`");
+        }
+
         [Command("channel")]
         [Summary("gets channel id")]
-        public async Task getChannel([Summary("A channel, either name or the #channel of it.")] IChannel channel)
+        public async Task getChannel([Summary("A channel, either name or the #channel of it.")][Remainder] IChannel channel)
         {
-            await ReplyAsync("guild id: \n`" + (channel as IGuildChannel).GuildId + "`\n" + 
-                "channel id: \n`" + channel.Id + "`", allowedMentions: Globals.allowed);
+            await ReplyAsync("guild: `"+ (channel as IGuildChannel).Guild.Name + "`, id: `" + (channel as IGuildChannel).GuildId + "`\n" + 
+                "channel : `" + channel.Name + "`, id: `" + channel.Id + "`", allowedMentions: Globals.notAllowed);
         }
 
         [Command("message")]
@@ -28,17 +37,19 @@ namespace GeckoBot.Commands
             input = input.Remove(0, 8);
             string[] final = input.Split("/");
 
-            var user = ( await (Context.Client.GetChannel(ulong.Parse(final[3])) as IMessageChannel).GetMessageAsync(ulong.Parse(final[4])) as IUserMessage).Author;
+            var channel = Context.Client.GetChannel(ulong.Parse(final[3])) as IMessageChannel;
+            var message = await channel.GetMessageAsync(ulong.Parse(final[4])) as IUserMessage;
+            var user = message.Author;
 
-            await ReplyAsync("guild id: \n`" + final[0] + "`\n" + 
-                "channel id: \n`" + final[1] + "`\n" + 
-                "message id: \n`" + final[2] + "`\n" +
-                "author: \n`" + user + ", id: " + user.Id + "`", allowedMentions: Globals.allowed);
+            await ReplyAsync("guild: `" + (channel as IGuildChannel).Guild.Name + "`, id: `" + final[2] + "`\n" + 
+                "channel: `" + channel.Name + "`, id: `<#" + final[3] + ">`\n" + 
+                "message: " + (message.Content.Length > 20 ? message.Content.Remove(20) : message.Content).Replace("`", "\\`") + ", id: `" + final[4] + "`\n" +
+                "author: `" + user + "`, id: `<@" + user.Id + ">`", allowedMentions: Globals.notAllowed);
         }
 
         [Command("message content")]
-        [Summary("gets ids from a message link")]
-        public async Task getMessageContent([Summary("A message link.")] string input)
+        [Summary("gets content from a message link")]
+        public async Task getMessageContent(string input)
         {
             input = input.Remove(0, 8);
             string[] final = input.Split("/");
@@ -63,25 +74,26 @@ namespace GeckoBot.Commands
 
             embed.WithColor(180, 212, 85);
 
-            await ReplyAsync("", embed: embed.Build(), allowedMentions: Globals.allowed);
+            await ReplyAsync("", embed: embed.Build(), allowedMentions: Globals.notAllowed);
         }
 
         [Command("user")]
         [Summary("gets info about a user using a mention")]
-        public async Task getUser([Summary("A @ mention")] IUser user)
+        public async Task getUser([Summary("A @ mention")][Remainder] IUser user)
         {
-            await ReplyAsync("user id: \n`" + user.Id + "`\n" + user.GetAvatarUrl(), allowedMentions: new AllowedMentions(Discord.AllowedMentionTypes.None));
+            await ReplyAsync("user: `" + user.ToString() + "`, id: `<@" + user.Id + ">`\n" + user.GetAvatarUrl(), allowedMentions: Globals.notAllowed);
         }
 
         [Command("emote")]
         [Summary("gets info about an emote using name or emote")]
-        public async Task getEmote(string emote)
+        public async Task getEmote([Remainder] string emote)
         {
             try
             {
                 IEmote emote2 = Emote.Parse(emote);
                 
-                await ReplyAsync(emote2 + "\n emote id: \n`" + emote2 + "`", allowedMentions: new AllowedMentions(AllowedMentionTypes.None));
+                await ReplyAsync("guild: `" + (emote2 as IGuild).Name + "`, id: `" + (emote2 as IGuild).Id + "`\n" + 
+                    "emote: `" + emote2 + " `id: `" + emote2 + "`", allowedMentions: Globals.notAllowed);
             }
             catch
             {
@@ -91,12 +103,13 @@ namespace GeckoBot.Commands
                     {
                         if (e.Name == emote)
                         {
-                            await ReplyAsync(e + "\n emote id: \n`" + e + "`", allowedMentions: new AllowedMentions(AllowedMentionTypes.None));
+                            await ReplyAsync("guild: `" + a.Name + "`, id: `" + a.Id + "`\n" +
+                                "emote: " + e + " `id: " + e + "`", allowedMentions: Globals.notAllowed);
                             return;
                         }
                     }
                 }
-                await ReplyAsync("emote not found", allowedMentions: new AllowedMentions(AllowedMentionTypes.None));
+                await ReplyAsync("emote not found", allowedMentions: Globals.notAllowed);
             }
         }
 
@@ -127,7 +140,7 @@ namespace GeckoBot.Commands
                         }
                         if (pageCounter == page)
                         {
-                            final.Add(e.ToString() + ":\n`" + e.ToString() + "`\n");
+                            final.Add(e + ":\n`" + e.ToString() + "`\n");
                         }
                         counter++;
                         total++;
@@ -139,7 +152,7 @@ namespace GeckoBot.Commands
 
             if (final.Count > 1)
             {
-                await ReplyAsync(string.Join("", final), allowedMentions: new AllowedMentions(Discord.AllowedMentionTypes.None));
+                await ReplyAsync(string.Join("", final), allowedMentions: Globals.notAllowed);
             }
             else
             {
@@ -152,11 +165,21 @@ namespace GeckoBot.Commands
     [Summary("finds various stuff, usually from ids")]
     public class find : ModuleBase<SocketCommandContext>
     {
+        [Command("guild")]
+        [Summary("Gets guild via id.")]
+        public async Task getGuild([Summary("A guild id.")][Remainder] string input)
+        {
+            var guild = Context.Client.GetGuild(ulong.Parse(input));
+            await ReplyAsync("guild: `" + guild.Name + "`, id: `" + guild.Id + "`");
+        }
+
         [Command("channel")]
         [Summary("finds channel from an id")]
         public async Task findChannel([Summary("The channel id.")] string input)
         {
-            await ReplyAsync("<#" + input + "> \n`<#" + input + ">`", allowedMentions: Globals.allowed);
+            var channel = Context.Client.GetChannel(ulong.Parse(input)) as IGuildChannel;
+            await ReplyAsync("guild: `" + channel.Guild.Name + "`, id: `" + (channel as IGuildChannel).GuildId + "`\n" +
+                "channel : `" + channel.Name + "`, id: `" + channel.Id + "`", allowedMentions: Globals.notAllowed);
         }
 
         [Command("message")]
@@ -164,11 +187,13 @@ namespace GeckoBot.Commands
         public async Task findMessage([Summary("The channel id of the message.")] string input, [Summary("The message id")] string input2)
         {
             var channel2 = Context.Client.GetChannel(ulong.Parse(input)) as IGuildChannel;
+            var message = await (channel2 as IMessageChannel).GetMessageAsync(ulong.Parse(input2));
+            var user = message.Author;
 
-            var user = (await (channel2 as IMessageChannel).GetMessageAsync(ulong.Parse(input2)) as IUserMessage).Author;
-
-            await ReplyAsync("https://discord.com/channels/" + channel2.GuildId + "/" + input + "/" + input2 + "\n" + 
-                "author: \n`" + user + ", id: " + user.Id + "`", allowedMentions: Globals.allowed);
+            await ReplyAsync("guild: `" + channel2.Guild.Name + ", id: " + channel2.Guild.Id + "`\n" +
+                "channel: `" + channel2.Name + ", id: <#" + channel2.Id + ">`\n" +
+                "message: " + (message.Content.Length > 20 ? message.Content.Remove(20) : message.Content).Replace("`", "\\`") + ", id: `" + message.Id + "`https://discord.com/channels/" + channel2.GuildId + "/" + input + "/" + input2 + "\n" +
+                "author: `" + user + "``, id: `<@" + user.Id + ">`", allowedMentions: Globals.notAllowed);
         }
 
         [Command("message content")]
@@ -195,7 +220,7 @@ namespace GeckoBot.Commands
 
             embed.WithColor(180, 212, 85);
 
-            await ReplyAsync("", embed: embed.Build(), allowedMentions: Globals.allowed);
+            await ReplyAsync("", embed: embed.Build(), allowedMentions: Globals.notAllowed);
         }
 
         [Command("user")]
@@ -204,7 +229,7 @@ namespace GeckoBot.Commands
         {
             var user = Context.Client.GetUser(ulong.Parse(input));
 
-            await ReplyAsync(user.ToString() + "\n" + MentionUtils.MentionUser(user.Id) + "\n`" + MentionUtils.MentionUser(user.Id) + "`\n" + user.GetAvatarUrl(), allowedMentions: new AllowedMentions(Discord.AllowedMentionTypes.None));
+            await ReplyAsync("user: `" + user.ToString() + "`, id: `<@" + user.Id + ">`\n" + user.GetAvatarUrl(), allowedMentions: new AllowedMentions(Discord.AllowedMentionTypes.None));
         }
 
         [Command("emote")]
@@ -216,7 +241,8 @@ namespace GeckoBot.Commands
                 try
                 {
                     var emote2 = await a.GetEmoteAsync(ulong.Parse(emote));
-                    await ReplyAsync(emote2.ToString() + "\n emote id: \n`" + emote2.ToString() + "`", allowedMentions: new AllowedMentions(Discord.AllowedMentionTypes.None));
+                    await ReplyAsync("guild: `" + (emote2 as IGuild).Name + "`, id: `" + (emote2 as IGuild).Id + "`\n" +
+                        "emote: " + emote2 + " `id: " + emote2 + "`", allowedMentions: new AllowedMentions(Discord.AllowedMentionTypes.None));
                     return;
                 }
                 catch
