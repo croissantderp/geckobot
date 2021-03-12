@@ -17,7 +17,7 @@ namespace GeckoBot.Commands
         [Summary("Gets guild id.")]
         public async Task getGuild([Summary("A guild.")][Remainder] string input)
         {
-            var guild = Context.Client.Guilds.Where(a => a.Name == input).First();
+            var guild = Context.Client.Guilds.Where(a => a.Name.Equals(input, StringComparison.InvariantCultureIgnoreCase)).First();
             
             await ReplyAsync("guild: `" + guild.Name + "`, id: `" + guild.Id + "`");
         }
@@ -42,8 +42,8 @@ namespace GeckoBot.Commands
             var user = message.Author;
 
             await ReplyAsync("guild: `" + (channel as IGuildChannel).Guild.Name + "`, id: `" + final[2] + "`\n" + 
-                "channel: `" + channel.Name + "`, id: `<#" + final[3] + ">`\n" + 
-                "message: " + (message.Content.Length > 20 ? message.Content.Remove(20) : message.Content).Replace("`", "\\`") + ", id: `" + final[4] + "`\n" +
+                "channel: `" + channel.Name + "`, id: `<#" + final[3] + ">`\n" +
+                "message: \"" + (message.Content.Length > 20 ? message.Content.Remove(20) : message.Content).Replace("`", "\\`") + "\", id: `" + final[4] + "`\n" +
                 "author: `" + user + "`, id: `<@" + user.Id + ">`", allowedMentions: Globals.notAllowed);
         }
 
@@ -101,7 +101,7 @@ namespace GeckoBot.Commands
                 {
                     foreach (IEmote e in a.Emotes)
                     {
-                        if (e.Name == emote)
+                        if (e.Name.Equals(emote, StringComparison.InvariantCultureIgnoreCase))
                         {
                             await ReplyAsync("guild: `" + a.Name + "`, id: `" + a.Id + "`\n" +
                                 "emote: " + e + " `id: " + e + "`", allowedMentions: Globals.notAllowed);
@@ -131,7 +131,7 @@ namespace GeckoBot.Commands
             {
                 foreach (IEmote e in a.Emotes)
                 {
-                    if (e.Name == emote)
+                    if (e.Name.Equals(emote, StringComparison.InvariantCultureIgnoreCase))
                     {
                         if (counter >= 5)
                         {
@@ -192,7 +192,7 @@ namespace GeckoBot.Commands
 
             await ReplyAsync("guild: `" + channel2.Guild.Name + ", id: " + channel2.Guild.Id + "`\n" +
                 "channel: `" + channel2.Name + ", id: <#" + channel2.Id + ">`\n" +
-                "message: " + (message.Content.Length > 20 ? message.Content.Remove(20) : message.Content).Replace("`", "\\`") + ", id: `" + message.Id + "`https://discord.com/channels/" + channel2.GuildId + "/" + input + "/" + input2 + "\n" +
+                "message: \"" + (message.Content.Length > 20 ? message.Content.Remove(20) : message.Content).Replace("`", "\\`") + "\", id: `" + message.Id + "`https://discord.com/channels/" + channel2.GuildId + "/" + input + "/" + input2 + "\n" +
                 "author: `" + user + "``, id: `<@" + user.Id + ">`", allowedMentions: Globals.notAllowed);
         }
 
