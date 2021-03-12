@@ -341,21 +341,21 @@ namespace GeckoBot.Commands
 
             //if it is geckobot's birthday
             bool isBirthday = date.DayOfYear == 288;
+            
+            // Map ids to users
+            var users = DmUsers.Select(client.GetUser);
 
             //DMs everybody on the list
-            foreach (ulong a in DmUsers)
+            foreach (var a in users)
             {
-                //gets user from id
-                IUser b = client.GetUser(a);
-
                 //sends file with exception for leap years
-                await b.SendFileAsync(
+                await a.SendFileAsync(
                     path,
                     content);
 
                 if (isBirthday)
                 {
-                    await b.SendMessageAsync("happy birthday geckobot :cake:");
+                    await a.SendMessageAsync("happy birthday geckobot :cake:");
                 }
             }
         }

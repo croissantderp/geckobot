@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using GeckoBot.Utils;
@@ -21,7 +22,7 @@ namespace GeckoBot.Commands
             await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
 
-        //sends a message with a link to the gecko collection
+        //sends a message with a link to the ice cream cards collection
         [Command("ice cream")]
         [Summary("Links the ice cream cards Google Drive folder.")]
         public async Task iceCream()
