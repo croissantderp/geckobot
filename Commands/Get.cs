@@ -81,7 +81,7 @@ namespace GeckoBot.Commands
         [Summary("gets info about a user using a mention")]
         public async Task getUser([Summary("A @ mention")][Remainder] IUser user)
         {
-            await ReplyAsync("user: `" + user.ToString() + "`, id: `<@" + user.Id + ">`\n" + user.GetAvatarUrl(), allowedMentions: Globals.notAllowed);
+            await ReplyAsync("user: " + MentionUtils.MentionUser(user.Id) + ", id: `<@" + user.Id + ">`\n" + user.GetAvatarUrl(), allowedMentions: Globals.notAllowed);
         }
 
         [Command("emote")]
@@ -229,7 +229,7 @@ namespace GeckoBot.Commands
         {
             var user = Context.Client.GetUser(ulong.Parse(input));
 
-            await ReplyAsync("user: `" + user.ToString() + "`, id: `<@" + user.Id + ">`\n" + user.GetAvatarUrl(), allowedMentions: new AllowedMentions(Discord.AllowedMentionTypes.None));
+            await ReplyAsync("user: " + MentionUtils.MentionUser(user.Id) + ", id: `<@" + user.Id + ">`\n" + user.GetAvatarUrl(), allowedMentions: new AllowedMentions(Discord.AllowedMentionTypes.None));
         }
 
         [Command("emote")]

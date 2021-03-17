@@ -27,7 +27,7 @@ namespace GeckoBot.Commands
                 .ToDictionary(sp => sp[0], sp => sp[1]);
         }
 
-        [Command("poll list")]
+        [Command("pl")]
         [Summary("sends the poll list")]
         public async Task plist()
         {
@@ -35,7 +35,7 @@ namespace GeckoBot.Commands
         }
 
         //sends message
-        [Command("create")]
+        [Command("pc")]
         [Summary("creates a poll")]
         public async Task create([Summary("The content of the poll.")] [Remainder]string poll)
         {
@@ -56,7 +56,7 @@ namespace GeckoBot.Commands
         }
 
         //sends message
-        [Command("vote")]
+        [Command("pv")]
         [Summary("votes on a poll")]
         public async Task vote([Summary("The content of the poll to vote on.")] string poll, [Summary("The fraction to submit in ##/## (denominator has to be greatest and numerator has to be positive).")] string fraction)
         {
@@ -97,7 +97,7 @@ namespace GeckoBot.Commands
             await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
 
-        [Command("results")]
+        [Command("ps")]
         [Summary("see results of a poll")]
         public async Task results([Summary("The content of the poll to see results for.")] [Remainder]string poll)
         {
@@ -112,7 +112,7 @@ namespace GeckoBot.Commands
             await ReplyAsync("rating on \"" + poll + "\": " + final, allowedMentions: Globals.allowed);
         }
 
-        [Command("remove")]
+        [Command("pr")]
         [Summary("removes polls, only creator of poll can remove")]
         public async Task remove([Summary("The content of the poll to remove.")] [Remainder]string poll)
         {
@@ -132,7 +132,7 @@ namespace GeckoBot.Commands
         }
 
         [RequireGeckobotAdmin]
-        [Command("fremove")]
+        [Command("fpr")]
         [Summary("force removes polls, requires geckobot admin")]
         public async Task fremove([Summary("The content of the poll to remove.")] [Remainder]string poll)
         {
