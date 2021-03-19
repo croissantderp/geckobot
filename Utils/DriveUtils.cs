@@ -101,6 +101,7 @@ namespace GeckoBot.Utils
         // Gets path from cache or downloads image to cache from drive
         public static string ImagePath(int num, bool isAlt)
         {
+            Commands.Gec.RefreshGec();
             FileUtils.checkForCacheExistance();
 
             string name = addZeros(num);
@@ -132,9 +133,8 @@ namespace GeckoBot.Utils
                 //adds name of gecko to list
                 if (!Commands.Gec.geckos.ContainsKey(name))
                 {
-                    Commands.Gec.RefreshGec();
                     Commands.Gec.geckos.Add(name, file.Name);
-
+                    
                     FileUtils.Save(Globals.DictToString(Commands.Gec.geckos, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko7.gek");
 
                     if (cached != null) return cached;
