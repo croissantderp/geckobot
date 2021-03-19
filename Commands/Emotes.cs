@@ -6,6 +6,7 @@ using GeckoBot.Preconditions;
 using System.Linq;
 using System.Threading.Tasks;
 using GeckoBot.Utils;
+using System;
 
 namespace GeckoBot.Commands
 {
@@ -200,20 +201,33 @@ namespace GeckoBot.Commands
         //emote react function
         [Command("re")]
         [Summary("Reacts to a message with the specified emotes.")]
-        public async Task ReactCustomAsync([Summary("The emotes to react with, seperated by '$'")] string emote, [Summary("First input, either link or channel id.")] string input, [Summary("Second input, message id or leave blank for link.")] string input2 = null)
+        public async Task ReactCustomAsync([Summary("The emotes to react with, seperated by '$'")] string emote, [Summary("First input, either link or channel id.")] string input = null, [Summary("Second input, message id or leave blank for link.")] string input2 = null)
         {
             EmoteUtils.RefreshEmoteDict();
 
             string channel = "";
             string message = "";
 
-            if (input2 == null)
+            if (input2 == null && input != null)
             {
                 input = input.Remove(0, 8);
                 string[] final = input.Split("/");
 
                 channel = final[3];
                 message = final[4];
+            }
+            else if (input == null)
+            {
+                if (Context.Message.ReferencedMessage != null)
+                {
+                    channel = Context.Message.ReferencedMessage.Channel.Id.ToString();
+                    message = Context.Message.ReferencedMessage.Id.ToString();
+                }
+                else
+                {
+                    channel = Context.Channel.Id.ToString();
+                    message = (await Context.Channel.GetMessagesAsync(Context.Message, Direction.Before, 1).FlattenAsync()).First().Id.ToString();
+                }
             }
             else
             {

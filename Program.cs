@@ -79,9 +79,10 @@ namespace GeckoBot
             {
                 var result = await _commands.ExecuteAsync(context, argPos, _services);
                 if (!result.IsSuccess && !result.Error.Equals(CommandError.UnknownCommand)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
+                else if (!result.Error.Equals(CommandError.UnknownCommand)) return;
                 //if (result.Error.Equals(CommandError.UnmetPrecondition)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
             }
-            else if (Regex.IsMatch(message.Content, @"(?<!\\)\`i"))
+            if (Regex.IsMatch(message.Content, @"(?<!\\)\`i"))
             {
                 var temp2 = Regex.Split(message.Content, @"(?<!\\)\`i");
                 argPos = temp2[0].Length + 2;
