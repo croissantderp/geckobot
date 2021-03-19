@@ -44,10 +44,11 @@ namespace GeckoBot.Utils
             // gecko3 stores the list of users who have signed up for the daily dm
             // gecko4 stores the last time the daily dm was executed
             // gecko5 stores rate dictionary
-            // gecko 6 stores custom commands
+            // gecko6 stores custom commands
+            // gecko7 stores gecko names and other info
             List<int> caches = new()
             {
-                1, 2, 3, 4, 5, 6
+                1, 2, 3, 4, 5, 6, 7
             };
             
             //checks if files exist

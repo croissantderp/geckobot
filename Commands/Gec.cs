@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -14,6 +14,7 @@ namespace GeckoBot.Commands
     public class Gec : ModuleBase<SocketCommandContext>
     {
         private static int _highestGecko;
+        public static Dictionary<string, string> geckos = new();
         
         // Force cache a gecko image
         // This functionality is accomplished by fgec already, consider removing
@@ -26,6 +27,14 @@ namespace GeckoBot.Commands
         }
         */
         
+        public static void RefreshGec()
+        {
+            geckos = Regex.Split(FileUtils.Load(@"..\..\Cache\gecko7.gek"), @"\s(?<!\\)ҩ\s")
+            .Select(part => Regex.Split(part, @"\s(?<!\\)\⁊\s"))
+            .Where(part => part.Length == 2)
+            .ToDictionary(sp => sp[0], sp => sp[1]);
+        }
+        
         //gets daily gecko image
         [Command("gec")]
         [Summary("Sends the daily gecko.")]
@@ -33,12 +42,12 @@ namespace GeckoBot.Commands
         {
             //gets day of the year
             DateTime date = DateTime.Today;
-            string final = (date.DayOfYear - 1).ToString();
+            int final = (date.DayOfYear - 1);
 
             //sends file with exception for leap years
             await Context.Channel.SendFileAsync(
                 DriveUtils.ImagePath(date.DayOfYear - 1, false), 
-                $"Today is {date.ToString("d")}. Day {date.DayOfYear} of the year {date.Year} (gecko #{final})");
+                $"Today is {date.ToString("d")}. Day {date.DayOfYear} of the year {date.Year} (gecko: {geckos[DriveUtils.addZeros(final)]})");
         }
         
         //sends a message with a link to the gecko collection
@@ -101,7 +110,8 @@ namespace GeckoBot.Commands
         public async Task rgec()
         {
             refreshHighestGec();
-            
+
+
             //gets random value
             Random random = new Random();
             int numb = random.Next(0, _highestGecko + 1);
@@ -110,7 +120,7 @@ namespace GeckoBot.Commands
             //sends file
             await Context.Channel.SendFileAsync(
                 DriveUtils.ImagePath(numb, false), 
-                $"gecko #{final}");
+                $"gecko: {geckos[final]}");
         }
 
         //finds a gecko
@@ -118,13 +128,15 @@ namespace GeckoBot.Commands
         [Summary("Sends the specified gecko.")]
         public async Task fgec([Summary("The value of the gecko.")] int value)
         {
+            RefreshGec();
+
             //converts int to string
             string final = DriveUtils.addZeros(value);
 
             //sends files
             await Context.Channel.SendFileAsync(
                 DriveUtils.ImagePath(value, false), 
-                $"gecko #{final}");
+                $"gecko: {geckos[final]}");
         }
 
         //finds a gecko
@@ -132,13 +144,14 @@ namespace GeckoBot.Commands
         [Summary("Sends an alternate of a gecko")]
         public async Task ogec([Summary("The value of the gecko.")] int value)
         {
+            RefreshGec();
             //converts int to string
             string final = DriveUtils.addZeros(value);
 
             //sends files
             await Context.Channel.SendFileAsync(
                 DriveUtils.ImagePath(value, true),
-                $"gecko #{final}");
+                $"gecko: {geckos[final]}");
         }
 
         // Gets the highest number gecko
@@ -146,13 +159,14 @@ namespace GeckoBot.Commands
         [Summary("Sends the latest gecko.")]
         public async Task hgec()
         {
+            RefreshGec();
             refreshHighestGec();
             int num = _highestGecko;
             
             //sends file
             await Context.Channel.SendFileAsync(
                 DriveUtils.ImagePath(num, false), 
-                $"gecko #{num}");
+                $"gecko: {geckos[DriveUtils.addZeros(num)]}");
         }
 
         // Gets the filename of the highest number gecko off of drive, then updates the Global value

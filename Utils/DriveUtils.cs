@@ -1,10 +1,12 @@
-using System;
+﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using Google.Apis.Drive.v3;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
+using System.Text.RegularExpressions;
 
 namespace GeckoBot.Utils
 {
@@ -107,10 +109,10 @@ namespace GeckoBot.Utils
             {
                 name = "b" + name;
             }
-
+            
             // If image already exists in cache, use it
             string cached = CheckCache(name);
-            if (cached != null) return cached;
+            if (cached != null && Commands.Gec.geckos.ContainsKey(name)) return cached;
 
             // Otherwise, fetch it from google drive
             DriveService driveService = AuthenticateServiceAccount(
@@ -126,6 +128,18 @@ namespace GeckoBot.Utils
             {
                 // Use the first result
                 var file = files[0];
+
+                //adds name of gecko to list
+                if (!Commands.Gec.geckos.ContainsKey(name))
+                {
+                    Commands.Gec.RefreshGec();
+                    Commands.Gec.geckos.Add(name, file.Name);
+
+                    FileUtils.Save(Globals.DictToString(Commands.Gec.geckos, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko7.gek");
+
+                    if (cached != null) return cached;
+                }
+
                 //Console.WriteLine(file.MimeType);
                 string type = file.MimeType.Replace("image/", ""); // sorta hacky solution to get file type
 
