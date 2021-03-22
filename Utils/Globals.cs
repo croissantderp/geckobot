@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Discord.Commands;
+using Discord;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace GeckoBot.Utils
 {
@@ -11,6 +15,41 @@ namespace GeckoBot.Utils
     {
         public static readonly Discord.AllowedMentions allowed = new (Discord.AllowedMentionTypes.Users);
         public static readonly Discord.AllowedMentions notAllowed = new(Discord.AllowedMentionTypes.None);
+
+        public static async Task<string> getIds(string input, string input2, SocketCommandContext context)
+        {
+            string channel = "";
+            string message = "";
+
+            if (input2 == null && input != null)
+            {
+                input = input.Remove(0, 8);
+                string[] final = input.Split("/");
+
+                channel = final[3];
+                message = final[4];
+            }
+            else if (input == null)
+            {
+                if (context.Message.ReferencedMessage != null)
+                {
+                    channel = context.Message.ReferencedMessage.Channel.Id.ToString();
+                    message = context.Message.ReferencedMessage.Id.ToString();
+                }
+                else
+                {
+                    channel = context.Channel.Id.ToString();
+                    message = (await context.Channel.GetMessagesAsync(context.Message, Direction.Before, 1).FlattenAsync()).First().Id.ToString();
+                }
+            }
+            else
+            {
+                channel = input;
+                message = input2;
+            }
+            
+            return channel + "$" + message;
+        }
 
         //dictionary to string
         public static string DictToString<T, V>(IEnumerable<KeyValuePair<T, V>> items, string format)

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Discord;
+using System;
 using Discord.Commands;
 using GeckoBot.Utils;
 
@@ -47,25 +48,12 @@ namespace GeckoBot.Commands
         // Also, there's probably a better way of deleting large bot messages than using a delete command
         [Command("delete")]
         [Summary("Delete a geckobot message.")]
-        public async Task delete([Summary("First input, either link or channel id")] string input, [Summary("Second input, message id or leave blank for link.")] string input2 = null)
+        public async Task delete([Summary("First input, either link or channel id")] string input = null, [Summary("Second input, message id or leave blank for link.")] string input2 = null)
         {
-            string channel = "";
-            string message = "";
-
-            if (input2 == null)
-            {
-                input = input.Remove(0, 8);
-                string[] final = input.Split("/");
-
-                channel = final[3];
-                message = final[4];
-            }
-            else
-            {
-                channel = input;
-                message = input2;
-            }
-
+            string[] ids = (await Globals.getIds(input, input2, Context)).ToString().Split("$");
+            string channel = ids[0];
+            string message = ids[1];
+            
             var channel2 = Context.Client.GetChannel(ulong.Parse(channel)) as IMessageChannel;
 
             //parses message id provided and gets message from channel

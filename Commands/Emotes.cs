@@ -205,35 +205,9 @@ namespace GeckoBot.Commands
         {
             EmoteUtils.RefreshEmoteDict();
 
-            string channel = "";
-            string message = "";
-
-            if (input2 == null && input != null)
-            {
-                input = input.Remove(0, 8);
-                string[] final = input.Split("/");
-
-                channel = final[3];
-                message = final[4];
-            }
-            else if (input == null)
-            {
-                if (Context.Message.ReferencedMessage != null)
-                {
-                    channel = Context.Message.ReferencedMessage.Channel.Id.ToString();
-                    message = Context.Message.ReferencedMessage.Id.ToString();
-                }
-                else
-                {
-                    channel = Context.Channel.Id.ToString();
-                    message = (await Context.Channel.GetMessagesAsync(Context.Message, Direction.Before, 1).FlattenAsync()).First().Id.ToString();
-                }
-            }
-            else
-            {
-                channel = input;
-                message = input2;
-            }
+            string[] ids = (await Globals.getIds(input, input2, Context)).ToString().Split("$");
+            string channel = ids[0];
+            string message = ids[1];
 
             //parses message id provided and gets message from channel
             var message2 = await (Context.Client.GetChannel(ulong.Parse(channel)) as IMessageChannel).GetMessageAsync(ulong.Parse(message));
