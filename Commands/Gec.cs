@@ -146,7 +146,7 @@ namespace GeckoBot.Commands
         {
             RefreshGec();
             //converts int to string
-            string final = DriveUtils.addZeros(value);
+            string final = "b" + DriveUtils.addZeros(value);
 
             //sends files
             await Context.Channel.SendFileAsync(

@@ -31,7 +31,7 @@ namespace GeckoBot.Commands
             //buils an embed
             var embed = new EmbedBuilder
             {
-                Title = "gecko collection",
+                Title = "ice cream cards",
                 Description = (
                 "[see the ice cream cards here](https://drive.google.com/drive/folders/1O7SVg5D0n8t3gOjkArjhhH7_YllcwAXA?usp=sharing)"
                 )
