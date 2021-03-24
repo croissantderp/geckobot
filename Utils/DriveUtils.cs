@@ -8,6 +8,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using System.Text.RegularExpressions;
 
+
 namespace GeckoBot.Utils
 {
     // Utilities for the Gecko Images Suite
@@ -152,6 +153,63 @@ namespace GeckoBot.Utils
             }
             
             throw new Exception("File " + name + " not found!");
+        }
+
+        // Gets path from cache or downloads image to cache from drive
+        public static int saveAll(int highest)
+        {
+            Commands.Gec.RefreshGec();
+            FileUtils.checkForCacheExistance();
+
+            DriveService driveService = AuthenticateServiceAccount(
+                "geckobotfileretriever@geckobot.iam.gserviceaccount.com",
+                "../../../GeckoBot-af43fa71833e.json");
+            var listRequest = driveService.Files.List();
+            listRequest.PageSize = 1000; // Only fetch one thousand
+            listRequest.Q = "mimeType contains 'image'"; // Filter out folders or other non image types
+
+            Google.Apis.Drive.v3.Data.FileList files2 = listRequest.Execute();
+            IList<Google.Apis.Drive.v3.Data.File> files = files2.Files;
+
+            int totalAmount = 0;
+            int amount = 0;
+
+            while (totalAmount < highest)
+            {
+                foreach (Google.Apis.Drive.v3.Data.File file in files)
+                {
+                    string name = file.Name.Remove(3);
+
+                    if (name.Contains("b")) name = file.Name.Remove(4);
+                    if (CheckCache(name) == null || !Commands.Gec.geckos.ContainsKey(name))
+                    {
+                        //adds name of gecko to list
+                        if (!Commands.Gec.geckos.ContainsKey(name))
+                        {
+                            Commands.Gec.geckos.Add(name, file.Name);
+
+                            if (CheckCache(name) != null) continue;
+                        }
+
+                        //Console.WriteLine(file.MimeType);
+                        string type = file.MimeType.Replace("image/", ""); // sorta hacky solution to get file type
+
+                        using var fileStream = new FileStream(
+                            $"../../Cache/{name}_icon.{type}",
+                            FileMode.Create,
+                            FileAccess.Write);
+                        driveService.Files.Get(file.Id).Download(fileStream);
+
+                        amount++;
+                    }
+                    totalAmount++;
+                }
+                listRequest.PageToken = files2.NextPageToken;
+            }
+
+            FileUtils.Save(Globals.DictToString(Commands.Gec.geckos, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko7.gek");
+
+            return amount;
         }
     }
 }

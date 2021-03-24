@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using GeckoBot.Utils;
+using GeckoBot.Preconditions;
 using Google.Apis.Drive.v3;
+using Google.Apis.Drive.v3.Data;
 
 namespace GeckoBot.Commands
 {
@@ -140,6 +142,32 @@ namespace GeckoBot.Commands
         }
 
         //finds a gecko
+        [Command("sgec")]
+        [Summary("Searches for the specified gecko.")]
+        public async Task sgec([Summary("the search input.")] string input, [Summary("the result number.")] int index = 1)
+        {
+            RefreshGec();
+
+            string final = geckos.Where(a => a.Value.Contains(input)).Take(index).Last().Key;
+
+            bool isAlt = false;
+
+            if (final.Contains("b"))
+            {
+                isAlt = true;
+                final = final.Remove(0, 1);
+            }
+
+            //converts int to string
+            int value = int.Parse(final);
+
+            //sends files
+            await Context.Channel.SendFileAsync(
+                DriveUtils.ImagePath(value, isAlt),
+                $"gecko: {geckos[final]}");
+        }
+
+        //finds an alternate gecko
         [Command("ogec")]
         [Summary("Sends an alternate of a gecko")]
         public async Task ogec([Summary("The value of the gecko.")] int value)
@@ -152,6 +180,21 @@ namespace GeckoBot.Commands
             await Context.Channel.SendFileAsync(
                 DriveUtils.ImagePath(value, true),
                 $"gecko: {geckos[final]}");
+        }
+
+        //caches all gecko descriptions
+        [RequireGeckobotAdmin]
+        [Command("cgec")]
+        [Summary("caches all geckos and descriptions.")]
+        public async Task cgec()
+        {
+            RefreshGec();
+            int before = geckos.Count;
+            refreshHighestGec();
+            int number = DriveUtils.saveAll(_highestGecko);
+
+            await ReplyAsync(number + " items saved, " + (geckos.Count - before) + " descriptions saved");
+            
         }
 
         // Gets the highest number gecko
@@ -179,13 +222,13 @@ namespace GeckoBot.Commands
 
             var listRequest = driveService.Files.List();
             //listRequest.Fields = "nextPageToken, files(id, name)";
+            listRequest.PageSize = 100; // Only fetch one hundred
+            listRequest.OrderBy = "name desc"; // Name descending gets the highest number gecko
+            listRequest.Q = "mimeType contains 'image'"; // Filter out folders or other non image types
             while (true)
             {
-                listRequest.PageSize = 100; // Only fetch one hundred
-                listRequest.OrderBy = "name desc"; // Name descending gets the highest number gecko
-                listRequest.Q = "mimeType contains 'image'"; // and not name contains 'b'"; // Filter out folders or other non image types
-
-                IList<Google.Apis.Drive.v3.Data.File> files = listRequest.Execute().Files;
+                FileList files2 = listRequest.Execute();
+                IList<Google.Apis.Drive.v3.Data.File> files = files2.Files;
 
                 foreach (Google.Apis.Drive.v3.Data.File a in files)
                 {
@@ -195,6 +238,7 @@ namespace GeckoBot.Commands
                         return;
                     }
                 }
+                listRequest.PageToken = files2.NextPageToken;
             }
         }
     }
