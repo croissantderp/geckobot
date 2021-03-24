@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -124,9 +125,6 @@ namespace GeckoBot.Commands
         [Summary(@"I gave up maintaining this ¯\_(ツ)_/¯, use `help.")]
         public async Task instructions()
         {
-            //if info is found
-            bool found = true;
-
             //embed
             var embed = new EmbedBuilder
             {
@@ -140,7 +138,7 @@ namespace GeckoBot.Commands
                 "**In order to not make admins angery, consider using a spam channel for these commands as they are lengthy.**"
                 )
             };
-
+            embed.WithFooter("It has been " + (DateTime.Now - Globals.lastReset).ToString() + " since this bot has been restarted");
             embed.WithColor(180, 212, 85);
 
             var embed2 = embed.Build();

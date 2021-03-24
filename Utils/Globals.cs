@@ -72,7 +72,7 @@ namespace GeckoBot.Utils
         public static List<ulong> undeletable = new();
 
         //days since bot was reset
-        public static int daysSinceReset = 0;
+        public static DateTime lastReset = DateTime.Now;
 
         public static readonly string[] names =
         {
