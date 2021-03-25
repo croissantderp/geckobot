@@ -148,7 +148,13 @@ namespace GeckoBot.Commands
         {
             RefreshGec();
 
-            string final = geckos.Where(a => a.Value.Contains(input)).Take(index).Last().Key;
+            int tempInt = 0;
+            List<int> tempIntList = new List<int>();
+
+            IEnumerable<KeyValuePair<string, string>> temp = geckos.Where(a => Globals.FuzzyMatch(a.Value, input.Replace(" ", ""), out tempInt)).OrderByDescending(a => Globals.FuzzyMatchScore(a.Value, input.Replace(" ", ""))); //a.Value.Contains(input)
+
+            IEnumerable<KeyValuePair<string, string>> temp2 = temp.Take(index);
+            string final = temp2.Last().Key;
 
             bool isAlt = false;
 
@@ -164,9 +170,10 @@ namespace GeckoBot.Commands
             //sends files
             await Context.Channel.SendFileAsync(
                 DriveUtils.ImagePath(value, isAlt),
-                $"gecko: {geckos[final]}");
+                $"result {temp2.Count()} of {temp.Count()}, score: {Globals.FuzzyMatchScore(geckos[final], input.Replace(" ", ""))}, gecko: {geckos[final]}");
         }
 
+     
         //finds an alternate gecko
         [Command("ogec")]
         [Summary("Sends an alternate of a gecko")]

@@ -96,6 +96,19 @@ namespace GeckoBot.Commands
             await ReplyAsync(EmoteUtils.emoteReplace(yes), allowedMentions: Globals.allowed);
         }
 
+        [Command("se")]
+        [Summary("Looks up data in the dictionary using fuzzy search.")]
+        public async Task se([Summary("The input to search for")] string yes, [Summary("The result number.")] int index = 1)
+        {
+            EmoteUtils.RefreshEmoteDict();
+            int tempInt = 0;
+            IEnumerable<KeyValuePair<string, string>> temp = EmoteDict.Where(a => Globals.FuzzyMatch(a.Key, yes, out tempInt) || Globals.FuzzyMatch(a.Value, yes, out tempInt)).OrderByDescending(a => Globals.FuzzyMatchScore(a.Key + a.Value, yes)); //a.Value.Contains(input)
+            IEnumerable<KeyValuePair<string, string>> temp2 = temp.Take(index);
+            string final = temp2.Last().Key;
+
+            await ReplyAsync($"result {temp2.Count()} of {temp.Count()}, score: {Globals.FuzzyMatchScore(final + EmoteDict[final], yes)}, key: " + final + ", Value: " + EmoteDict[final], allowedMentions: Globals.allowed);
+        }
+
         //finds emote
         [Command("ge")]
         [Summary("Looks up a key in the dictionary given the value; the reverse of `e.")]
