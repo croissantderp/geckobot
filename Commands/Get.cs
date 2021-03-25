@@ -26,8 +26,8 @@ namespace GeckoBot.Commands
         [Summary("gets channel id")]
         public async Task getChannel([Summary("A channel, either name or the #channel of it.")][Remainder] IChannel channel)
         {
-            await ReplyAsync("guild: `"+ (channel as IGuildChannel).Guild.Name + "`, id: `" + (channel as IGuildChannel).GuildId + "`\n" + 
-                "channel : `" + channel.Name + "`, id: `" + channel.Id + "`", allowedMentions: Globals.notAllowed);
+            await ReplyAsync("guild: `"+ (channel as IGuildChannel).Guild.Name + "`, id: `" + (channel as IGuildChannel).GuildId + "`\n" +
+                "channel : `" + channel.Name + "`, id: `<#" + channel.Id + ">`", allowedMentions: Globals.notAllowed);
         }
 
         [Command("message")]
@@ -43,8 +43,8 @@ namespace GeckoBot.Commands
 
             await ReplyAsync("guild: `" + (channel as IGuildChannel).Guild.Name + "`, id: `" + final[2] + "`\n" + 
                 "channel: `" + channel.Name + "`, id: `<#" + final[3] + ">`\n" +
-                "message: \"" + (message.Content.Length > 20 ? message.Content.Remove(20) : message.Content).Replace("`", "\\`") + "\", id: `" + final[4] + "`\n" +
-                "author: `" + user + "`, id: `<@" + user.Id + ">`", allowedMentions: Globals.notAllowed);
+                "message: \"" + (message.Content.Length > 20 ? message.Content.Remove(20) + "..." : message.Content).Replace("`", "\\`") + "\", id: `" + final[4] + "`\n" +
+                "author: `" + MentionUtils.MentionUser(user.Id) + "`, id: `<@" + user.Id + ">`", allowedMentions: Globals.notAllowed);
         }
 
         [Command("message content")]
@@ -179,7 +179,7 @@ namespace GeckoBot.Commands
         {
             var channel = Context.Client.GetChannel(ulong.Parse(input)) as IGuildChannel;
             await ReplyAsync("guild: `" + channel.Guild.Name + "`, id: `" + (channel as IGuildChannel).GuildId + "`\n" +
-                "channel : `" + channel.Name + "`, id: `" + channel.Id + "`", allowedMentions: Globals.notAllowed);
+                "channel : `" + channel.Name + "`, id: `<#" + channel.Id + ">`", allowedMentions: Globals.notAllowed);
         }
 
         [Command("message")]
@@ -192,7 +192,7 @@ namespace GeckoBot.Commands
 
             await ReplyAsync("guild: `" + channel2.Guild.Name + ", id: " + channel2.Guild.Id + "`\n" +
                 "channel: `" + channel2.Name + ", id: <#" + channel2.Id + ">`\n" +
-                "message: \"" + (message.Content.Length > 20 ? message.Content.Remove(20) : message.Content).Replace("`", "\\`") + "\", id: `" + message.Id + "`https://discord.com/channels/" + channel2.GuildId + "/" + input + "/" + input2 + "\n" +
+                "message: \"" + (message.Content.Length > 20 ? message.Content.Remove(20) + "..." : message.Content).Replace("`", "\\`") + "\", id: `" + message.Id + "`https://discord.com/channels/" + channel2.GuildId + "/" + input + "/" + input2 + "\n" +
                 "author: `" + user + "``, id: `<@" + user.Id + ">`", allowedMentions: Globals.notAllowed);
         }
 
