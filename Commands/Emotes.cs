@@ -146,6 +146,15 @@ namespace GeckoBot.Commands
             await EmoteSave(yes1, yes, false);
         }
 
+        //save function
+        [Command("ee")]
+        [Summary("Edits a key to the dictionary.")]
+        public async Task ee([Summary("The key of the value.")] string yes1, [Summary("The value to change.")][Remainder] string yes)
+        {
+            await EmoteRemove(yes1, false);
+            await EmoteSave(yes1, yes, false);
+        }
+
         //big save function
         [Command("ess")]
         [Summary("Saves all emotes from all guilds into the dictionary.")]

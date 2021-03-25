@@ -35,7 +35,12 @@ namespace GeckoBot.Utils
             for (int i = 0; i < yesnt.Length; i++)
             {
                 //checks if a key exists for the segment and if it is prefaced by \
-                if (Emotes.EmoteDict.ContainsKey(yesnt[i]))
+                if (Regex.IsMatch(yesnt[i], @"^(?<!\\)\`"))
+                {
+                    //returns joined segments
+                    return removeforbidden(string.Join("", final));
+                }
+                else if (Emotes.EmoteDict.ContainsKey(yesnt[i]))
                 {
                     final[i] = Emotes.EmoteDict[yesnt[i]];
                     if (final[i].Contains("@फΉ̚ᐼㇶ⤊"))
@@ -59,7 +64,7 @@ namespace GeckoBot.Utils
             }
 
             //returns joined segments
-            return removeforbidden(string.Join("", final.Select(p => p.ToString())));
+            return removeforbidden(string.Join("", final));
         }
 
         public static string escapeforbidden(string input)
