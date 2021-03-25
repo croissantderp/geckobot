@@ -44,7 +44,7 @@ namespace GeckoBot.Commands
             await ReplyAsync("guild: `" + (channel as IGuildChannel).Guild.Name + "`, id: `" + final[2] + "`\n" + 
                 "channel: `" + channel.Name + "`, id: `<#" + final[3] + ">`\n" +
                 "message: \"" + (message.Content.Length > 20 ? message.Content.Remove(20) + "..." : message.Content).Replace("`", "\\`") + "\", id: `" + final[4] + "`\n" +
-                "author: `" + MentionUtils.MentionUser(user.Id) + "`, id: `<@" + user.Id + ">`", allowedMentions: Globals.notAllowed);
+                "author: " + MentionUtils.MentionUser(user.Id) + ", id: `<@" + user.Id + ">`", allowedMentions: Globals.notAllowed);
         }
 
         [Command("message content")]
@@ -193,7 +193,7 @@ namespace GeckoBot.Commands
             await ReplyAsync("guild: `" + channel2.Guild.Name + ", id: " + channel2.Guild.Id + "`\n" +
                 "channel: `" + channel2.Name + ", id: <#" + channel2.Id + ">`\n" +
                 "message: \"" + (message.Content.Length > 20 ? message.Content.Remove(20) + "..." : message.Content).Replace("`", "\\`") + "\", id: `" + message.Id + "`https://discord.com/channels/" + channel2.GuildId + "/" + input + "/" + input2 + "\n" +
-                "author: `" + user + "``, id: `<@" + user.Id + ">`", allowedMentions: Globals.notAllowed);
+                "author: " + MentionUtils.MentionUser(user.Id) + ", id: `<@" + user.Id + ">`", allowedMentions: Globals.notAllowed);
         }
 
         [Command("message content")]
