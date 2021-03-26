@@ -19,11 +19,10 @@ namespace GeckoBot.Commands
         //rng but qUaNtUm
         [Command("qrng")]
         [Summary("random function using quantum bits")]
-        public async Task qrng()
+        public async Task qrng([Summary("Max value that can be generated.")] int max = 100)
         {
             using var sim = new QuantumSimulator();
-
-            long num = await Quantum.qeckoBot.SampleRandomNumber.Run(sim);
+            long num = await Quantum.qeckoBot.SampleRandomNumberInRange.Run(sim, long.Parse(max.ToString()));
             await ReplyAsync(num.ToString());
         }
     }

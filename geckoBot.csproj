@@ -10,7 +10,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputPath>bin\Build</OutputPath>
-    <NoWarn>1701;1702;0414;CA1416;</NoWarn>
+    <NoWarn>1701;1702;0414;CA1416;MSB3270;</NoWarn>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
@@ -25,12 +25,6 @@
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
     <PackageReference Include="System.Management" Version="5.0.0" />
     <PackageReference Include="System.Windows.Extensions" Version="5.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="qeckoBot">
-      <HintPath>qeckobot\bin\Debug\netstandard2.1\qeckoBot.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>
