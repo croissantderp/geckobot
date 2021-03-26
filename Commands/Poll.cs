@@ -16,10 +16,10 @@ namespace GeckoBot.Commands
     public class Poll : ModuleBase<SocketCommandContext>
     {
         //emote dictionary
-        public static Dictionary<string, string> rateDict = new();
+        private static Dictionary<string, string> rateDict = new();
 
         //loads poll dictionary as string and converts it back into dictionary
-        public static void RefreshRateDict()
+        private static void RefreshRateDict()
         {
             rateDict = Regex.Split(FileUtils.Load(@"..\..\Cache\gecko5.gek"), @"\s(?<!\\)ҩ\s")
                 .Select(part => Regex.Split(part, @"\s(?<!\\)\⁊\s"))
@@ -116,19 +116,7 @@ namespace GeckoBot.Commands
         [Summary("removes polls, only creator of poll can remove")]
         public async Task remove([Summary("The content of the poll to remove.")] [Remainder]string poll)
         {
-            RefreshRateDict();
-
-            string userid = rateDict[poll].Split(";")[2];
-
-            if (Context.User.Id.ToString() == userid)
-            {
-                rateDict.Remove(poll);
-
-                //adds check emote after done
-                await Context.Message.AddReactionAsync(new Emoji("✅"));
-            }
-
-            FileUtils.Save(Globals.DictToString(rateDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko5.gek");
+            await PollRemove(poll, false);
         }
 
         [RequireGeckobotAdmin]
@@ -136,12 +124,23 @@ namespace GeckoBot.Commands
         [Summary("force removes polls, requires geckobot admin")]
         public async Task fremove([Summary("The content of the poll to remove.")] [Remainder]string poll)
         {
+            await PollRemove(poll, true);
+        }
+        
+        // Remove a poll from the dictionary
+        private async Task PollRemove(string poll, bool withAdmin)
+        {
             RefreshRateDict();
 
-            rateDict.Remove(poll);
+            string userid = rateDict[poll].Split(";")[2];
 
-            //adds check emote after done
-            await Context.Message.AddReactionAsync(new Emoji("✅"));
+            if (withAdmin || Context.User.Id.ToString() == userid)
+            {
+                rateDict.Remove(poll);
+
+                //adds check emote after done
+                await Context.Message.AddReactionAsync(new Emoji("✅"));
+            }
 
             FileUtils.Save(Globals.DictToString(rateDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko5.gek");
         }

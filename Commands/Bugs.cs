@@ -58,7 +58,7 @@ namespace GeckoBot.Commands
     
         // Refresh bugs list
         // yes
-        public void RefreshBugs()
+        private static void RefreshBugs()
         {
             FileUtils.checkForExistance();
             
