@@ -65,6 +65,44 @@ namespace GeckoBot.Commands
             timer2.Stop();
         }
 
+        //replies to message
+        [Command("me")]
+        [Summary("Sends a message with words replaced by emotes from the dictionary in a reply to a message")]
+        public async Task mention([Summary("The message content.")] string message, [Summary("url or channel id")] string target = null, [Summary("message id")] string target2 = null)
+        {
+            string[] temp = (await Globals.getIds(target, target2, Context)).Split("$");
+
+            //gets current client
+            DiscordSocketClient client = Context.Client;
+            
+            //parses channel id provided and gets channel from client
+            var chnl = client.GetChannel(ulong.Parse(temp[0])) as IMessageChannel;
+            var message2 = await chnl.GetMessageAsync(ulong.Parse(temp[1])) as IUserMessage;
+            
+            await message2.ReplyAsync(Context.User + ": " + EmoteUtils.emoteReplace(message), allowedMentions: Globals.allowed);
+
+            await Context.Message.AddReactionAsync(new Emoji("✅"));
+        }
+
+        //replies to message
+        [Command("ame")]
+        [Summary("Sends a message with words replaced by emotes from the dictionary in a reply to a message but admin only")]
+        public async Task amention([Summary("The message content.")] string message, [Summary("url or channel id")] string target = null, [Summary("message id")] string target2 = null)
+        {
+            string[] temp = (await Globals.getIds(target, target2, Context)).Split("$");
+
+            //gets current client
+            DiscordSocketClient client = Context.Client;
+
+            //parses channel id provided and gets channel from client
+            var chnl = client.GetChannel(ulong.Parse(temp[0])) as IMessageChannel;
+            var message2 = await chnl.GetMessageAsync(ulong.Parse(temp[1])) as IUserMessage;
+
+            await message2.ReplyAsync(EmoteUtils.emoteReplace(message), allowedMentions: Globals.allowed);
+
+            await Context.Message.AddReactionAsync(new Emoji("✅"));
+        }
+
         //sends message
         [RequireGeckobotAdmin]
         [Command("ate")]

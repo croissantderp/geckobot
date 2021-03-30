@@ -128,7 +128,7 @@ namespace GeckoBot.Commands
             //embed
             var embed = new EmbedBuilder
             {
-            Title = "geckobot" + Globals.names[Globals.CurrentName] + System.Environment.NewLine + "1/31/2020 instruction manual",
+            Title = "geckobot" + Globals.names[Globals.CurrentName] + System.Environment.NewLine + "3/30/2020 instruction manual",
             Description = ("my prefix is \\` and \\`i for inline commands." + System.Environment.NewLine +
                 "(highly recommended to have developer mode on to easily use)" + System.Environment.NewLine +
                 "if there's a problem, ping my owner croissantderp#4167 " + System.Environment.NewLine + System.Environment.NewLine +
