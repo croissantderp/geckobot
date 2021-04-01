@@ -1,6 +1,9 @@
 ﻿using System.Threading.Tasks;
 using System.Linq;
 using Discord.Commands;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 using static System.Math;
 
@@ -50,7 +53,8 @@ namespace GeckoBot.Commands
         [Summary("search more things in sqrt(n) time")]
         public async Task grover2([Summary("number of qubits to use")] int qubits,  [Summary("the indices (seperated by '$') of the marked values")] string matcher, [Summary("number of search iterations")] int iterations = 0, [Summary("number of search repetitions")] int repetitions = 0)
         {
-            if (qubits > 10)
+
+            if (qubits > 15)
             {
                 await ReplyAsync("please use 12 or under qubits");
                 return;
@@ -89,10 +93,17 @@ namespace GeckoBot.Commands
             double averageSuccess = 0;
             double averageProbability = 0;
             double averageSpeedup = 0;
+            decimal averageTimeInSeconds = 0;
+            double averageProbabilityClassical = 0;
+            decimal averageTimeInSecondsClassical = 0;
 
             foreach (var idxAttempt in Enumerable.Range(0, repeats))
             {
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
                 var task = ApplyGroverSearch.Run(sim, new QArray<long>(markedElements), nIterations, nDatabaseQubits);
+                stopwatch.Stop();
+                averageTimeInSeconds += (decimal)stopwatch.Elapsed.TotalSeconds;
 
                 var data = task.Result;
 
@@ -111,6 +122,14 @@ namespace GeckoBot.Commands
                     averageProbability += empiricalSuccessProbability;
                     averageSpeedup += speedupFactor;
                 }
+
+                Stopwatch stopwatch2 = new Stopwatch();
+                stopwatch2.Start();
+                bool result = classicalSearch((int)databaseSize, markedElements);
+                stopwatch2.Stop();
+                averageTimeInSecondsClassical += (decimal)stopwatch2.Elapsed.TotalSeconds;
+
+                averageProbabilityClassical += result ? 1 : 0;
             }
             await ReplyAsync($"Quantum search for marked element in database.\n" +
                 $"Database size: {databaseSize}\n" +
@@ -121,7 +140,29 @@ namespace GeckoBot.Commands
                 $"Quantum success probability: {quantumSuccessProbability}\n" +
                 $"Average success: {averageSuccess / repeats} \n" +
                 $"Average probability: {averageProbability / repeats} \n" +
-                $"Average speedup: {averageSpeedup / repeats} \n");
+                $"Average classsical probability: {averageProbabilityClassical / repeats} \n" +
+                $"Average speedup: {averageSpeedup / repeats} \n" +
+                $"Average time: {averageTimeInSeconds / repeats} \n" +
+                $"Average classical time: {averageTimeInSecondsClassical / repeats} \n");
+        }
+
+        public bool classicalSearch(int arraySize, long[] markedElements)
+        {
+            int[] database = new int[arraySize];
+            foreach (int i in markedElements) database[i] = 1;
+            
+            List<int> matches = new ();
+
+            for (int i = 0; i < database.Length; i++)
+            {
+                if (database[i] == 1)
+                {
+                    matches.Add(i);
+                }
+            }
+            bool[] matched = matches.Select(a => markedElements.Contains(a)).ToArray();
+
+            return matched.All(a => a);
         }
 
         [Command("blackBox")]
