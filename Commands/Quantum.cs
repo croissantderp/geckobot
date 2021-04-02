@@ -169,7 +169,7 @@ namespace GeckoBot.Commands
                 $"Average classical time: {averageTimeInSecondsClassical / repeats} \n");
         }
 
-        public bool classicalSearch(int arraySize, long[] markedElements)
+        private bool classicalSearch(int arraySize, long[] markedElements)
         {
             int[] database = new int[arraySize];
             foreach (int i in markedElements) database[i] = 1;
@@ -193,27 +193,80 @@ namespace GeckoBot.Commands
         public async Task blackBox([Summary("The black box to pass in, 1 is constant zero, 2 is constant one, 3 is identity, 4 is negation.")] int input)
         {
             using var sim = new QuantumSimulator();
-            string result = "";
-            switch (input)
+            string result = input switch
             {
-                case 1:
-                    result = "constant zero " + (await IsConstantZeroConstant.Run(sim) ? "is" : "is not") + " constant";
-                    break;
-                case 2:
-                    result = "constant one " + (await IsConstantOneConstant.Run(sim) ? "is" : "is not") + " constant";
-                    break;
-                case 3:
-                    result = "identity " + (await IsIdentityConstant.Run(sim) ? "is" : "is not") + " constant";
-                    break;
-                case 4:
-                    result = "negation " + (await IsNegationConstant.Run(sim) ? "is" : "is not") + " constant";
-                    break;
-                default:
-                    result = "The black box to pass in, 1 is constant zero, 2 is constant one, 3 is identity, 4 is negation.";
-                    break;
-            }
+                1 => "constant zero " + (await IsConstantZeroConstant.Run(sim) ? "is" : "is not") + " constant",
+                2 => "constant one " + (await IsConstantOneConstant.Run(sim) ? "is" : "is not") + " constant",
+                3 => "identity " + (await IsIdentityConstant.Run(sim) ? "is" : "is not") + " constant",
+                4 => "negation " + (await IsNegationConstant.Run(sim) ? "is" : "is not") + " constant",
+                _ => "The black box to pass in, 1 is constant zero, 2 is constant one, 3 is identity, 4 is negation.",
+            };
             await ReplyAsync(result);
         }
+
+        [Command("voodoo")]
+        [Summary("Use the power of black magic to determine the outcome of your coin flip")]
+        public async Task voodoo([Summary("Whether your coin is heads or tails (true is heads)")]bool coin)
+        {
+            var message = "```css\n";
+            var numPhrases = new Random().Next(4, 7);
+            List<string> phrases = new();
+            List<string> states = new();
+            
+            // Populate phrases and states lists
+            for (int i = 0; i < numPhrases; i++)
+            {
+                phrases.Add(_voodooPhrases[new Random().Next(0, _voodooPhrases.Count)]);
+                states.Add(_voodooStates[new Random().Next(0, _voodooStates.Count)]);
+            }
+
+            var spaces = phrases.Select(x => x.Length).Max() + 3;
+            message += "[ OPERATION: ]".PadRight(spaces) + "[ STATE: ]\n";
+            
+            // Append lists to message
+            for (int i = 0; i < numPhrases; i++)
+                message += $"{phrases[i].PadRight(spaces)}{states[i]}\n";
+
+            var coinString = coin ? "HEADS" : "TAILS";
+            message += $"[ DETERMINED: ] COIN was {coinString}\n```";
+            
+            await ReplyAsync(message);
+        }
+
+        private readonly List<string> _voodooPhrases = new()
+        {
+            "Expanding Matrix Quandaries",
+            "Reciting Ancient Ritual",
+            "Offering Tasty Sacrifice",
+            "Solving For X",
+            //"Rationalizing Pi",
+            "Engaging Quantum Oracle",
+            "Constructing Additional Pylons",
+            //"Applying Hadamard Cascade",
+            "Simulating Bloch Sphere",
+            "Flipping Separate Yet Quantumly Orthogonal Coin",
+            "Allocating Qubit Array",
+            "Consuming Computer RAM",
+            "Heating Up CPU",
+            "Applying Bitwise XOR",
+            "Spawning Child Process",
+            "Determining Inverse Square Root",
+            "Communing With The Deep Ones",
+        };
+
+        private readonly List<string> _voodooStates = new()
+        {
+            "|+⟩",
+            "|-⟩",
+            "|1⟩",
+            "|0⟩",
+            "|01⟩",
+            "|10⟩",
+            "|0110⟩",
+            "|42⟩",
+            "[ UNKNOWN ]",
+            "[ REDACTED ]",
+        };
     }
 }
 
