@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Linq;
 using Discord.Commands;
+using Discord;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -30,6 +31,28 @@ namespace GeckoBot.Commands
             await ReplyAsync((min + num).ToString());
         }
 
+        //absolutely fair coin flip
+        [Command("coin flip")]
+        [Summary("Simple coin flip game, you win if the coin is heads, computer wins if coins is tails")]
+        public async Task coinAgainstComputer([Summary("Your move, true is to flip, false is to not.")] bool move)
+        {
+            using var sim = new QuantumSimulator();
+
+            var result = await UnfairCoinFlip.Run(sim, move);
+
+            await ReplyAsync("the bot Hadamard'd the coin, it is in |+⟩ \n you " + (move ? "flipped" : "did not flip") + " the coin, it is in |+⟩ \n the bot Hadamard'd the coin, it is in |0⟩ \n the coin is observed, it is in " + (result.ToString() == "1" ? "heads, the bot wins" : "tails, the bot wins"));
+        }
+
+        //coin flip but cheating is not allowed
+        [Command("coin flip")]
+        [Summary("Simple coin flip game, you win if the coin is heads, computer wins if coins is tails")]
+        public async Task coin(IUser recipient, string bits)
+        {
+            IUser sender = Context.User;
+            
+            await ReplyAsync("in progress");
+        }
+
         //g ro v e r
         [Command("grover")]
         [Summary("basic search in sqrt(n) time")]
@@ -53,10 +76,10 @@ namespace GeckoBot.Commands
         [Summary("search more things in sqrt(n) time")]
         public async Task grover2([Summary("number of qubits to use")] int qubits,  [Summary("the indices (seperated by '$') of the marked values")] string matcher, [Summary("number of search iterations")] int iterations = 0, [Summary("number of search repetitions")] int repetitions = 0)
         {
-
+            
             if (qubits > 15)
             {
-                await ReplyAsync("please use 12 or under qubits");
+                await ReplyAsync("please use 15 or under qubits");
                 return;
             }
             if (repetitions > 50)
