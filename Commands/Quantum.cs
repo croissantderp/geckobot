@@ -198,16 +198,22 @@ namespace GeckoBot.Commands
         [Summary("Use the power of black magic to determine the outcome of your coin flip")]
         public async Task voodoo([Summary("Whether your coin is heads or tails (true is heads)")]bool coin)
         {
+            var r = new Random();
+            
             var message = "```css\n";
-            var numPhrases = new Random().Next(4, 7);
+            var numPhrases = r.Next(4, 8);
             List<string> phrases = new();
             List<string> states = new();
+            
+            // Small chance for secret message
+            if (numPhrases == 7 && r.Next(1, 4) == 3) 
+                states.AddRange(new List<string> {"[ THEY   ]", "[ ARE    ]", "[ COMING ]", "[ RUN    ]", "[ WHILE  ]", "[ YOU    ]", "[ CAN    ]"});
             
             // Populate phrases and states lists
             for (int i = 0; i < numPhrases; i++)
             {
-                phrases.Add(_voodooPhrases[new Random().Next(0, _voodooPhrases.Count)]);
-                states.Add(_voodooStates[new Random().Next(0, _voodooStates.Count)]);
+                phrases.Add(_voodooPhrases[r.Next(0, _voodooPhrases.Count)]);
+                states.Add(_voodooStates[r.Next(0, _voodooStates.Count)]);
             }
 
             var spaces = phrases.Select(x => x.Length).Max() + 3;
@@ -244,43 +250,54 @@ namespace GeckoBot.Commands
             "Determining Inverse Square Root",
             "Communing With The Deep Ones",
             "Applying PauliZ rotation of PI() / 4 radians",
-            "Finding answer with high probability",
-            "Computing Oracle Synthesis algorithm",
+            "Finding Answer With High Probability",
+            "Computing Oracle Synthesis Algorithm",
             "Factoring your private key",
-            "Reflect About var life",
+            //"Reflecting About var life",
             "Obtaining Artoo's token",
             "Obtaining RBot's token",
-            "Generating circuit diagram",
-            "Quantum state lost. All systems failed, attempting reboot...",
-            "rotating characters in mspaint",
-            "Plotting vectors",
-            "Listening to music",
+            "Generating Circuit Diagram",
+            "[ERR] Quantum state lost. All systems failed, attempting reboot...",
+            "Rotating Text in MSPaint",
+            "Plotting Vectors",
+            //"Listening to music",
             "Accessing FBI backdoor",
-            "Amplifying amplified amplitude",
+            "Amplifying Amplified Amplitude",
             "Calculating arcsin of state",
             "Ising coupling qubits",
-            "Applying Toffoli gate",
-            "Applying Ravioli gate",
-            "Swapping qubit matrices",
+            "Applying Toffoli Gate",
+            "Applying Ravioli Gate",
+            "Swapping Qubit Matrices",
             "ApplyToAll(CCCCNOT)",
-            "Reversing operation, generating reversable black box oracle",
-            "Doing this thing 𝜙",
-            "Reverse engineering your connection",
+            //"Reversing operation, generating reversable black box oracle",
+            "Calculating 𝜙",
+            "Reverse Engineering Your Connection",
+            "[object Object]",
+            "Gutting Sacrificial Pig",
+            "Entering Fourth Dimension",
+            "Compressing Dark Matter",
+            "Opening Dimensional Rift",
+            "Finding Inner Peace",
+            "null",
             "Reading TOS",
             "Generating predictive model",
-            "Reading wikipedia",
+            "Consulting Wikipedia",
+            "Pasting Snippet From Stack Overflow",
             "Moving three parallel universes ahead",
             "Counting geckoimages",
+            "Querying Drive API",
             "Pushing to GitHub",
+            "Resolving Merge Conflicts",
             "Contacting Gandalf",
             "Contacting Dumbledore",
-            "Contacting Gorbachev",
+            //"Contacting Gorbachev",
         };
 
         private readonly List<string> _voodooStates = new()
         {
             "|+⟩",
             "|-⟩",
+            "|+-⟩",
             "|1⟩",
             "|0⟩",
             "|01⟩",
@@ -289,6 +306,7 @@ namespace GeckoBot.Commands
             "|42⟩",
             "[ UNKNOWN ]",
             "[ REDACTED ]",
+            "[ OBSCURED ]",
             "|ψ〉〈ψ|",
             "|k〉",
             "|z ⊕ xₖ〉",
