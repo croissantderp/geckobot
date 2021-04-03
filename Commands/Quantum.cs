@@ -196,7 +196,7 @@ namespace GeckoBot.Commands
 
         [Command("voodoo")]
         [Summary("Use the power of black magic to determine the outcome of your coin flip")]
-        public async Task voodoo([Summary("Whether your coin is heads or tails (true is heads)")]bool coin)
+        public async Task voodoo([Summary("Whether your coin is heads or tails (true is heads)")]bool coin, [Summary("Optional seed to influence coin")] int seed = 0)
         {
             var r = new Random();
             
@@ -204,11 +204,19 @@ namespace GeckoBot.Commands
             var numPhrases = r.Next(4, 8);
             List<string> phrases = new();
             List<string> states = new();
-            
-            // Small chance for secret message
-            if (numPhrases == 7 && r.Next(1, 4) == 3) 
-                states.AddRange(new List<string> {"[ THEY   ]", "[ ARE    ]", "[ COMING ]", "[ RUN    ]", "[ WHILE  ]", "[ YOU    ]", "[ CAN    ]"});
-            
+
+            seed = seed == 0 ? r.Next(1, 1000) : seed;
+
+            //secret statements
+            states.AddRange((numPhrases, seed) switch
+            { 
+                (7, 102) => new List<string> { "[ THEY   ]", "[ ARE    ]", "[ COMING ]", "[ RUN    ]", "[ WHILE  ]", "[ YOU    ]", "[ CAN    ]" },
+                (7, 058) => new List<string> { "[ PREPARE ]", "[ FOR     ]", "[ THE     ]", "[ END     ]", "[ IT      ]", "[ HAS     ]", "[ BEGUN   ]" },
+                (6, 358) => new List<string> { "[ It       ]", "[ IS       ]", "[ A        ]", "[ PLEASURE ]", "[ TO       ]", "[ BURN     ]" },
+
+                _ => new List<string>()
+            });
+
             // Populate phrases and states lists
             for (int i = 0; i < numPhrases; i++)
             {
@@ -253,14 +261,14 @@ namespace GeckoBot.Commands
             "Finding Answer With High Probability",
             "Computing Oracle Synthesis Algorithm",
             "Factoring your private key",
-            //"Reflecting About var life",
+            "Reflecting About Variable [life]",
+            "Reflecting about superposition",
             "Obtaining Artoo's token",
             "Obtaining RBot's token",
             "Generating Circuit Diagram",
             "[ERR] Quantum state lost. All systems failed, attempting reboot...",
             "Rotating Text in MSPaint",
             "Plotting Vectors",
-            //"Listening to music",
             "Accessing FBI backdoor",
             "Amplifying Amplified Amplitude",
             "Calculating arcsin of state",
@@ -269,7 +277,18 @@ namespace GeckoBot.Commands
             "Applying Ravioli Gate",
             "Swapping Qubit Matrices",
             "ApplyToAll(CCCCNOT)",
-            //"Reversing operation, generating reversable black box oracle",
+            "Reversing Operation",
+            "Generating Reversable Black Box Oracle",
+            "Qubits Entering Black Box...",
+            "Reversing equations",
+            "May I have your attention please.",
+            "A fire has been reported in the building.",
+            "Please proceed to the nearest exit.",
+            "Preparing State of Emergency",
+            "Preparing Railgun For Fire",
+            "Preparing Large Hadron Collider For Fire",
+            "Aquiring Funds from Nigerian Prince",
+            "Performing Hug Operator on Qubits",
             "Calculating 𝜙",
             "Reverse Engineering Your Connection",
             "[object Object]",
@@ -290,7 +309,32 @@ namespace GeckoBot.Commands
             "Resolving Merge Conflicts",
             "Contacting Gandalf",
             "Contacting Dumbledore",
-            //"Contacting Gorbachev",
+            "Obtaining a Soul",
+            "Simulating Gecko in 4D Space",
+            "Dealing With Null Reference Exception On Line 45",
+            "Dealing With Null Reference Exception On Line ???",
+            "Compiling...",
+            "Powering On Fusion Reactor",
+            "Contacting SCP Foundation",
+            "Generating Frequencies",
+            "Powering On Vacuum Tubes",
+            "Generating Voronoi Pattern",
+            "Obtaining Coronavirus Sample",
+            "Priming Sculk Sensor",
+            "Priming Rabbit-based Proximity Sensors",
+            "Processing gcode",
+            "Constructing 3D Printer",
+            "Calculating Minimal Surface Egg",
+            "Inviting Geckobot to Discord Servers",
+            "[WARNING] This Connection Is No Longer Private",
+            "Rerouting Connection Through Secure Server",
+            "Simplifying Fractions",
+            "Approximating Pi = 5",
+            "Generating Quantum GeckoImage",
+            "Uploading Status to Server",
+            "Contacting AI-COM/RSPN",
+            "Stockpiling Weapons",
+            "Discussing With GBot",
         };
 
         private readonly List<string> _voodooStates = new()
@@ -307,6 +351,10 @@ namespace GeckoBot.Commands
             "[ UNKNOWN ]",
             "[ REDACTED ]",
             "[ OBSCURED ]",
+            "[ LOADING... ]",
+            "[ RENDERING... ]",
+            "[ IN PROGRESS ]",
+            "[ NULL ]",
             "|ψ〉〈ψ|",
             "|k〉",
             "|z ⊕ xₖ〉",
@@ -318,7 +366,7 @@ namespace GeckoBot.Commands
             "sin((2M+1)θ) |1〉|N-1〉",
             "cos((2M+1)θ) |0〉(|0〉+|1〉+...+|N-2〉)",
             "O(1/√N)",
-            "|𝜙〉"
+            "|𝜙〉",
         };
     }
 }

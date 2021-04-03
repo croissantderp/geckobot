@@ -23,6 +23,13 @@ namespace GeckoBot.Commands
             await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
 
+        [Command("open dm")]
+        [Summary("Opens a DM with the user")]
+        public async Task openDM()
+        {
+            await Context.User.SendMessageAsync("DM opened");
+        }
+
         //sends a message with a link to the ice cream cards collection
         [Command("ice cream")]
         [Summary("Links the ice cream cards Google Drive folder.")]
