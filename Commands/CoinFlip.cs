@@ -19,8 +19,8 @@ namespace GeckoBot.Commands
     [RequireContext(ContextType.DM)]
     public class QuantumCoinFlip : ModuleBase<SocketCommandContext>
     {
-        static Dictionary<string, string> usersInGame = new Dictionary<string, string>();
-        static List<string> justMoved = new List<string>();
+        private static readonly Dictionary<string, string> usersInGame = new Dictionary<string, string>();
+        private static readonly List<string> justMoved = new List<string>();
 
         //coin flip but cheating is not allowed
         [Command("coin")]
@@ -30,14 +30,14 @@ namespace GeckoBot.Commands
         {
             var recipitant = Context.Client.GetUser(ulong.Parse(recipitantid));
 
-            if (usersInGame.Keys.Where(a => a.Contains(recipitant.Id.ToString())).Count() != 0)
+            if (usersInGame.Keys.Any(a => a.Contains(recipitant.Id.ToString())))
             {
                 await ReplyAsync("person is already in a game");
                 return;
             }
             IUser sender = Context.User;
 
-            if (usersInGame.Keys.Where(a => a.Contains(sender.Id.ToString())).Count() != 0)
+            if (usersInGame.Keys.Any(a => a.Contains(sender.Id.ToString())))
             {
                 await ReplyAsync("cannot start a new game while in a game");
                 return;
@@ -53,13 +53,10 @@ namespace GeckoBot.Commands
 
             using var sim = new QuantumSimulator();
 
-            foreach (string a in bits.Split("$"))
+            if (bits.Split("$").Any(a => a != "1" && a != "0"))
             {
-                if (a != "1" && a != "0")
-                {
-                    await ReplyAsync("make sure bits only consist of 1s and 0s and seperators ($)");
-                    return;
-                }
+                await ReplyAsync("make sure bits only consist of 1s and 0s and seperators ($)");
+                return;
             }
 
             var elements = bits.Split("$").Select(a => a == "1");
@@ -116,7 +113,7 @@ namespace GeckoBot.Commands
         [Summary("Guess in the quantum coin game.")]
         public async Task coinLie([Summary("Type of encoding used, rectilinear or diagonal.")] string encoding)
         {
-            if (usersInGame.Keys.Where(a => a.Contains(Context.User.Id.ToString())).Count() == 0)
+            if (!usersInGame.Keys.Any(a => a.Contains(Context.User.Id.ToString())))
             {
                 await ReplyAsync("you are not in a game");
                 return;
@@ -128,7 +125,7 @@ namespace GeckoBot.Commands
                 return;
             }
 
-            string temp = usersInGame.Keys.Where(a => a.Contains(Context.User.Id.ToString())).First().ToString();
+            string temp = usersInGame.Keys.First(a => a.Contains(Context.User.Id.ToString()));
             List<string> users = temp.Split("$").ToList();
 
 
@@ -155,14 +152,14 @@ namespace GeckoBot.Commands
         [Summary("Confirm a result in the quantum coin flip game.")]
         public async Task confirm()
         {
-            if (usersInGame.Keys.Where(a => a.Contains(Context.User.Id.ToString())).Count() == 0)
+            if (!usersInGame.Keys.Any(a => a.Contains(Context.User.Id.ToString())))
             {
                 await ReplyAsync("you are not in a game");
                 return;
             }
 
 
-            string temp = usersInGame.Keys.Where(a => a.Contains(Context.User.Id.ToString())).First().ToString();
+            string temp = usersInGame.Keys.First(a => a.Contains(Context.User.Id.ToString()));
             string[] users = temp.Split("$");
 
             if (justMoved.Contains(Context.User.Id.ToString()) && users[0] != users[1])
@@ -240,13 +237,13 @@ namespace GeckoBot.Commands
         [Summary("Deny a result in the quantum coin flip game.")]
         public async Task deny()
         {
-            if (usersInGame.Keys.Where(a => a.Contains(Context.User.Id.ToString())).Count() == 0)
+            if (!usersInGame.Keys.Any(a => a.Contains(Context.User.Id.ToString())))
             {
                 await ReplyAsync("you are not in a game");
                 return;
             }
 
-            string temp = usersInGame.Keys.Where(a => a.Contains(Context.User.Id.ToString())).First().ToString();
+            string temp = usersInGame.Keys.First(a => a.Contains(Context.User.Id.ToString()));
             string[] users = temp.Split("$");
 
             if (justMoved.Contains(Context.User.Id.ToString()) && users[0] != users[1])
@@ -324,13 +321,13 @@ namespace GeckoBot.Commands
         [Summary("Quit a game of coin.")]
         public async Task quit()
         {
-            if (usersInGame.Keys.Where(a => a.Contains(Context.User.Id.ToString())).Count() == 0)
+            if (!usersInGame.Keys.Any(a => a.Contains(Context.User.Id.ToString())))
             {
                 await ReplyAsync("you are not in a game");
                 return;
             }
 
-            string temp = usersInGame.Keys.Where(a => a.Contains(Context.User.Id.ToString())).First().ToString();
+            string temp = usersInGame.Keys.First(a => a.Contains(Context.User.Id.ToString()));
             string[] users = temp.Split("$");
             
             foreach (string user in users)
