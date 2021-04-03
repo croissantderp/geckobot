@@ -43,16 +43,6 @@ namespace GeckoBot.Commands
             await ReplyAsync("the bot Hadamard'd the coin, it is in |+⟩ \n you " + (move ? "flipped" : "did not flip") + " the coin, it is in |+⟩ \n the bot Hadamard'd the coin, it is in |0⟩ \n the coin is observed, it is in " + (result.ToString() == "1" ? "heads, the bot wins" : "tails, the bot wins"));
         }
 
-        //coin flip but cheating is not allowed
-        [Command("coin flip")]
-        [Summary("Simple coin flip game, you win if the coin is heads, computer wins if coins is tails")]
-        public async Task coin(IUser recipient, string bits)
-        {
-            IUser sender = Context.User;
-            
-            await ReplyAsync("in progress");
-        }
-
         //g ro v e r
         [Command("grover")]
         [Summary("basic search in sqrt(n) time")]
