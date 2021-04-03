@@ -246,7 +246,7 @@ namespace GeckoBot.Commands
             "Applying PauliZ rotation of PI() / 4 radians",
             "Finding answer with high probability",
             "Computing Oracle Synthesis algorithm",
-            "factoring your private key",
+            "Factoring your private key",
             "Reflect About var life",
             "Obtaining Artoo's token",
             "Obtaining RBot's token",
@@ -264,7 +264,9 @@ namespace GeckoBot.Commands
             "Swapping qubit matrices",
             "ApplyToAll(CCCCNOT)",
             "Reversing operation, generating reversable black box oracle",
-            "doing this thing 𝜙",
+            "Doing this thing 𝜙",
+            "Reverse engineering your connection",
+            "",
         };
 
         private readonly List<string> _voodooStates = new()

@@ -24,10 +24,10 @@ namespace GeckoBot.Commands
 
         //coin flip but cheating is not allowed
         [Command("coin")]
-        [Summary("Coin game where you encrypt five bytes in rectilinear or diagonal fashion and somebody else has to guess the type of encryption used. The recipitant has no way of knowing the encrytion, and the sender cannot lie without guessing the results for the other column. (See https://en.wikipedia.org/wiki/Quantum_coin_flipping for more reference)")]
-        public async Task coin([Summary("The id of the user you're going to play against")] string recipitantid, [Summary("A string of bits (0 or 1) seperated by $")] string bits, [Summary("Type of encoding used, rectilinear or diagonal.")] string encoding)
+        [Summary("**Info**\nCoin game where you encrypt five bytes in rectilinear or diagonal fashion and somebody else has to guess the type of encryption used. The recipitant has no way of knowing the encrytion, and the sender cannot lie without guessing the results for the other column (See https://en.wikipedia.org/wiki/Quantum_coin_flipping for more reference).\n\n" +
+            "**Instructions**\nThe sender encrypts the bytes using this command and the bot sends them to the recipitant. That player will guess using '\\`guess [rect/diag]' then the bot sends this guess back to the sender. That player would then '\\`confirm' or '\\`deny' the guess. The recipitant will recieve that result and '\\`confirm' or '\\`deny' it. The bot then sends the winner and other statistics.")]
+        public async Task coin([Summary("The id of the user you're going to play against, playing against yourself is supported if you put your own id")] string recipitantid, [Summary("A string of bits (0 or 1) seperated by $")] string bits, [Summary("Type of encoding used, rectilinear or diagonal. ('rect' or 'diag')")] string encoding)
         {
-
             var recipitant = Context.Client.GetUser(ulong.Parse(recipitantid));
 
             if (usersInGame.Keys.Where(a => a.Contains(recipitant.Id.ToString())).Count() != 0)
@@ -47,7 +47,7 @@ namespace GeckoBot.Commands
 
             if (encoding != "rect" && encoding != "diag")
             {
-                await ReplyAsync("use arguments 'rect' and 'diag' only");
+                await ReplyAsync("use arguments 'rect' and 'diag' only for the encryption field");
                 return;
             }
 
@@ -74,7 +74,7 @@ namespace GeckoBot.Commands
             Random rng = new Random();
             bool[] decoding = new bool[5];
 
-            for (int i = 0; i < rng.Next((int)Math.Round((double)5 / 2, MidpointRounding.ToZero), (int)Math.Round((double)5 / 2, MidpointRounding.AwayFromZero) + 1); i++)
+            for (int i = 0; i < rng.Next((int)Round((double)5 / 2, MidpointRounding.ToZero), (int)Round((double)5 / 2, MidpointRounding.AwayFromZero) + 1); i++)
             {
                 decoding[i] = true;
             }
@@ -146,7 +146,7 @@ namespace GeckoBot.Commands
 
             justMoved.Add(Context.User.Id.ToString());
 
-            await Context.Client.GetUser(ulong.Parse(users[0])).SendMessageAsync("your opponent guessed " + encoding + ", were they correct? Use \\`confirm or \\`deny.");
+            await Context.Client.GetUser(ulong.Parse(users[0])).SendMessageAsync("your opponent guessed " + encoding + ", were they correct? Use \\`confirm or \\`deny \n(This is an opportunity to lie, you are not required to tell the truth).");
             await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
 
@@ -182,9 +182,9 @@ namespace GeckoBot.Commands
                     final[i] = original[i] + " -> " + results[i];
                 }
 
-                await Context.Client.GetUser(ulong.Parse(users[0])).SendMessageAsync("your opponent said your guess was correct. Do you agree?" +
-                    $"```     R|D\n{string.Join("\n", final)}``` " +
-                    "Use \\`confirm or \\`deny.");
+                await Context.Client.GetUser(ulong.Parse(users[0])).SendMessageAsync("your opponent said your guess was correct. Do you agree? (the original bits should line up with the correct decryption method, R or D)" +
+                    $"```O    R|D\n{string.Join("\n", final)}``` " +
+                    "Use \\`confirm or \\`deny.\n(This is an opportunity to lie, you are not required to tell the truth).");
 
                 string temp2 = usersInGame[temp];
                 usersInGame.Remove(temp);
@@ -233,7 +233,6 @@ namespace GeckoBot.Commands
                 await ReplyAsync("your game has not progressed to this point yet");
                 return;
             }
-
         }
 
         //coin flip but cheating is not allowed
@@ -267,9 +266,9 @@ namespace GeckoBot.Commands
                     final[i] = original[i] + " -> " + results[i];
                 }
 
-                await Context.Client.GetUser(ulong.Parse(users[0])).SendMessageAsync("your opponent said your guess was incorrect. Do you agree?" +
-                    $"```     R|D\n{string.Join("\n", final)}``` " +
-                    "Use \\`confirm or \\`deny.");
+                await Context.Client.GetUser(ulong.Parse(users[0])).SendMessageAsync("your opponent said your guess was incorrect. Do you agree? (the original bits should line up with the correct decryption method, R or D)" +
+                    $"```O    R|D\n{string.Join("\n", final)}``` " +
+                    "Use \\`confirm or \\`deny.\n(This is an opportunity to lie, you are not required to tell the truth).");
 
                 string temp2 = usersInGame[temp];
                 usersInGame.Remove(temp);
@@ -296,7 +295,7 @@ namespace GeckoBot.Commands
                 string liars = (p1lie, p2lie) switch
                 {
                     (true, true) => "both players are liars",
-                    (true, false) => Context.Client.GetUser(ulong.Parse(users[1])).ToString() + " is a liar",
+                    (true, false) => Context.Client.GetUser(ulong.Parse(users[1])).ToString() + " was caught lying",
                     (false, true) => Context.Client.GetUser(ulong.Parse(users[0])).ToString() + " lied about " + (actualCorrect ? "winning" : "losing"),
                     (false, false) => "both players were being truthful",
                 };
