@@ -266,7 +266,15 @@ namespace GeckoBot.Commands
             "Reversing operation, generating reversable black box oracle",
             "Doing this thing 𝜙",
             "Reverse engineering your connection",
-            "",
+            "Reading TOS",
+            "Generating predictive model",
+            "Reading wikipedia",
+            "Moving three parallel universes ahead",
+            "Counting geckoimages",
+            "Pushing to GitHub",
+            "Contacting Gandalf",
+            "Contacting Dumbledore",
+            "Contacting Gorbachev",
         };
 
         private readonly List<string> _voodooStates = new()
