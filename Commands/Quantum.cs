@@ -279,6 +279,18 @@ namespace GeckoBot.Commands
             "Opening Dimensional Rift",
             "Finding Inner Peace",
             "null",
+            "Reading TOS",
+            "Generating predictive model",
+            "Consulting Wikipedia",
+            "Pasting Snippet From Stack Overflow",
+            "Moving three parallel universes ahead",
+            "Counting geckoimages",
+            "Querying Drive API",
+            "Pushing to GitHub",
+            "Resolving Merge Conflicts",
+            "Contacting Gandalf",
+            "Contacting Dumbledore",
+            //"Contacting Gorbachev",
         };
 
         private readonly List<string> _voodooStates = new()
