@@ -15,7 +15,7 @@ using Microsoft.Quantum.Simulation.Core;
 
 namespace GeckoBot.Commands
 {
-    [Summary("Quantum commands using Q# and the Quantum Simulator")]
+    [Summary("A quantum coin flipping game to see if you can trust your friends!")]
     [RequireContext(ContextType.DM)]
     public class QuantumCoinFlip : ModuleBase<SocketCommandContext>
     {
@@ -24,7 +24,7 @@ namespace GeckoBot.Commands
 
         //coin flip but cheating is not allowed
         [Command("coin")]
-        [Summary("Coin game where you encrypt five bytes in rectilinear or diagonal fashion and somebody else has to guess the type of encryption used. The recipitant has no way of knowing the encrytion, and the sender cannot lie without guessing the results for the other column.")]
+        [Summary("Coin game where you encrypt five bytes in rectilinear or diagonal fashion and somebody else has to guess the type of encryption used. The recipitant has no way of knowing the encrytion, and the sender cannot lie without guessing the results for the other column. (See https://en.wikipedia.org/wiki/Quantum_coin_flipping for more reference)")]
         public async Task coin([Summary("The id of the user you're going to play against")] string recipitantid, [Summary("A string of bits (0 or 1) seperated by $")] string bits, [Summary("Type of encoding used, rectilinear or diagonal.")] string encoding)
         {
 
@@ -210,7 +210,7 @@ namespace GeckoBot.Commands
 
                 string liars = (p1lie, p2lie) switch
                 {
-                    (true, true) => "both players are liars",
+                    (true, true) => Context.Client.GetUser(ulong.Parse(users[0])).ToString() + " was fooled by " + Context.Client.GetUser(ulong.Parse(users[1])).ToString(),
                     (true, false) => Context.Client.GetUser(ulong.Parse(users[1])).ToString() + " is a liar",
                     (false, true) => Context.Client.GetUser(ulong.Parse(users[0])).ToString() + " is a liar",
                     (false, false) => "both players were being truthful",
@@ -297,10 +297,9 @@ namespace GeckoBot.Commands
                 {
                     (true, true) => "both players are liars",
                     (true, false) => Context.Client.GetUser(ulong.Parse(users[1])).ToString() + " is a liar",
-                    (false, true) => Context.Client.GetUser(ulong.Parse(users[0])).ToString() + " is a liar",
+                    (false, true) => Context.Client.GetUser(ulong.Parse(users[0])).ToString() + " lied about " + (actualCorrect ? "winning" : "losing"),
                     (false, false) => "both players were being truthful",
                 };
-
 
                 foreach (string user in users)
                 {
@@ -323,7 +322,7 @@ namespace GeckoBot.Commands
 
         //coin flip but cheating is not allowed
         [Command("quit")]
-        [Summary("")]
+        [Summary("Quit a game of coin.")]
         public async Task quit()
         {
             if (usersInGame.Keys.Where(a => a.Contains(Context.User.Id.ToString())).Count() == 0)
@@ -340,8 +339,5 @@ namespace GeckoBot.Commands
                 await Context.Client.GetUser(ulong.Parse(user)).SendMessageAsync("you/opponent has quit the game");
             }
         }
-
-
-
     }
 }
