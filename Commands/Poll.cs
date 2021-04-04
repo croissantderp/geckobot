@@ -15,7 +15,7 @@ namespace GeckoBot.Commands
     [Summary("Ask others about things.")]
     public class Poll : ModuleBase<SocketCommandContext>
     {
-        //emote dictionary
+        //poll dictionary
         private static Dictionary<string, string> rateDict = new();
 
         //loads poll dictionary as string and converts it back into dictionary

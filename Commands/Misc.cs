@@ -24,31 +24,17 @@ namespace GeckoBot.Commands
         }
 
         [Command("open dm")]
-        [Summary("Opens a DM with the user")]
+        [Summary("Opens a DM with the user.")]
         public async Task openDM()
         {
             await Context.User.SendMessageAsync("DM opened");
         }
 
-        //sends a message with a link to the ice cream cards collection
-        [Command("ice cream")]
-        [Summary("Links the ice cream cards Google Drive folder.")]
-        public async Task iceCream()
+        [Command("ping")]
+        [Summary("Returns the latency.")]
+        public async Task ping()
         {
-            //buils an embed
-            var embed = new EmbedBuilder
-            {
-                Title = "ice cream cards",
-                Description = (
-                "[see the ice cream cards here](https://drive.google.com/drive/folders/1O7SVg5D0n8t3gOjkArjhhH7_YllcwAXA?usp=sharing)"
-                )
-            };
-
-            embed.WithColor(180, 212, 85);
-
-            var embed2 = embed.Build();
-
-            await ReplyAsync(embed: embed2);
+            await ReplyAsync("latency is " + Context.Client.Latency.ToString() + "ms");
         }
 
         // This is probably a bad idea

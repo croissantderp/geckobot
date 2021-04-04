@@ -88,7 +88,7 @@ namespace GeckoBot.Commands
                 List<string> desc = commands.Select(FormatCommand).ToList();
 
                 embedBuilder.Title = "Command List:";
-                embedBuilder.Description = string.Join(", ", desc);
+                embedBuilder.Description = "The prefix for this server is " + Prefix.returnPrefix(Context.Guild != null ? Context.Guild.Id.ToString() : "") + "\n" + string.Join(", ", desc);
             }
 
             embedBuilder.WithColor(180, 212, 85);
@@ -128,15 +128,13 @@ namespace GeckoBot.Commands
             //embed
             var embed = new EmbedBuilder
             {
-            Title = "geckobot" + Globals.names[Globals.CurrentName] + System.Environment.NewLine + "3/30/2020 instruction manual",
-            Description = ("my prefix is \\` and \\`i for inline commands." + System.Environment.NewLine +
+            Title = "geckobot" + Globals.names[Globals.CurrentName] + "3/30/2020 instruction manual",
+            Description = @"my prefix is " + Prefix.returnPrefix(Context.Guild != null ? Context.Guild.Id.ToString() : "") + " and [prefix]i for inline commands." + System.Environment.NewLine +
                 "(highly recommended to have developer mode on to easily use)" + System.Environment.NewLine +
-                "if there's a problem, ping my owner croissantderp#4167 " + System.Environment.NewLine + System.Environment.NewLine +
-                "links: [trello](https://trello.com/invite/b/cFS33M13/8fddf3ac42bd0fe419e482c6f4414e01/gecko-bot-todo) [github](https://github.com/croissantderp/geckobot) [invite](https://discord.com/oauth2/authorize?client_id=766064505079726140&scope=bot&permissions=379968)" + System.Environment.NewLine + System.Environment.NewLine +
-                "'\\`what do you do?' quick start guide" + System.Environment.NewLine + System.Environment.NewLine +
-                "'\\`help [command]' cool help command" + System.Environment.NewLine + System.Environment.NewLine +
-                "**In order to not make admins angery, consider using a spam channel for these commands as they are lengthy.**"
-                )
+                "if there's a problem, ping my owner croissantderp#4167 " + System.Environment.NewLine +
+                "links: [trello](https://trello.com/invite/b/cFS33M13/8fddf3ac42bd0fe419e482c6f4414e01/gecko-bot-todo) [github](https://github.com/croissantderp/geckobot) [invite](https://discord.com/oauth2/authorize?client_id=766064505079726140&scope=bot&permissions=379968)" + System.Environment.NewLine +
+                "'[prefix]what do you do?' quick start guide" + System.Environment.NewLine +
+                "'[prefix]help [command]' cool help command"
             };
             embed.WithFooter("It has been " + (DateTime.Now - Globals.lastReset).ToString() + " since this bot has been restarted");
             embed.WithColor(180, 212, 85);
