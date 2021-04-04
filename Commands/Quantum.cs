@@ -201,11 +201,11 @@ namespace GeckoBot.Commands
             var r = new Random();
             
             var message = "```css\n";
-            var numPhrases = r.Next(4, 8);
+            var numPhrases = r.Next(4, 9);
             List<string> phrases = new();
             List<string> states = new();
 
-            seed = seed == 0 ? r.Next(1, 1000) : seed;
+            seed = seed == 0 ? r.Next(0, 1000) : seed;
 
             //secret statements
             states.AddRange((numPhrases, seed) switch
@@ -213,6 +213,14 @@ namespace GeckoBot.Commands
                 (7, 102) => new List<string> { "[ THEY   ]", "[ ARE    ]", "[ COMING ]", "[ RUN    ]", "[ WHILE  ]", "[ YOU    ]", "[ CAN    ]" },
                 (7, 058) => new List<string> { "[ PREPARE ]", "[ FOR     ]", "[ THE     ]", "[ END     ]", "[ IT      ]", "[ HAS     ]", "[ BEGUN   ]" },
                 (6, 358) => new List<string> { "[ It       ]", "[ IS       ]", "[ A        ]", "[ PLEASURE ]", "[ TO       ]", "[ BURN     ]" },
+                (6, 111) => new List<string> { "[ MAY       ]", "[ I         ]", "[ HAVE      ]", "[ YOUR      ]", "[ ATTENTION ]", "[ PLEASE    ]" },
+                (8, 111) => new List<string> {"[ A        ]", "[ FIRE     ]", "[ HAS      ]", "[ BEEN     ]", "[ REPORTED ]", "[ IN       ]", "[ THE      ]", "[ BUILDING ]"},
+                (6, 112) => new List<string> {"[ PLEASE  ]", "[ PROCEED ]", "[ TO      ]", "[ THE     ]", "[ NEAREST ]", "[ EXIT    ]" },
+                (5, 9999999) => new List<string> { "[ h ]", "[ E ]", "[ h ]", "[ E ]", "[ . ]"},
+                (7, 66) => new List<string> { "[ BEWARE ]", "[ THE    ]", "[ MAN    ]", "[ WHO    ]", "[ SPEAKS ]", "[ IN     ]", "[ HANDS  ]" },
+                (7, 0) => new List<string> { "[ BEWARE  ]", "[ THE     ]", "[ GECKO   ]", "[ YOU     ]", "[ WILL    ]", "[ NOT     ]", "[ SURVIVE ]" },
+                (5, -1) => new List<string> { "[ GOODBYE ]", "[ WE      ]", "[ WILL    ]", "[ MEET    ]", "[ AGAIN   ]" },
+                (5, 101) => new List<string> { "[ THE    ]", "[ LAST   ]", "[ WORD   ]", "[ IS     ]", "[ NOT    ]", "[ VERY   ]", "[ NICE    ]" },
 
                 _ => new List<string>()
             });
@@ -281,9 +289,6 @@ namespace GeckoBot.Commands
             "Generating Reversable Black Box Oracle",
             "Qubits Entering Black Box...",
             "Reversing equations",
-            "May I have your attention please.",
-            "A fire has been reported in the building.",
-            "Please proceed to the nearest exit.",
             "Preparing State of Emergency",
             "Preparing Railgun For Fire",
             "Preparing Large Hadron Collider For Fire",
