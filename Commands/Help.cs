@@ -40,11 +40,14 @@ namespace GeckoBot.Commands
         [Command("help")]
         [Summary("Dynamic help command.")]
         public async Task help(
-            [Remainder]
             [Summary("The specific command or module to send info about.")]
-            string target = null
+            string target = null,
+            [Summary("The index of the result.")]
+            int result = 1
             )
         {
+            result--;
+
             List<CommandInfo> commands = _commands.Commands.ToList();
             List<ModuleInfo> modules = _commands.Modules.ToList();
             EmbedBuilder embedBuilder = new ();
@@ -52,35 +55,43 @@ namespace GeckoBot.Commands
             // If there was an argument given, send info about that argument
             if (target != null)
             {
-                var command = commands.Find(cmd => cmd.Aliases.Contains(target.ToLower()) || FormatCommand(cmd) == target);
-                var module = modules.Find(m => m.Name.Equals(target, StringComparison.InvariantCultureIgnoreCase));
-                
-                if (command != null) // Try matching a command first
+                var commandsList = commands.FindAll(cmd => cmd.Aliases.Contains(target, StringComparer.InvariantCultureIgnoreCase) || FormatCommand(cmd) == target);
+                try
                 {
-                    var fields = command.Parameters;
-                    
-                    embedBuilder.Title = FormatCommand(command); // Command name
-                    embedBuilder.Description = command.Summary; // Command description
-                    
-                    embedBuilder.AddField("Usage:", 
-                        $"{command.Name} {string.Join(" ", fields.Select(FormatParameter))}"); // Command usage
-                    if (fields.Count > 0)
-                        embedBuilder.AddField("Parameters:",
-                            string.Join("\n", fields.Select(FormatParameterLong))); // Detailed parameter explanations
-                    embedBuilder.AddField("Module:", command.Module.Name); // Parent module
+                    var command = commandsList[result];
+
+                    if (command != null) // Try matching a command first
+                    {
+                        var fields = command.Parameters;
+
+                        embedBuilder.Title = FormatCommand(command); // Command name
+                        embedBuilder.Description = command.Summary; // Command description
+
+                        embedBuilder.AddField("Usage:",
+                            $"{command.Name} {string.Join(" ", fields.Select(FormatParameter))}"); // Command usage
+                        if (fields.Count > 0)
+                            embedBuilder.AddField("Parameters:",
+                                string.Join("\n", fields.Select(FormatParameterLong))); // Detailed parameter explanations
+                        embedBuilder.AddField("Module:", command.Module.Name); // Parent module
+                    }
                 }
-                else if (module != null) // If not a command, check modules
+                catch
                 {
-                    embedBuilder.Title = module.Name; // Module name
-                    embedBuilder.Description = module.Summary; // Module description
-                    
-                    embedBuilder.AddField("Commands:", 
-                        string.Join(", ", module.Commands.Select(FormatCommand))); // Children commands
-                }
-                else // Otherwise, nothing was found
-                {
-                    await Context.Channel.SendFileAsync(@"..\..\Cache\message.gif");
-                    return;
+                    var module = modules.FindAll(m => m.Name.Equals(target, StringComparison.InvariantCultureIgnoreCase))[result - commandsList.Count()];
+
+                    if (module != null) // Check modules
+                    {
+                        embedBuilder.Title = module.Name; // Module name
+                        embedBuilder.Description = module.Summary; // Module description
+
+                        embedBuilder.AddField("Commands:",
+                            string.Join(", ", module.Commands.Select(FormatCommand))); // Children commands
+                    }
+                    else // Otherwise, nothing was found
+                    {
+                        await Context.Channel.SendFileAsync(@"..\..\Cache\message.gif");
+                        return;
+                    }
                 }
             } 
             else // If no argument was given, send a list of commands
