@@ -128,10 +128,9 @@ namespace GeckoBot.Commands
             //embed
             var embed = new EmbedBuilder
             {
-            Title = "geckobot" + Globals.names[Globals.CurrentName] + "3/30/2020 instruction manual",
-            Description = @"my prefix is " + Prefix.returnPrefix(Context.Guild != null ? Context.Guild.Id.ToString() : "") + " and [prefix]i for inline commands." + System.Environment.NewLine +
-                "(highly recommended to have developer mode on to easily use)" + System.Environment.NewLine +
-                "if there's a problem, ping my owner croissantderp#4167 " + System.Environment.NewLine +
+            Title = "geckobot" + Globals.names[Globals.CurrentName] + " 3/30/2020 instruction manual",
+            Description = "my prefix is " + Prefix.returnPrefix(Context.Guild != null ? Context.Guild.Id.ToString() : "") + " and [prefix]i for inline commands." + System.Environment.NewLine +
+                "if there's a problem, ping a geckobot admin " + System.Environment.NewLine +
                 "links: [trello](https://trello.com/invite/b/cFS33M13/8fddf3ac42bd0fe419e482c6f4414e01/gecko-bot-todo) [github](https://github.com/croissantderp/geckobot) [invite](https://discord.com/oauth2/authorize?client_id=766064505079726140&scope=bot&permissions=379968)" + System.Environment.NewLine +
                 "'[prefix]what do you do?' quick start guide" + System.Environment.NewLine +
                 "'[prefix]help [command]' cool help command"
@@ -142,6 +141,34 @@ namespace GeckoBot.Commands
             var embed2 = embed.Build();
 
             await ReplyAsync(embed: embed2);
+        }
+
+        //instructions
+        [Command("admins")]
+        [Summary("Gets a list of current geckobot admins.")]
+        public async Task admins()
+        {
+            ulong[] adminsId = GeckoBot.Preconditions.RequireGeckobotAdmin.GeckobotAdmins.ToArray();
+
+            string final = "";
+
+            foreach (ulong a in adminsId)
+            {
+                final += MentionUtils.MentionUser(a) + "\n";
+            }
+
+            //embed
+            var embed = new EmbedBuilder
+            {
+                Title = "geckobot" + Globals.names[Globals.CurrentName] + " admins",
+                Description = final
+            };
+
+            embed.WithColor(180, 212, 85);
+
+            var embed2 = embed.Build();
+
+            await ReplyAsync(embed: embed2, allowedMentions: Globals.notAllowed);
         }
     }
 }

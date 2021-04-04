@@ -9,7 +9,7 @@ namespace GeckoBot.Preconditions
     public class RequireGeckobotAdmin : PreconditionAttribute
     {
         // List of all Geckobot Admins
-        private static readonly List<ulong> GeckobotAdmins = new()
+        public static readonly List<ulong> GeckobotAdmins = new()
         {
             526863414635790356,
             355534246439419904

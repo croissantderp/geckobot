@@ -10,7 +10,7 @@ using GeckoBot.Utils;
 
 namespace GeckoBot.Commands
 {
-    [Summary("Prefix related commands")]
+    [Summary("Prefix related commands.")]
     public class Prefix : ModuleBase<SocketCommandContext>
     {
         //prefix dictionary
@@ -28,10 +28,10 @@ namespace GeckoBot.Commands
         }
 
         [Command("change prefix")]
-        [Summary("Changes the bot's prefix in the current server")]
+        [Summary("Changes the bot's prefix in the current server, only works in guilds.")]
         [RequireContext(ContextType.Guild)]
-        //[RequireUserPermission(GuildPermission.ManageGuild)]
-        public async Task change([Summary("The new Prefix")][Remainder]string prefix)
+        [RequireUserPermission(GuildPermission.ManageGuild)]
+        public async Task change([Summary("The new prefix.")][Remainder]string prefix)
         {
             RefreshPrefixDict();
 
