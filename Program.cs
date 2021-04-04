@@ -91,7 +91,7 @@ namespace GeckoBot
             if (regex.IsMatch(message.Content))
             {
                 var temp2 = regex.Split(message.Content); //@"(?<!\\)\`i"
-                argPos = temp2[0].Length + 2;
+                argPos = temp2[0].Length + prefix.Length + 1;
 
                 var result = await _commands.ExecuteAsync(context, argPos, _services);
                 if (!result.IsSuccess && !result.Error.Equals(CommandError.UnknownCommand)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
