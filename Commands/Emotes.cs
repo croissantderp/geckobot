@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GeckoBot.Utils;
 using System;
+using System.Text.RegularExpressions;
 
 namespace GeckoBot.Commands
 {
@@ -208,7 +209,7 @@ namespace GeckoBot.Commands
 
         //big save function
         [Command("ess")]
-        [Summary("Saves all emotes from all guilds into the dictionary.")]
+        [Summary("Saves all emotes from all guilds into the dictionary. Geckobot will add repeat emotes with a '-(number)' at the end.")]
         public async Task ess()
         {
             EmoteUtils.RefreshEmoteDict();
@@ -226,7 +227,7 @@ namespace GeckoBot.Commands
 
                 foreach (IEmote c in b)
                 {
-                    bool isAnim = System.Text.RegularExpressions.Regex.IsMatch(c.ToString(), @"^<a:");
+                    bool isAnim = Regex.IsMatch(c.ToString(), @"^<a:");
                     
                     //gets number of total characters in the emote name
                     int count = c.ToString().Length;
@@ -234,16 +235,42 @@ namespace GeckoBot.Commands
                     //shortened name of the emote
                     string name = c.ToString().Remove(count - 20, 20).Remove(0, (isAnim ? 3 : 2));
 
-                    //if the emote dictionary already contains a key or emote contains banned characters
+                    string cstring = c.ToString();
+
+                    Regex preRegex = new Regex(@"^" + name + @"(|-)\d*");
+
+                    //if the emote dictionary already contains a key
                     if (!EmoteDict.ContainsKey(name))
                     {
-                        string cstring = c.ToString();
                         //escapes forbidden
                         name = EmoteUtils.escapeforbidden(name);
                         cstring = EmoteUtils.escapeforbidden(cstring);
 
                         //adds to emote dictionary
                         EmoteDict.Add(name, cstring);
+
+                        //adds to counter
+                        emotesAdded++;
+                    }
+                    else if (EmoteDict.Keys.Where(a => preRegex.IsMatch(a)).All(a => EmoteDict[a] != cstring))
+                    {
+                        //escapes forbidden
+                        name = EmoteUtils.escapeforbidden(name);
+                        cstring = EmoteUtils.escapeforbidden(cstring);
+
+                        Regex regex = new Regex(@"^" + name + @"-\d+");
+
+                        var arrayThing = EmoteDict.Keys.Where(a => regex.IsMatch(a));
+                        Console.WriteLine(string.Join(", ", arrayThing));
+                        int offset = 0;
+
+                        if (arrayThing.Count() != 0)
+                        {
+                            offset = int.Parse(arrayThing.Select(a => a.Split("-").Last()).OrderByDescending(a => int.Parse(a)).First());
+                            Console.WriteLine(name + " " + cstring + " -> " + offset);
+                        }
+                        //adds to emote dictionary
+                        EmoteDict.Add(name + "-" + (offset + 1).ToString(), cstring);
 
                         //adds to counter
                         emotesAdded++;
