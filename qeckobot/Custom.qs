@@ -58,6 +58,10 @@
 				SWAP(qubits[Truncate(arguments[index])], qubits[Truncate(arguments[index + 1])]);
 				set index = index + 1;
 			}
+			elif (a == "CNOT"){
+				CNOT(qubits[Truncate(arguments[index])], qubits[Truncate(arguments[index + 1])]);
+				set index = index + 1;
+			}
 			elif (a == "CY"){
 				CY(qubits[Truncate(arguments[index])], qubits[Truncate(arguments[index + 1])]);
 				set index = index + 1;
