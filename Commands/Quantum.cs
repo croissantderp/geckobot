@@ -43,28 +43,98 @@ namespace GeckoBot.Commands
             await ReplyAsync("the bot Hadamard'd the coin, it is in |+⟩ \n you " + (move ? "flipped" : "did not flip") + " the coin, it is in |+⟩ \n the bot Hadamard'd the coin, it is in |0⟩ \n the coin is observed, it is in " + (result.ToString() == "1" ? "heads, the bot wins" : "tails, the bot wins"));
         }
 
-        //g ro v e r
-        [Command("grover")]
-        [Summary("basic search in sqrt(n) time")]
-        public async Task grover([Summary("number of qubits to use")] int qubits, [Summary("the pattern to search for (in binary seperated by '$')")] string matcher)
+        [Command("circuit")]
+        [Summary("Construct quantum circuits using up to 5 qubits, current supported operations are " +
+            "H(qubit index) \n" +
+            "I(qubit index) \n" +
+            "X(qubit index) \n" +
+            "Y(qubit index) \n" +
+            "Z(qubit index) \n" +
+            "T(qubit index) \n" +
+            "RX(theta, qubit index) \n" +
+            "RY(theta, qubit index) \n" +
+            "RZ(theta, qubit index) \n" +
+            "S(qubit index) \n" +
+            "SWAP(qubit1 index, qubit2 index) \n" +
+            "CNOT(control qubit index, target qubit index) \n" +
+            "CY(control qubit index, qubit index) \n" +
+            "CZ(control qubit index, qubit index) \n" +
+            "CCNOT(control qubit1 index, control qubit2 index, target qubit index) \n" +
+            "M(qubit index) ")]
+        public async Task circuit([Summary("The number of qubits to use, has to be 5 or under.")] int qubits, [Summary("Commands to use, seperated by '$' (ex. 'H(0)$M(0)').")] [Remainder] string commands)
         {
-            using var sim = new QuantumSimulator();
-            if (qubits > 10)
+            if (qubits > 5)
             {
-                await ReplyAsync("please use 10 or under qubits");
+                await ReplyAsync("use 5 or under qubits");
                 return;
             }
 
-            var matcherInts = matcher.Split("$").Select(a => (int.Parse(a) == 0 ? true : false));
+            string[] parsedCommands = commands.Split("$");
 
-            var temp = await SearchForMarkedInput.Run(sim, qubits, new QArray<bool>(matcherInts));
-            await ReplyAsync(temp.ToString());
-        }
+            List<string> Oqubits = new List<string>();
+
+            List<string> Operations = new List<string>();
+
+            foreach (string c in parsedCommands)
+            {
+                string[] operationArray = c.ToUpper().Split("(");
+
+                operationArray[0] = operationArray[0] switch
+                {
+                    "CX" => "CNOT",
+                    "CCX" => "CCNOT",
+                    "TOFF" => "CCNOT",
+                    _ => operationArray[0]
+                };
+
+                Operations.Add(operationArray[0]);
+
+                string[] argumentArray = operationArray[1].Replace(")", "").Split(",");
+
+                Oqubits.AddRange(argumentArray);
+
+                bool NotError = true;
+                NotError = operationArray[0] switch
+                {
+                    "H" => argumentArray.Length == 1,
+                    "I" => argumentArray.Length == 1,
+                    "X" => argumentArray.Length == 1,
+                    "Y" => argumentArray.Length == 1,
+                    "Z" => argumentArray.Length == 1,
+                    "T" => argumentArray.Length == 1,
+                    "RX" => argumentArray.Length == 2,
+                    "RY" => argumentArray.Length == 2,
+                    "RZ" => argumentArray.Length == 2,
+                    "S" => argumentArray.Length == 1,
+                    "SWAP" => argumentArray.Length == 2,
+                    "CNOT" => argumentArray.Length == 2,
+                    "CY" => argumentArray.Length == 2,
+                    "CZ" => argumentArray.Length == 2,
+                    "CCNOT" => argumentArray.Length == 3,
+                    "M" => argumentArray.Length == 1,
+                    _ => false
+                };
+
+                if (!NotError)
+                {
+                    await ReplyAsync("There is an error in the arguments");
+                    return;
+                }
+            }
+
+            var sim = new QuantumSimulator(throwOnReleasingQubitsNotInZeroState: true);
+
+            double[] finalArguments = Oqubits.Select(a => double.Parse(a)).ToArray();
+            
+            var results = await COperation.Run(sim, qubits, new QArray<double>(finalArguments), new QArray<string>(Operations));
+
+            await ReplyAsync(results.ToString());
+        } 
 
         //https://github.com/microsoft/Quantum/blob/main/samples/algorithms/database-search/Program.cs
-        [Command("grover search")]
-        [Summary("search more things in sqrt(n) time")]
-        public async Task grover2([Summary("number of qubits to use")] int qubits,  [Summary("the indices (seperated by '$') of the marked values")] string matcher, [Summary("number of search iterations")] int iterations = 0, [Summary("number of search repetitions")] int repetitions = 0)
+        [Command("grover")]
+        [Summary("search in sqrt(n) time")]
+        public async Task grover([Summary("number of qubits to use")] int qubits,  [Summary("the indices (seperated by '$') of the marked values")] string matcher, [Summary("number of search iterations")] int iterations = 0, [Summary("number of search repetitions")] int repetitions = 0)
         {
             
             if (qubits > 15)

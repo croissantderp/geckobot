@@ -39,12 +39,7 @@ namespace GeckoBot.Commands
         
         [Command("help")]
         [Summary("Dynamic help command.")]
-        public async Task help(
-            [Summary("The specific command or module to send info about.")]
-            string target = null,
-            [Summary("The index of the result.")]
-            int result = 1
-            )
+        public async Task help([Summary("The specific command or module to send info about.")] string target = null,[Summary("The index of the result.")] int result = 1)
         {
             result--;
 
