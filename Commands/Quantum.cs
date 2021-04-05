@@ -60,7 +60,18 @@ namespace GeckoBot.Commands
             "CY(control qubit index, qubit index) \n" +
             "CZ(control qubit index, qubit index) \n" +
             "CCNOT(control qubit1 index, control qubit2 index, target qubit index) \n" +
-            "M(qubit index) ")]
+            "R1(theta, qubit index) \n" +
+            "CRX(control qubit index, theta, target qubit index) \n" +
+            "CRY(control qubit index, theta, target qubit index) \n" +
+            "CRZ(control qubit index, theta, target qubit index) \n" +
+            "CR1(control qubit index, theta, target qubit index) \n" +
+            "CH(control qubit index, target qubit index) \n" +
+            "CI(control qubit index, target qubit index) \n" +
+            "CT(control qubit index, target qubit index) \n" +
+            "CS(control qubit index, target qubit index) \n" +
+            "CSWAP(control qubit index, qubit1 index, qubit2 index) \n" +
+            "M(qubit index) \n" +
+            "RESET(qubit index) ")]
         public async Task circuit([Summary("The number of qubits to use, has to be 5 or under.")] int qubits, [Summary("Commands to use, seperated by '$' (ex. 'H(0)$M(0)').")] [Remainder] string commands)
         {
             if (qubits > 5)
@@ -111,7 +122,18 @@ namespace GeckoBot.Commands
                     "CY" => argumentArray.Length == 2,
                     "CZ" => argumentArray.Length == 2,
                     "CCNOT" => argumentArray.Length == 3,
+                    "R1" => argumentArray.Length == 2,
+                    "CRX" => argumentArray.Length == 3,
+                    "CRY" => argumentArray.Length == 3,
+                    "CRZ" => argumentArray.Length == 3,
+                    "CR1" => argumentArray.Length == 3,
+                    "CH" => argumentArray.Length == 2,
+                    "CI" => argumentArray.Length == 2,
+                    "CT" => argumentArray.Length == 2,
+                    "CS" => argumentArray.Length == 2,
+                    "CSWAP" => argumentArray.Length == 3,
                     "M" => argumentArray.Length == 1,
+                    "RESET" => argumentArray.Length == 1,
                     _ => false
                 };
 

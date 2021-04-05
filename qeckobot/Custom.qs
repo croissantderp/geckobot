@@ -70,16 +70,55 @@
 				CZ(qubits[Truncate(arguments[index])], qubits[Truncate(arguments[index + 1])]);
 				set index = index + 1;
 			}
-			elif (a == "CY"){
-				CY(qubits[Truncate(arguments[index])], qubits[Truncate(arguments[index + 1])]);
-				set index = index + 1;
-			}
 			elif (a == "CCNOT"){
 				CCNOT(qubits[Truncate(arguments[index])], qubits[Truncate(arguments[index + 1])], qubits[Truncate(arguments[index + 2])]);
 				set index = index + 2;
 			}
+			elif (a == "R1"){
+				R1(arguments[index], qubits[Truncate(arguments[index + 1])]);
+				set index = index + 1;
+			}
 			elif (a == "M"){
 				set lemon w/= Truncate(arguments[index]) <- M(qubits[Truncate(arguments[index])]);
+			}
+			elif (a == "CRX"){
+				Controlled Rx([qubits[Truncate(arguments[index])]], (arguments[index + 1], qubits[Truncate(arguments[index + 2])]));
+				set index = index + 2;
+			}
+			elif (a == "CRY"){
+				Controlled Ry([qubits[Truncate(arguments[index])]], (arguments[index + 1], qubits[Truncate(arguments[index + 2])]));
+				set index = index + 2;
+			}
+			elif (a == "CRZ"){
+				Controlled Rz([qubits[Truncate(arguments[index])]], (arguments[index + 1], qubits[Truncate(arguments[index + 2])]));
+				set index = index + 2;
+			}
+			elif (a == "CR1"){
+				Controlled R1([qubits[Truncate(arguments[index])]], (arguments[index + 1], qubits[Truncate(arguments[index + 2])]));
+				set index = index + 2;
+			}
+			elif (a == "CH"){
+				Controlled H([qubits[Truncate(arguments[index])]], (qubits[Truncate(arguments[index + 1])]));
+				set index = index + 1;
+			}
+			elif (a == "CI"){
+				Controlled I([qubits[Truncate(arguments[index])]], (qubits[Truncate(arguments[index + 1])]));
+				set index = index + 1;
+			}
+			elif (a == "CT"){
+				Controlled T([qubits[Truncate(arguments[index])]], (qubits[Truncate(arguments[index + 1])]));
+				set index = index + 1;
+			}
+			elif (a == "CS"){
+				Controlled S([qubits[Truncate(arguments[index])]], (qubits[Truncate(arguments[index + 1])]));
+				set index = index + 1;
+			}
+			elif (a == "CSWAP"){
+				Controlled SWAP([qubits[Truncate(arguments[index])]], (qubits[Truncate(arguments[index + 1])], qubits[Truncate(arguments[index + 2])]));
+				set index = index + 2;
+			}
+			elif (a == "RESET"){
+				Reset(qubits[Truncate(arguments[index])]);
 			}
 			
 			set index = index + 1;
