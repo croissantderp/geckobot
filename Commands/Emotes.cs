@@ -87,7 +87,15 @@ namespace GeckoBot.Commands
             //parses channel id provided and gets channel from client
             var chnl = client.GetChannel(ulong.Parse(temp[0])) as IMessageChannel;
             var message2 = await chnl.GetMessageAsync(ulong.Parse(temp[1])) as IUserMessage;
-            
+
+            var user = await (chnl as IGuildChannel).Guild.GetUserAsync(Context.User.Id);
+
+            if (!user.GetPermissions(chnl as IGuildChannel).ViewChannel || !user.GetPermissions(chnl as IGuildChannel).SendMessages)
+            {
+                await ReplyAsync("You are missing permission!");
+                return;
+            }
+
             await message2.ReplyAsync(Context.User + ": " + EmoteUtils.emoteReplace(message), allowedMentions: Globals.allowed);
 
             await Context.Message.AddReactionAsync(new Emoji("✅"));
@@ -209,7 +217,7 @@ namespace GeckoBot.Commands
         //save function
         [Command("ee")]
         [Summary("Edits a key to the dictionary.")]
-        public async Task ee([Summary("The key of the value.")] string yes1, [Summary("The value to change.")][Remainder] string yes)
+        public async Task ee([Summary("The key of the value.")] string yes1, [Summary("The value to change the previous value to.")][Remainder] string yes)
         {
             await EmoteRemove(yes1, false);
             await EmoteSave(yes1, yes, false);
