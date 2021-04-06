@@ -47,11 +47,19 @@ namespace GeckoBot.Commands
             {
                 //gets current client
                 DiscordSocketClient client = Context.Client;
-
+                
                 //parses channel id provided and gets channel from client
-                var chnl = client.GetChannel(ulong.Parse(target)) as IMessageChannel;
+                var chnl = client.GetChannel(ulong.Parse(target));
+                
+                var user = await (chnl as IGuildChannel).Guild.GetUserAsync(Context.User.Id);
 
-                await chnl.SendMessageAsync(Context.User + ": " + EmoteUtils.emoteReplace(message), allowedMentions: Globals.allowed);
+                if (!user.GetPermissions(chnl as IGuildChannel).ViewChannel || !user.GetPermissions(chnl as IGuildChannel).SendMessages)
+                {
+                    await ReplyAsync("You are missing permission!");
+                    return;
+                }
+
+                await (chnl as IMessageChannel).SendMessageAsync(Context.User + ": " + EmoteUtils.emoteReplace(message), allowedMentions: Globals.allowed);
             }
 
             await Context.Message.AddReactionAsync(new Emoji("✅"));
