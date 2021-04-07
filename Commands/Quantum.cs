@@ -3,6 +3,7 @@ using System.Linq;
 using Discord.Commands;
 using Discord;
 using System;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -88,7 +89,13 @@ namespace GeckoBot.Commands
 
             foreach (string c in parsedCommands)
             {
-                string[] operationArray = c.ToUpper().Split("(");
+                string c2 = Regex.Replace(c, @"\s+", "");
+                if (c2 == "")
+                {
+                    continue;
+                }
+
+                string[] operationArray = c2.ToUpper().Split("(");
 
                 operationArray[0] = operationArray[0] switch
                 {
