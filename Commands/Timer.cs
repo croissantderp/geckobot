@@ -73,7 +73,7 @@ namespace GeckoBot.Commands
             await user.SendMessageAsync(EmoteUtils.emoteReplace(message));
 
             //stops timer
-            timer2.Stop();
+            timer2.Close();
         }
 
         //visible timer command
@@ -215,7 +215,7 @@ namespace GeckoBot.Commands
             Globals.undeletable.Remove(id);
 
             //stops timer
-            timer.Stop();
+            timer.Close();
 
             _timerExists = false;
 

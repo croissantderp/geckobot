@@ -22,7 +22,7 @@ namespace GeckoBot.Commands
 
         //sends message
         [Command("te")]
-        [Summary("Sends a message with words replaced by emotes from the dictionary to the target channel.")]
+        [Summary("Sends a message with words replaced by emotes from the dictionary to the target channel. DMs have a 1 hour cooldown.")]
         public async Task send([Summary("The channel id, or user id prefaced by 'dm'")] string target, [Summary("The message content.")] [Remainder]string message)
         {
             if (target.Contains("dm"))
@@ -71,7 +71,7 @@ namespace GeckoBot.Commands
             cooldown.Remove(key);
 
             //stops timer
-            timer2.Stop();
+            timer2.Close();
         }
 
         //replies to message

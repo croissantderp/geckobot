@@ -47,9 +47,10 @@ namespace GeckoBot.Utils
             // gecko6 stores custom commands
             // gecko7 stores gecko names and other info
             // gecko8 stores prefixes
+            // gecko9 stores alerts
             List<int> caches = new()
             {
-                1, 2, 3, 4, 5, 6, 7, 8
+                1, 2, 3, 4, 5, 6, 7, 8, 9
             };
             
             //checks if files exist

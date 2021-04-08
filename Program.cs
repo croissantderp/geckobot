@@ -96,12 +96,37 @@ namespace GeckoBot
                 var result = await _commands.ExecuteAsync(context, argPos, _services);
                 if (!result.IsSuccess && !result.Error.Equals(CommandError.UnknownCommand)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
                 //if (result.Error.Equals(CommandError.UnmetPrecondition)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
+                else if (!result.Error.Equals(CommandError.UnknownCommand)) return;
             }
             if (message.Content == "`what do you do?")
             {
                 var result = await _commands.ExecuteAsync(context, 1, _services);
                 if (!result.IsSuccess && !result.Error.Equals(CommandError.UnknownCommand)) await message.Channel.SendMessageAsync(result.ErrorReason, allowedMentions: Globals.allowed);
+                return;
             }
+            if (message.Content != "")
+            {
+                var matches = Alert.alerts.Where(a => message.Content.Contains(a.Value));
+                if (matches != null)
+                {
+                    foreach (var match in matches)
+                    {
+                        var user = context.Guild.GetUser(ulong.Parse(match.Key));
+                        if (user.GetPermissions(context.Channel as IGuildChannel).ViewChannel)
+                        {
+                            await context.User.SendMessageAsync("Alert triggered at https://discord.com/channels/" + context.Guild.Id.ToString() + "/" + context.Channel.Id.ToString() + "/" + context.Message.Id.ToString() + " (use '`ar' to unsubscribe)");
+
+                            Alert.alerts.Remove(match.Key);
+                            //starts a timer with desired amount of time
+                            System.Timers.Timer t = new(300000);
+                            t.Elapsed += (sender, e) => Alert.AlertCooldown(match.Key, match.Value, t);
+                            t.Start();
+                        }
+                    }
+                }
+                return;
+            }
+
         }
     }
 }
