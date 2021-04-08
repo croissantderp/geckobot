@@ -28,7 +28,7 @@ namespace GeckoBot.Commands
 
         [Command("as")]
         [Summary("Sets an alert phrase for the user")]
-        public async Task SetAlert(string input)
+        public async Task SetAlert([Summary("The trigger phrase")][Remainder] string input)
         {
             RefreshAlertsDict();
 
