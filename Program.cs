@@ -114,7 +114,7 @@ namespace GeckoBot
                         var user = context.Guild.GetUser(ulong.Parse(match.Key));
                         if (user.GetPermissions(context.Channel as IGuildChannel).ViewChannel)
                         {
-                            await context.User.SendMessageAsync("Alert triggered at https://discord.com/channels/" + context.Guild.Id.ToString() + "/" + context.Channel.Id.ToString() + "/" + context.Message.Id.ToString() + " (use '`ar' to unsubscribe)");
+                            await user.SendMessageAsync("Alert triggered at https://discord.com/channels/" + context.Guild.Id.ToString() + "/" + context.Channel.Id.ToString() + "/" + context.Message.Id.ToString() + " (use '`ar' to unsubscribe)");
 
                             Alert.alerts.Remove(match.Key);
                             //starts a timer with desired amount of time
