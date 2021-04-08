@@ -106,6 +106,7 @@ namespace GeckoBot
             }
             if (message.Content != "")
             {
+                Alert.RefreshAlertsDict();
                 var matches = Alert.alerts.Where(a => message.Content.Contains(a.Value));
                 if (matches != null)
                 {
@@ -114,15 +115,13 @@ namespace GeckoBot
                         var user = context.Guild.GetUser(ulong.Parse(match.Key));
                         if (user.GetPermissions(context.Channel as IGuildChannel).ViewChannel)
                         {
-                            await user.SendMessageAsync("Alert triggered at https://discord.com/channels/" + context.Guild.Id.ToString() + "/" + context.Channel.Id.ToString() + "/" + context.Message.Id.ToString() + " (use '`ar' to unsubscribe)");
+                            await user.SendMessageAsync("Alert triggered at https://discord.com/channels/" + context.Guild.Id.ToString() + "/" + context.Channel.Id.ToString() + "/" + context.Message.Id.ToString() + "\nThe Alert was automatically deactivated, use '`as [trigger] to reactivate it.'");
 
                             Alert.alerts.Remove(match.Key);
-                            //starts a timer with desired amount of time
-                            System.Timers.Timer t = new(300000);
-                            t.Elapsed += (sender, e) => Alert.AlertCooldown(match.Key, match.Value, t);
-                            t.Start();
                         }
                     }
+                    FileUtils.Save(Globals.DictToString(Alert.alerts, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko9.gek");
+
                 }
                 return;
             }

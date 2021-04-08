@@ -16,7 +16,7 @@ namespace GeckoBot.Commands
         public static Dictionary<string, string> alerts = new();
 
         //loads poll dictionary as string and converts it back into dictionary
-        private static void RefreshAlertsDict()
+        public static void RefreshAlertsDict()
         {
             FileUtils.checkForExistance();
 
@@ -74,14 +74,5 @@ namespace GeckoBot.Commands
         {
             await Context.Channel.SendFileAsync(@"..\..\Cache\gecko9.gek");
         }
-        
-        public static void AlertCooldown(string key, string value, System.Timers.Timer timer)
-        {
-            alerts.Add(key, value);
-
-            //stops timer
-            timer.Close();
-        }
-
     }
 }
