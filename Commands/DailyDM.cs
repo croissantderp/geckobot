@@ -344,6 +344,10 @@ namespace GeckoBot.Commands
             
             // Map ids to users
             var users = DmUsers.Select(client.GetUser);
+            
+            //Console.WriteLine(DmUsers);
+            // Note: line 349 throws concurrent modification on my computer
+            // Should get around to fixing that some time
 
             //DMs everybody on the list
             foreach (var a in users)
