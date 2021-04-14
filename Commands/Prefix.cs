@@ -40,7 +40,7 @@ namespace GeckoBot.Commands
                 prefixes.Remove(Context.Guild.Id.ToString());
             }
 
-            prefixes.Add(Context.Guild.Id.ToString(), prefix);
+            prefixes.Add(Context.Guild.Id.ToString(), EmoteUtils.escapeforbidden(prefix));
 
             FileUtils.Save(Globals.DictToString(prefixes, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko8.gek");
 
@@ -52,7 +52,7 @@ namespace GeckoBot.Commands
         {
             RefreshPrefixDict();
 
-            return prefixes.ContainsKey(guild) && guild != null ? prefixes[guild] : "`";
+            return prefixes.ContainsKey(guild) && guild != null ? EmoteUtils.removeforbidden(prefixes[guild]) : "`";
         }
     }
 }

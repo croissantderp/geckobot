@@ -23,7 +23,7 @@ namespace GeckoBot.Commands
             alerts = Regex.Split(FileUtils.Load(@"..\..\Cache\gecko9.gek"), @"\s(?<!\\)ҩ\s")
                 .Select(part => Regex.Split(part, @"\s(?<!\\)\⁊\s"))
                 .Where(part => part.Length == 2)
-                .ToDictionary(sp => sp[0], sp => sp[1]);
+                .ToDictionary(sp => EmoteUtils.removeforbidden(sp[0]), sp => EmoteUtils.removeforbidden(sp[1]));
         }
 
         [Command("as")]
@@ -37,7 +37,7 @@ namespace GeckoBot.Commands
                 alerts.Remove(Context.User.Id.ToString());
             }
 
-            alerts.Add(Context.User.Id.ToString(), input);
+            alerts.Add(Context.User.Id.ToString(), EmoteUtils.escapeforbidden(input));
 
             FileUtils.Save(Globals.DictToString(alerts, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko9.gek");
 

@@ -137,7 +137,7 @@ namespace GeckoBot.Commands
             //embed
             var embed = new EmbedBuilder
             {
-            Title = "geckobot" + Globals.names[Globals.CurrentName] + " 3/30/2020 instruction manual",
+            Title = "geckobot" + Globals.names[Globals.CurrentName] + " 4/13/2021 instruction manual",
             Description = "my prefix is " + Prefix.returnPrefix(Context.Guild != null ? Context.Guild.Id.ToString() : "") + " and [prefix]i for inline commands." + System.Environment.NewLine +
                 "if there's a problem, ping a geckobot admin " + System.Environment.NewLine +
                 "links: [trello](https://trello.com/invite/b/cFS33M13/8fddf3ac42bd0fe419e482c6f4414e01/gecko-bot-todo) [github](https://github.com/croissantderp/geckobot) [invite](https://discord.com/oauth2/authorize?client_id=766064505079726140&scope=bot&permissions=379968)" + System.Environment.NewLine +
