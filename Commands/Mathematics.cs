@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
 
@@ -34,6 +35,38 @@ namespace GeckoBot.Commands
         public async Task divide([Summary("First number.")] decimal num1, [Summary("Number to divide first number by.")] decimal num2)
         {
             await ReplyAsync((num1 / num2).ToString());
+        }
+
+        //maf but time
+        [Command("time add")]
+        [Summary("Adds two numbers.")]
+        public async Task Tadd([Remainder][Summary("Times seperated by spaces")] string num1)
+        {
+            TimeSpan finalTime = new TimeSpan(num1.Split(" ").Select(a => Timer.parseTime(a).Ticks).Sum());
+
+            await ReplyAsync(finalTime.ToString());
+        }
+
+        [Command("time subtract")]
+        [Summary("Subtracts two numbers.")]
+        public async Task Tsubtract([Remainder][Summary("Times seperated by spaces")] string num1)
+        {
+            TimeSpan[] finalTimes = num1.Split(" ").Select(a => Timer.parseTime(a)).ToArray();
+
+            TimeSpan finalTime = finalTimes[0];
+
+            bool first = false;
+            foreach(TimeSpan a in finalTimes)
+            {
+                if (!first)
+                {
+                    first = true;
+                    continue;
+                }
+                finalTime -= a;
+            }
+
+            await ReplyAsync(finalTime.ToString());
         }
     }
 }

@@ -236,7 +236,7 @@ namespace GeckoBot.Commands
         }
         
         //parses time in hh:mm:ss format
-        private TimeSpan parseTime(string unparsed)
+        public static TimeSpan parseTime(string unparsed)
         {
             var parsed = unparsed
                 .Split(":")
@@ -248,9 +248,9 @@ namespace GeckoBot.Commands
                 parsed[1], 
                 parsed[2]);
         }
-        
+
         //parses date in mm/dd/yyyy format
-        private DateTime parseDate(string unparsed)
+        public static DateTime parseDate(string unparsed)
         {
             var parsed = unparsed
                 .Split("/")
