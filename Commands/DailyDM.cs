@@ -167,7 +167,7 @@ namespace GeckoBot.Commands
                 runChecks(skipHGecCheck: true).RunSynchronously();
             }
 
-            //sets timer to amount of time until next hour plus a little bit
+            //slight delay to work around issues
             System.Timers.Timer timer2 = new(10000);
             timer2.Elapsed += async (sender, e) => await wait(timer2);
             timer2.Start();

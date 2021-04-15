@@ -31,6 +31,7 @@ namespace GeckoBot.Commands
         [Summary("Creates a custom command.")]
         public async Task cs([Summary("The name of the custom command.")] string title, [Summary("The command content, fields are marked by '[]'.")] [Remainder] string content)
         {
+            //uses witchcraft to check if there are fields in the command
             if (!Regex.IsMatch(content, @"(?<!\\)\[[^\]]*\]"))
             {
                 await ReplyAsync("please have at least one field");
@@ -52,9 +53,12 @@ namespace GeckoBot.Commands
         public async Task c([Summary("The name of the custom command")] string title, [Summary("The fields of the command, seperate fields with '$'.")] [Remainder] string content)
         {
             RefreshCDict();
+
+            //parses string from the dictionary
             int amount = Regex.Matches(cDict[title], @"(?<!\\)\[[^\]]*\]").Count;
             string[] inserts = Regex.Split(content, @"(?<!\\)\$");
 
+            //cehcks if amount of fields entered matches amount of fields in the command
             if (inserts.Length != amount)
             {
                 await ReplyAsync("there are " + amount + " fields in this command");

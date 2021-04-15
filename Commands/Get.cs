@@ -9,6 +9,8 @@ using GeckoBot.Utils;
 
 namespace GeckoBot.Commands
 {
+    //in general all these commands get an object either by name or id then format and send a message based on it
+
     [Group("get")]
     [Summary("Gets information about things you are stalking")]
     public class get : ModuleBase<SocketCommandContext>

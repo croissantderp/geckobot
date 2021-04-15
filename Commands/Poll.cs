@@ -28,15 +28,14 @@ namespace GeckoBot.Commands
         }
 
         [Command("pl")]
-        [Summary("sends the poll list")]
+        [Summary("Sends the poll list.")]
         public async Task plist()
         {
             await Context.Channel.SendFileAsync(@"..\..\Cache\gecko5.gek");
         }
 
-        //sends message
         [Command("pc")]
-        [Summary("creates a poll")]
+        [Summary("Creates a poll.")]
         public async Task create([Summary("The content of the poll.")] [Remainder]string poll)
         {
             RefreshRateDict();
@@ -55,9 +54,8 @@ namespace GeckoBot.Commands
             await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
 
-        //sends message
         [Command("pv")]
-        [Summary("votes on a poll")]
+        [Summary("Votes on a poll.")]
         public async Task vote([Summary("The content of the poll to vote on.")] string poll, [Summary("The fraction to submit in ##/## (denominator has to be greatest and numerator has to be positive).")] string fraction)
         {
             RefreshRateDict();

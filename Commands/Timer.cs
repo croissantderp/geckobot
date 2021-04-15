@@ -30,7 +30,7 @@ namespace GeckoBot.Commands
         public static bool EverStarted = false; //if timer has ever started
 
 
-        //timer
+        //basic timer that dms you when the time runs out
         [Command("timer")]
         [Summary("Sets an alarm which will be sent after the specified length of time.")]
         public async Task startTimer([Summary("The message to send when time is up.")] string message, [Summary("The time in hh:mm:ss.")] string time)
@@ -47,11 +47,12 @@ namespace GeckoBot.Commands
             await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
 
-        //alarm
+        //an alarm that counts down towards a specified time then dms you
         [Command("alarm")]
         [Summary("Sets an alarm which will be sent on the specified date and time (in hh:mm:ss format).")]
         public async Task alarm([Summary("The message to send when time is up.")] string message, [Summary("The time in hh:mm:ss.")] string time, [Summary("Optional date in mm/dd/yyyy.")] string date = null)
         {
+            //parses the input time and calculates the amount of time until the input time
             TimeSpan final = (date != null ? parseDate(date) : DateTime.Today) + parseTime(time) - DateTime.Now;
 
             //gets user
@@ -69,7 +70,7 @@ namespace GeckoBot.Commands
         //the task that is activated when time is up
         private async Task timerUp(IUser user, string message, System.Timers.Timer timer2)
         {
-            //dms user
+            //dms user prespecified message
             await user.SendMessageAsync(EmoteUtils.emoteReplace(message));
 
             //stops timer
@@ -94,12 +95,15 @@ namespace GeckoBot.Commands
                 //final time when timer runs out
                 DateTime finalTime;
 
+                //if it is alarm or timer styled
                 if (!isTimer)
                 {
+                    //adds specified date with the parsed time
                     finalTime = parseDate(date) + parsedTime;
                 }
                 else
                 {
+                    //gets number of days
                     int days = int.Parse(date);
 
                     //turns input time into a time span
@@ -109,13 +113,16 @@ namespace GeckoBot.Commands
                     finalTime = DateTime.Now + timeLeft;
                 }
 
+                //splits the input message with ending message
                 string[] endMessage = finalMessage[1].Split("[end]");
                 
                 //gets duration for first message
                 TimeSpan duration = finalTime - DateTime.Now;
 
+                //rounds the first duration for initial message
                 TimeSpan duration2 = TimeSpan.FromSeconds(Math.Round(duration.TotalSeconds));
 
+                //sends the initial message
                 var message2 = await (Context.Client.GetChannel(ulong.Parse(target)) as IMessageChannel).SendMessageAsync(
                     EmoteUtils.emoteReplace(finalMessage[0]) + duration2 + EmoteUtils.emoteReplace(endMessage[0]));
 
@@ -125,10 +132,13 @@ namespace GeckoBot.Commands
                 //sets timer as exists
                 _timerExists = true;
 
+                //makes countdown message undeletable
                 Globals.undeletable.Add(message2.Id);
                 
+                //sets global datetime to specified time
                 Globals.datetime = finalTime;
 
+                //stores strings in global
                 Globals.strings = new [] { EmoteUtils.emoteReplace(finalMessage[0]), EmoteUtils.emoteReplace(endMessage[0]), EmoteUtils.emoteReplace(endMessage[1]) };
 
                 //time between checks
@@ -141,6 +151,7 @@ namespace GeckoBot.Commands
             }
         }
         
+        //pauses the timer and countdown
         [RequireGeckobotAdmin]
         [Command("pause")]
         [Summary("Pauses the countdown.")]
@@ -150,6 +161,7 @@ namespace GeckoBot.Commands
             await ReplyAsync("paused");
         }
         
+        //unpauses the timer and countdown
         [RequireGeckobotAdmin]
         [Command("unpause")]
         [Summary("Unpauses the countdown.")]
@@ -193,6 +205,7 @@ namespace GeckoBot.Commands
                 }
             }
             // Shouldn't other catch statements also log errors in Bugs or is Bugs specifically targeted towards timer errors?
+            // bugs is currently targeted towards timer errors
             catch(Exception ex)
             {
                 FileUtils.checkForExistance();
@@ -210,6 +223,7 @@ namespace GeckoBot.Commands
             }
         }
 
+        //ends and disposes of timer.
         private void endCountdown(ulong id)
         {
             Globals.undeletable.Remove(id);
@@ -224,7 +238,7 @@ namespace GeckoBot.Commands
             Globals.strings = Array.Empty<string>();
         }
 
-        //ends timer
+        //ends timer by force
         [RequireGeckobotAdmin]
         [Command("end countdown")]
         [Summary("End the countdown.")]

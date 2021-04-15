@@ -26,9 +26,13 @@ namespace GeckoBot.Commands
         {
             using var sim = new QuantumSimulator();
 
+            //removes minimum value from max to effectively make minimum value 0
             max -= min;
             
+            //simple qubit based number generator
             long num = await SampleRandomNumberInRange.Run(sim, long.Parse(max.ToString()));
+
+            //readds minimum value
             await ReplyAsync((min + num).ToString());
         }
 
@@ -39,11 +43,13 @@ namespace GeckoBot.Commands
         {
             using var sim = new QuantumSimulator();
 
+            //function which has the bot hadamard the qubit which represents the coin, then player moves and bot hadamards it again always resulting in a 0 and a bot win
             var result = await UnfairCoinFlip.Run(sim, move);
 
             await ReplyAsync("the bot Hadamard'd the coin, it is in |+⟩ \n you " + (move ? "flipped" : "did not flip") + " the coin, it is in |+⟩ \n the bot Hadamard'd the coin, it is in |0⟩ \n the coin is observed, it is in " + (result.ToString() == "1" ? "heads, the bot wins" : "tails, the bot wins"));
         }
 
+        //command which constructs a quantum circuit which is simulated
         [Command("circuit")]
         [Summary("Construct quantum circuits using up to 5 qubits, current supported operations are " +
             "H(qubit index) \n" +
@@ -75,28 +81,36 @@ namespace GeckoBot.Commands
             "RESET(qubit index) ")]
         public async Task circuit([Summary("The number of qubits to use, has to be 5 or under.")] int qubits, [Summary("Commands to use, seperated by '$' (ex. 'H(0)$M(0)').")] [Remainder] string commands)
         {
+            //upper cap on qubits because of resources
             if (qubits > 5)
             {
                 await ReplyAsync("use 5 or under qubits");
                 return;
             }
 
+            //splits the string of commands into seperate commands
             string[] parsedCommands = commands.Split("$");
 
+            //list of which qubits are involved in which operation
             List<string> Oqubits = new List<string>();
 
+            //list of operations
             List<string> Operations = new List<string>();
 
+            //populates Oqubits and Operations
             foreach (string c in parsedCommands)
             {
+                //removes spaces and continues if an empty command is found
                 string c2 = Regex.Replace(c, @"\s+", "");
                 if (c2 == "")
                 {
                     continue;
                 }
 
+                //splits the command into operation and qubit values
                 string[] operationArray = c2.ToUpper().Split("(");
 
+                //converts some other names to the default one
                 operationArray[0] = operationArray[0] switch
                 {
                     "CX" => "CNOT",
@@ -105,12 +119,16 @@ namespace GeckoBot.Commands
                     _ => operationArray[0]
                 };
 
+                //adds operation
                 Operations.Add(operationArray[0]);
 
+                //splits arguments
                 string[] argumentArray = operationArray[1].Replace(")", "").Split(",");
 
+                //adds qubit values
                 Oqubits.AddRange(argumentArray);
 
+                //checks that there are no errors in the operation
                 bool NotError = true;
                 NotError = operationArray[0] switch
                 {
@@ -144,6 +162,7 @@ namespace GeckoBot.Commands
                     _ => false
                 };
 
+                //returns if an error is found
                 if (!NotError)
                 {
                     await ReplyAsync("There is an error in the arguments");
@@ -153,8 +172,10 @@ namespace GeckoBot.Commands
 
             var sim = new QuantumSimulator(throwOnReleasingQubitsNotInZeroState: true);
 
+            //converts qubits to doubles
             double[] finalArguments = Oqubits.Select(a => double.Parse(a)).ToArray();
-            
+
+            //function handles arrays and runs completed circuit
             var results = await COperation.Run(sim, qubits, new QArray<double>(finalArguments), new QArray<string>(Operations));
 
             await ReplyAsync(results.ToString());
@@ -165,7 +186,7 @@ namespace GeckoBot.Commands
         [Summary("search in sqrt(n) time")]
         public async Task grover([Summary("number of qubits to use")] int qubits,  [Summary("the indices (seperated by '$') of the marked values")] string matcher, [Summary("number of search iterations")] int iterations = 0, [Summary("number of search repetitions")] int repetitions = 0)
         {
-            
+            //sets caps on resources
             if (qubits > 15)
             {
                 await ReplyAsync("please use 15 or under qubits");
@@ -182,6 +203,8 @@ namespace GeckoBot.Commands
                 return;
             }
 
+
+            //vv stuff below here is just a clump of math that I don't exactly understand
             var sim = new QuantumSimulator(throwOnReleasingQubitsNotInZeroState: true);
 
             var nDatabaseQubits = qubits;
@@ -209,8 +232,11 @@ namespace GeckoBot.Commands
             double averageProbabilityClassical = 0;
             decimal averageTimeInSecondsClassical = 0;
 
+            //^^ stuff ends here
+
             foreach (var idxAttempt in Enumerable.Range(0, repeats))
             {
+                //stopwatch times amount of time grover search takes
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
                 var task = ApplyGroverSearch.Run(sim, new QArray<long>(markedElements), nIterations, nDatabaseQubits);
@@ -235,6 +261,7 @@ namespace GeckoBot.Commands
                     averageSpeedup += speedupFactor;
                 }
 
+                //second stopwatch times how long normal search takes
                 Stopwatch stopwatch2 = new Stopwatch();
                 stopwatch2.Start();
                 bool result = classicalSearch((int)databaseSize, markedElements);
@@ -243,6 +270,8 @@ namespace GeckoBot.Commands
 
                 averageProbabilityClassical += result ? 1 : 0;
             }
+
+            //sends a mass of statistics
             await ReplyAsync($"Quantum search for marked element in database.\n" +
                 $"Database size: {databaseSize}\n" +
                 $"Marked elements: {string.Join(",", markedElements.Select(x => x.ToString()).ToArray())}\n" +
@@ -258,13 +287,16 @@ namespace GeckoBot.Commands
                 $"Average classical time: {averageTimeInSecondsClassical / repeats} \n");
         }
 
+        //classical search to compete with the grover one
         private bool classicalSearch(int arraySize, long[] markedElements)
         {
+            //contructs the array to search (grover search does this so I had to include it to be fair)
             int[] database = new int[arraySize];
             foreach (int i in markedElements) database[i] = 1;
             
             List<int> matches = new ();
 
+            //finds the matches 
             for (int i = 0; i < database.Length; i++)
             {
                 if (database[i] == 1)
@@ -272,16 +304,22 @@ namespace GeckoBot.Commands
                     matches.Add(i);
                 }
             }
+
+            //array of matches
             bool[] matched = matches.Select(a => markedElements.Contains(a)).ToArray();
 
+            //checks that all teh matches are correct
             return matched.All(a => a);
         }
 
+        //quantum deutsch oracle experiment
         [Command("blackBox")]
         [Summary("Deutsch oracle thing")]
         public async Task blackBox([Summary("The black box to pass in, 1 is constant zero, 2 is constant one, 3 is identity, 4 is negation.")] int input)
         {
             using var sim = new QuantumSimulator();
+
+            //runs corresponding blackbox
             string result = input switch
             {
                 1 => "constant zero " + (await IsConstantZeroConstant.Run(sim) ? "is" : "is not") + " constant",
@@ -290,9 +328,11 @@ namespace GeckoBot.Commands
                 4 => "negation " + (await IsNegationConstant.Run(sim) ? "is" : "is not") + " constant",
                 _ => "The black box to pass in, 1 is constant zero, 2 is constant one, 3 is identity, 4 is negation.",
             };
+
             await ReplyAsync(result);
         }
 
+        //literally witchcraft
         [Command("voodoo")]
         [Summary("Use the power of black magic to determine the outcome of your coin flip")]
         public async Task voodoo([Summary("Whether your coin is heads or tails (true is heads)")]bool coin, [Summary("Optional seed to influence coin")] int seed = 0)
@@ -304,9 +344,10 @@ namespace GeckoBot.Commands
             List<string> phrases = new();
             List<string> states = new();
 
+            //generates a seed
             seed = seed == 0 ? r.Next(0, 1000) : seed;
 
-            //secret statements
+            //secret statements which are determined by teh seed
             states.AddRange((numPhrases, seed) switch
             { 
                 (7, 102) => new List<string> { "[ THEY   ]", "[ ARE    ]", "[ COMING ]", "[ RUN    ]", "[ WHILE  ]", "[ YOU    ]", "[ CAN    ]" },

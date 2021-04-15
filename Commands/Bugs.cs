@@ -13,7 +13,6 @@ namespace GeckoBot.Commands
         //bug list
         public static readonly List<string> BugList = new();
         
-        
         [Command("report")]
         [Summary("Reports a bug.")]
         public async Task report([Summary("The content to put in teh bug report")] [Remainder]string reason)

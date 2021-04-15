@@ -242,16 +242,20 @@ namespace GeckoBot.Commands
             }
         }
 
-        // Fetches the highest gecko, then updates the HighestGecko value and alerts image subscribers.
+        // Fetches the highest gecko, then updates the HighestGecko value and alerts image subscribers. Also sends multiple geckoimages if there have been multiple added since last checked.
         public async Task RefreshHighestGec()
         {
             var fetched = await FetchHighestGec();
             if (fetched == _highestGecko) return;
-                        
+            
+            for (int i = 0; i < fetched - _highestGecko; i++)
+            {
+                await Program.ddm.DmGroup(
+                    DriveUtils.ImagePath(_highestGecko + i + 1, false),
+                    $"new gecko image: {geckos[DriveUtils.addZeros(_highestGecko + i + 1)]}");
+            }
+
             _highestGecko = fetched;
-            await Program.ddm.DmGroup(
-                DriveUtils.ImagePath(fetched, false), 
-                $"new gecko image: {geckos[fetched.ToString()]}");
         }
     }
 }

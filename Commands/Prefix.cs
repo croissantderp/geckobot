@@ -16,7 +16,7 @@ namespace GeckoBot.Commands
         //prefix dictionary
         private static Dictionary<string, string> prefixes = new();
 
-        //loads poll dictionary as string and converts it back into dictionary
+        //loads prefix dictionary as string and converts it back into dictionary
         private static void RefreshPrefixDict()
         {
             FileUtils.checkForExistance();
@@ -27,6 +27,7 @@ namespace GeckoBot.Commands
                 .ToDictionary(sp => sp[0], sp => sp[1]);
         }
 
+        //command that changes the prefix
         [Command("change prefix")]
         [Summary("Changes the bot's prefix in the current server, only works in guilds.")]
         [RequireContext(ContextType.Guild)]
@@ -35,6 +36,7 @@ namespace GeckoBot.Commands
         {
             RefreshPrefixDict();
 
+            //removes prefix and then adds new one
             if (prefixes.ContainsKey(Context.Guild.Id.ToString()))
             {
                 prefixes.Remove(Context.Guild.Id.ToString());
@@ -48,6 +50,7 @@ namespace GeckoBot.Commands
             await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
 
+        //returns the prefix for current server
         public static string returnPrefix(string guild)
         {
             RefreshPrefixDict();

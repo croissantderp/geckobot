@@ -15,6 +15,8 @@ using Microsoft.Quantum.Simulation.Core;
 
 namespace GeckoBot.Commands
 {
+    //no I am not commenting this
+
     [Summary("A quantum coin flipping game to see if you can trust your friends!")]
     [RequireContext(ContextType.DM)]
     public class QuantumCoinFlip : ModuleBase<SocketCommandContext>

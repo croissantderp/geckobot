@@ -23,6 +23,13 @@ namespace GeckoBot.Commands
             await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
 
+        [Command("shard")]
+        [Summary("Gets recommended shard count.")]
+        public async Task shard()
+        {
+            await ReplyAsync((await Context.Client.GetRecommendedShardCountAsync()).ToString());
+        }
+
         [Command("open dm")]
         [Summary("Opens a DM with the user.")]
         public async Task openDM()
