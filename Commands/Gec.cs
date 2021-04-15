@@ -15,7 +15,7 @@ namespace GeckoBot.Commands
     [Summary("Integration of the [gecko collection](https://drive.google.com/drive/folders/1Omwv0NNV0k_xlECZq3d4r0MbSbuHC_Og?usp=sharing).")]
     public class Gec : ModuleBase<SocketCommandContext>
     {
-        private static int _highestGecko;
+        private int _highestGecko = FetchHighestGec().Result;
         public static Dictionary<string, string> geckos = new();
         
         // Force cache a gecko image
@@ -111,9 +111,6 @@ namespace GeckoBot.Commands
         [Summary("Sends a random gecko.")]
         public async Task rgec()
         {
-            refreshHighestGec();
-
-
             //gets random value
             Random random = new Random();
             int numb = random.Next(0, _highestGecko + 1);
@@ -197,7 +194,6 @@ namespace GeckoBot.Commands
         {
             RefreshGec();
             int before = geckos.Count;
-            refreshHighestGec();
             int number = DriveUtils.saveAll(_highestGecko);
 
             await ReplyAsync(number + " items saved, " + (geckos.Count - before) + " descriptions saved");
@@ -210,7 +206,6 @@ namespace GeckoBot.Commands
         public async Task hgec()
         {
             RefreshGec();
-            refreshHighestGec();
             int num = _highestGecko;
             
             //sends file
@@ -219,14 +214,13 @@ namespace GeckoBot.Commands
                 $"gecko: {geckos[DriveUtils.addZeros(num)]}");
         }
 
-        // Gets the filename of the highest number gecko off of drive, then updates the Global value
-        // Is inefficient; should update soon
-        void refreshHighestGec()
+        // Fetches the highest gecko from Google Drive
+        private static async Task<int> FetchHighestGec()
         {
             DriveService driveService = DriveUtils.AuthenticateServiceAccount(
                 "geckobotfileretriever@geckobot.iam.gserviceaccount.com", 
                 "../../../GeckoBot-af43fa71833e.json");
-
+            
             var listRequest = driveService.Files.List();
             //listRequest.Fields = "nextPageToken, files(id, name)";
             listRequest.PageSize = 100; // Only fetch one hundred
@@ -234,19 +228,30 @@ namespace GeckoBot.Commands
             listRequest.Q = "mimeType contains 'image'"; // Filter out folders or other non image types
             while (true)
             {
-                FileList files2 = listRequest.Execute();
-                IList<Google.Apis.Drive.v3.Data.File> files = files2.Files;
+                FileList files2 = await listRequest.ExecuteAsync();
+                IList<File> files = files2.Files;
 
-                foreach (Google.Apis.Drive.v3.Data.File a in files)
+                foreach (File a in files)
                 {
                     if (Regex.IsMatch(a.Name, @"^\d"))
                     {
-                        _highestGecko = int.Parse(Regex.Replace(a.Name, @"_.+", ""));
-                        return;
+                        return int.Parse(Regex.Replace(a.Name, @"_.+", ""));
                     }
                 }
                 listRequest.PageToken = files2.NextPageToken;
             }
+        }
+
+        // Fetches the highest gecko, then updates the HighestGecko value and alerts image subscribers.
+        public async Task RefreshHighestGec()
+        {
+            var fetched = await FetchHighestGec();
+            if (fetched == _highestGecko) return;
+                        
+            _highestGecko = fetched;
+            await Program.ddm.DmGroup(
+                DriveUtils.ImagePath(fetched, false), 
+                $"new gecko image: {geckos[fetched.ToString()]}");
         }
     }
 }

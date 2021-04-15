@@ -20,7 +20,8 @@ namespace GeckoBot
         static readonly string[] Scopes = { DriveService.Scope.DriveReadonly };
         static string ApplicationName = "GeckoBot";
         
-        public static DailyDM ddm = new DailyDM();
+        public static readonly DailyDM ddm = new();
+        public static readonly Gec gec = new();
 
         static void Main(string[] args)
         {

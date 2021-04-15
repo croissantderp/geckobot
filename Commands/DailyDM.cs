@@ -18,7 +18,6 @@ namespace GeckoBot.Commands
         public DiscordSocketClient _client { get; set; }
 
         private static System.Timers.Timer dmTimer = new(); //the primary timer for dms
-
         private static System.Timers.Timer dmTimer2 = new(); //the secondary timer for dms
 
         private static int _lastRun = DateTime.Now.DayOfYear; //last time bot was run and daily geckoimage was sent
@@ -37,7 +36,7 @@ namespace GeckoBot.Commands
         //starts timer for various checks
         [Command("start")]
         [Summary("Starts the timer.")]
-        public async Task test()
+        public async Task start()
         {
             await Context.Client.SetGameAsync("`what do you do?");
 
@@ -70,121 +69,20 @@ namespace GeckoBot.Commands
 
                     await ReplyAsync("hourly check will start in t - " + (60 - minutes) + " minutes");
                 }
-
-                if (!Timer.EverStarted)
-                {
-                    SystemEvents.PowerModeChanged += PowerEvents;
-                    Timer.EverStarted = true;
-                }
             }
         }
 
-        public void initiatethings()
-        {
-            //sets timer to amount of time until next hour plus a little bit
-            System.Timers.Timer timer = new((60 - DateTime.Now.Minute)* 60 * 1000 + 1000);
-            timer.Elapsed += async (sender, e) => await trueStart(timer, false);
-            timer.Start();
-
-            dmTimer2 = timer;
-
-            Timer.IsCounting = true;
-
-            if (_lastRun != DateTime.Now.DayOfYear)
-            {
-                //checks
-                daily().RunSynchronously();
-            }
-
-            //sets timer to amount of time until next hour plus a little bit
-            System.Timers.Timer timer2 = new(10000);
-            timer2.Elapsed += async (sender, e) => await wait(timer2);
-            timer2.Start();
-
-            if (!Timer.EverStarted)
-            {
-                SystemEvents.PowerModeChanged += PowerEvents;
-                Timer.EverStarted = true;
-            }
-        }
-
-        public async Task wait(System.Timers.Timer timer)
-        {
-            await _client.SetGameAsync("`what do you do?");
-            timer.Stop();
-        }
-
-        public async void PowerEvents(object sender, PowerModeChangedEventArgs e)
-        {
-            if (!Globals.isSleep)
-            {
-                Timer.timer.Stop();
-                dmTimer.Stop();
-                dmTimer2.Stop();
-
-                Globals.isSleep = true;
-            }
-            else
-            {
-                Timer.timer.Start();
-                dmTimer.Start();
-                dmTimer2.Start();
-
-                _lastRun = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek"));
-
-                if (_lastRun != DateTime.Now.DayOfYear)
-                {
-                    //checks
-                    await daily();
-                }
-
-                Globals.isSleep = false;
-            }
-        }
-
-        //actually starts timer
-        public async Task trueStart(System.Timers.Timer timer, bool reply)
-        {
-            Start();
-
-            _lastRun = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek"));
-
-            if (_lastRun != DateTime.Now.DayOfYear)
-            {
-                //checks
-                await dailydm();
-            }
-
-            if (!Timer.CounterStarted)
-            {
-                Timer.CounterStarted = true;
-                if (reply)
-                {
-                    await ReplyAsync("hourly check started");
-                }
-            }
-
-            timer.Stop();
-        }
-        
         //checks
         [Command("check")]
         [Summary("Checks whether the daily dm needs to be sent.")]
         public async Task check()
         {
-            _lastRun = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek"));
+            var ran = await runChecks();
             
-            if (_lastRun != DateTime.Now.DayOfYear)
-            {
-                //checks
-                await dailydm();
-
+            if (ran)
                 await ReplyAsync("checked and updated");
-            }
             else
-            {
                 await ReplyAsync("checked");
-            }
         }
         
         // Force updates
@@ -193,11 +91,7 @@ namespace GeckoBot.Commands
         [Summary("Force updates the daily dm.")]
         public async Task fcheck()
         {
-            //forces update by subtracting one from day of the year
-            _lastRun = DateTime.Now.DayOfYear - 1;
-
-            await dailydm();
-
+            await runChecks(true);
             await ReplyAsync("force updated");
         }
 
@@ -206,10 +100,9 @@ namespace GeckoBot.Commands
         [Summary("Signs you up for daily dm.")]
         public async Task dmgec([Summary("Bool whether you want to sign up or not.")] bool yes)
         {
+            RefreshDmGroup();
             if (yes)
             {
-                RefreshDmGroup();
-
                 //gets current user
                 IUser user = Context.User;
 
@@ -233,8 +126,6 @@ namespace GeckoBot.Commands
             }
             else
             {
-                RefreshDmGroup();
-                
                 //gets current user
                 IUser user = Context.User;
 
@@ -257,33 +148,47 @@ namespace GeckoBot.Commands
                 }
             }
         }
-
-        //actually starts the timer
-        public void Start()
+        
+        // Initialize timers and run initial checks
+        public void initiatethings()
         {
-            //one hour looping timer for checking
-            System.Timers.Timer timer = new(1000*60*60);
-            timer.Elapsed += async (sender, e) => await daily();
+            //sets timer to amount of time until next hour plus a little bit
+            System.Timers.Timer timer = new((60 - DateTime.Now.Minute)* 60 * 1000 + 1000);
+            timer.Elapsed += async (sender, e) => await FirstStart(timer, false);
             timer.Start();
 
-            dmTimer = timer;
+            dmTimer2 = timer;
 
-            //makes sure there is only one timer
-            Timer.Started = true;
+            Timer.IsCounting = true;
+
+            if (_lastRun != DateTime.Now.DayOfYear)
+            {
+                //checks
+                runChecks(skipHGecCheck: true).RunSynchronously();
+            }
+
+            //sets timer to amount of time until next hour plus a little bit
+            System.Timers.Timer timer2 = new(10000);
+            timer2.Elapsed += async (sender, e) => await wait(timer2);
+            timer2.Start();
         }
 
-        //checks when timer runs out
-        async Task daily()
+        // Runs checks every hour
+        // Returns a boolean indicating whether the daily dm was sent due to this function call
+        // Passing true to force forces the dailydm to be sent
+        // while passing true to skipHGecCheck will skip the refresh of the highest gecko
+        // to prevent null reference exceptions during initialization if RefreshHighestGec finds a new highest gecko and calls dmGroup
+        public async Task<bool> runChecks(bool force = false, bool skipHGecCheck = false)
         {
-            //now
+            _lastRun = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek"));
+            bool wasRefreshed = false;
+            
             DateTime time = DateTime.Now;
-
-            //getting minutes
             int minutes = time.Minute;
 
             _lastCheck = DateTime.Now;
 
-            //if timer is misaligned with hour, realign it
+            // If the hour loop is misaligned, reset timer and rerun FirstStart at the strike of the next hour
             if (minutes > 0)
             {
                 //stops current timer
@@ -291,7 +196,7 @@ namespace GeckoBot.Commands
 
                 //sets timer to amount of time until next hour plus a little bit
                 System.Timers.Timer timer2 = new((60 - minutes) * 60 * 1000 + 1000);
-                timer2.Elapsed += async (sender, e) => await trueStart(timer2, false);
+                timer2.Elapsed += async (sender, e) => await FirstStart(timer2, false);
                 timer2.Start();
 
                 dmTimer2 = timer2;
@@ -301,24 +206,66 @@ namespace GeckoBot.Commands
                 Timer.IsCounting = true;
             }
 
-            if (_lastRun != DateTime.Now.DayOfYear)
+            // Run daily dm if it has been a day since the last dm
+            if (force || _lastRun != DateTime.Now.DayOfYear)
             {
-                //checks
                 await dailydm();
+                wasRefreshed = true;
             }
+
+            // Refresh highest gecko
+            if (!skipHGecCheck) await Program.gec.RefreshHighestGec();
+
+            return wasRefreshed;
+        }
+
+        private async Task wait(System.Timers.Timer timer)
+        {
+            await _client.SetGameAsync("`what do you do?");
+            timer.Stop();
+        }
+
+        // Starts the loop and runs first check
+        // Called when the first hour (hh:00) is reached so that the subsequent 1 hour loop runs checks at :00 as well
+        private async Task FirstStart(System.Timers.Timer timer, bool reply)
+        {
+            Start();
+            await runChecks();
+
+            if (!Timer.CounterStarted)
+            {
+                Timer.CounterStarted = true;
+                if (reply)
+                {
+                    await ReplyAsync("hourly check started");
+                }
+            }
+
+            timer.Stop();
+        }
+
+        // Starts the one hour loop for running checks
+        private void Start()
+        {
+            System.Timers.Timer timer = new(1000*60*60);
+            timer.Elapsed += async (sender, e) => await runChecks();
+            timer.Start();
+
+            dmTimer = timer;
+
+            //makes sure there is only one timer
+            Timer.Started = true;
         }
 
         //sends daily dm
         async Task dailydm()
         {
-            RefreshDmGroup();
-
             //generates statement to send
             DateTime date = DateTime.Today;
             string final = (date.DayOfYear - 1).ToString();
             
             //DMs everybody on the list
-            await dmGroup(
+            await DmGroup(
                 DriveUtils.ImagePath(date.DayOfYear - 1, false),
                 $"Today is {date.ToString("d")}. Day {date.DayOfYear} of the year {date.Year} (gecko #{final})");
 
@@ -333,8 +280,10 @@ namespace GeckoBot.Commands
             FileUtils.Save(_lastRun.ToString(), @"..\..\Cache\gecko4.gek");
         }
 
-        private async Task dmGroup(string path, string content)
+        // Dms a group of users
+        public async Task DmGroup(string path, string content)
         {
+            RefreshDmGroup();
             DiscordSocketClient client = _client;
 
             DateTime date = DateTime.Today;
