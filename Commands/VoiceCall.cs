@@ -1,14 +1,19 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Management.Automation;
+using System.Management.Automation.Runspaces;
 using Discord;
 using Discord.Audio;
 using Discord.Commands;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 
 namespace GeckoBot.Commands
 {
@@ -39,20 +44,53 @@ namespace GeckoBot.Commands
             await SendAudioAsync(Context.Guild, Context.Channel, song);
         }
 
-        [Command("say", RunMode = RunMode.Async)]
-        public async Task say([Remainder] string text)
+        [Command("sa", RunMode = RunMode.Async)]
+        [Summary("Synthesizes an audio file using DECtalk, credit for this feature goes to [this](https://github.com/freddyGiant/study-bot).")]
+        public async Task say([Remainder][Summary("the text that DECtalk will synthesize, also could work with an attached text file.")] string text = "")
         {
-            string fileName = @"..\..\Cache\" + Context.Message.Id.ToString() + ".wav";
+            string fileName = @"../../../dectalk/" + Context.Message.Id.ToString() + ".wav";
 
-            File.Create(fileName);
+            if (Context.Message.Attachments.Count != 0)
+            {
+                IAttachment attach = Context.Message.Attachments.First();
 
-            DecTalk(@"..\..\..\dectalk", fileName, "lol");
+                string[] suffixs = attach.Filename.Split(".");
 
-            Console.WriteLine("test1");
+                string suffix = "." + suffixs[suffixs.Length - 1];
+                
+                if (suffix == ".txt")
+                {
+                    using (var client = new WebClient())
+                    {
+                        client.DownloadFile(new Uri(attach.Url), @"..\..\Cache\" + Context.Message.Id.ToString() + suffix);
 
+                        text = Utils.FileUtils.Load(@"..\..\Cache\" + Context.Message.Id.ToString() + suffix);
+                        
+                        File.Delete(@"..\..\Cache\" + Context.Message.Id.ToString() + suffix);
+                    }
+                }
+            }
+
+            string cleanText = text.Replace("'", "").Replace("\n", "");
+
+            DecTalk(@"./" + Context.Message.Id.ToString() + ".wav", cleanText);
+
+            //starts a timer with desired amount of time
+            System.Timers.Timer t = new(1000);
+            t.Elapsed += async (sender, e) => await dttimer(t, fileName);
+            t.Start();
+
+            await Context.Message.AddReactionAsync(new Emoji("✅"));
+        }
+
+        public async Task dttimer(System.Timers.Timer timer, string fileName)
+        {
             //await SendAudioAsync(Context.Guild, Context.Channel, fileName);
+            await Context.Channel.SendFileAsync(fileName);
 
             File.Delete(fileName);
+
+            timer.Close();
         }
 
         public async Task JoinAudio(IGuild guild, IVoiceChannel target)
@@ -79,7 +117,6 @@ namespace GeckoBot.Commands
             Console.WriteLine(client.ConnectionState);
 
             await client.StopAsync();
-            Console.WriteLine("testest");
         }
 
         public async Task SendAudioAsync(IGuild guild, IMessageChannel channel, string path)
@@ -100,6 +137,7 @@ namespace GeckoBot.Commands
                     try { await ffmpeg.StandardOutput.BaseStream.CopyToAsync(stream); }
                     finally { await stream.FlushAsync(); }
                 }
+                File.Delete(path);
             }
         }
 
@@ -114,14 +152,13 @@ namespace GeckoBot.Commands
             });
         }
 
-        private Process DecTalk(string dectalkPath, string filePath, string content)
+        private Process DecTalk(string filePath, string content)
         {
-            Console.WriteLine("test");
             return Process.Start(new ProcessStartInfo
             {
-                FileName = @"..\..\..\dectalk\say.exe",
-                Arguments = $"cd {dectalkPath} & say.exe -w {filePath} -p [:phoneme on] \"{content}\"",
-                UseShellExecute = true
+                FileName = "powershell.exe",
+                Arguments = $"sl ../../../dectalk | ../../../dectalk/say.exe -w {filePath} -p [:phoneme on] '{content}'",
+                UseShellExecute = false
             });
         }
     }
