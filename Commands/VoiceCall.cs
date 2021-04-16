@@ -21,6 +21,8 @@ namespace GeckoBot.Commands
     {
         private readonly Dictionary<ulong, IAudioClient> ConnectedChannels = new Dictionary<ulong, IAudioClient>();
 
+        private static bool firstTime = true; 
+
         // You *MUST* mark these commands with 'RunMode.Async'
         // otherwise the bot will not respond until the Task times out.
         [Command("join", RunMode = RunMode.Async)]
@@ -64,6 +66,8 @@ namespace GeckoBot.Commands
                     {
                         client.DownloadFile(new Uri(attach.Url), @"..\..\Cache\" + Context.Message.Id.ToString() + suffix);
 
+                        
+
                         text = Utils.FileUtils.Load(@"..\..\Cache\" + Context.Message.Id.ToString() + suffix);
                         
                         File.Delete(@"..\..\Cache\" + Context.Message.Id.ToString() + suffix);
@@ -75,11 +79,13 @@ namespace GeckoBot.Commands
 
             DecTalk(@"./" + Context.Message.Id.ToString() + ".wav", cleanText);
 
+            Console.WriteLine(firstTime);
             //starts a timer with desired amount of time
-            System.Timers.Timer t = new(1000);
+            System.Timers.Timer t = new(firstTime ? 5000 : 1000);
             t.Elapsed += async (sender, e) => await dttimer(t, fileName);
             t.Start();
 
+            if (firstTime) firstTime = false;
             await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
 
