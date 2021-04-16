@@ -21,8 +21,6 @@ namespace GeckoBot.Commands
     {
         private readonly Dictionary<ulong, IAudioClient> ConnectedChannels = new Dictionary<ulong, IAudioClient>();
 
-        private static bool firstTime = true; 
-
         // You *MUST* mark these commands with 'RunMode.Async'
         // otherwise the bot will not respond until the Task times out.
         [Command("join", RunMode = RunMode.Async)]
@@ -79,24 +77,32 @@ namespace GeckoBot.Commands
 
             DecTalk(@"./" + Context.Message.Id.ToString() + ".wav", cleanText);
 
-            Console.WriteLine(firstTime);
             //starts a timer with desired amount of time
-            System.Timers.Timer t = new(firstTime ? 5000 : 1000);
-            t.Elapsed += async (sender, e) => await dttimer(t, fileName);
+            System.Timers.Timer t = new(1000);
+            t.Elapsed += async (sender, e) => await dttimer(t, fileName, false);
             t.Start();
 
-            if (firstTime) firstTime = false;
             await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
 
-        public async Task dttimer(System.Timers.Timer timer, string fileName)
+        public async Task dttimer(System.Timers.Timer timer, string fileName, bool iteration)
         {
-            //await SendAudioAsync(Context.Guild, Context.Channel, fileName);
-            await Context.Channel.SendFileAsync(fileName);
+            if (iteration)
+            {
+                File.Delete(fileName);
+                timer.Close();
+            }
+            else
+            {
+                //await SendAudioAsync(Context.Guild, Context.Channel, fileName);
+                await Context.Channel.SendFileAsync(fileName);
 
-            File.Delete(fileName);
-
-            timer.Close();
+                //resets timer for deletion
+                timer.Close();
+                timer = new(10000);
+                timer.Elapsed += async (sender, e) => await dttimer(timer, fileName, true);
+                timer.Start();
+            }
         }
 
         public async Task JoinAudio(IGuild guild, IVoiceChannel target)
