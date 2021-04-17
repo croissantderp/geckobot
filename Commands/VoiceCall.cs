@@ -95,8 +95,14 @@ namespace GeckoBot.Commands
             else
             {
                 //await SendAudioAsync(Context.Guild, Context.Channel, fileName);
-                await Context.Channel.SendFileAsync(fileName);
-
+                if (new System.IO.FileInfo(fileName).Length < 8000000)
+                {
+                    await Context.Channel.SendFileAsync(fileName);
+                }
+                else
+                {
+                    await ReplyAsync("file size too large");
+                }
                 //resets timer for deletion
                 timer.Close();
                 timer = new(10000);
