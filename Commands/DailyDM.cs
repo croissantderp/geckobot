@@ -161,15 +161,9 @@ namespace GeckoBot.Commands
 
             Timer.IsCounting = true;
 
-            if (_lastRun != DateTime.Now.DayOfYear)
-            {
-                //checks
-                runChecks(skipHGecCheck: true).RunSynchronously();
-            }
-
             //slight delay to work around issues
             System.Timers.Timer timer2 = new(10000);
-            timer2.Elapsed += async (sender, e) => await wait(timer2);
+            timer2.Elapsed += async (sender, e) => await lateStart(timer2);
             timer2.Start();
         }
 
@@ -178,7 +172,7 @@ namespace GeckoBot.Commands
         // Passing true to force forces the dailydm to be sent
         // while passing true to skipHGecCheck will skip the refresh of the highest gecko
         // to prevent null reference exceptions during initialization if RefreshHighestGec finds a new highest gecko and calls dmGroup
-        public async Task<bool> runChecks(bool force = false, bool skipHGecCheck = false)
+        public async Task<bool> runChecks(bool force = false)
         {
             _lastRun = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek"));
             bool wasRefreshed = false;
@@ -214,14 +208,20 @@ namespace GeckoBot.Commands
             }
 
             // Refresh highest gecko
-            if (!skipHGecCheck) await Program.gec.RefreshHighestGec();
+            await Program.gec.RefreshHighestGec();
 
             return wasRefreshed;
         }
 
-        private async Task wait(System.Timers.Timer timer)
+        //task that runs a few seconds aftrer initialize to make sure client is connected
+        private async Task lateStart(System.Timers.Timer timer)
         {
+            //checks
+            await runChecks();
+
+            //sets activity
             await _client.SetGameAsync("`what do you do?");
+
             timer.Stop();
         }
 
