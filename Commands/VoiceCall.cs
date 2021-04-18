@@ -94,17 +94,25 @@ namespace GeckoBot.Commands
             }
             else
             {
+                timer.Close();
+
                 //await SendAudioAsync(Context.Guild, Context.Channel, fileName);
-                if (new System.IO.FileInfo(fileName).Length < 8000000)
+                try
                 {
                     await Context.Channel.SendFileAsync(fileName);
+
                 }
-                else
+                catch
                 {
-                    await ReplyAsync("file size too large");
+                    await ReplyAsync("error, final recording file size too large or other error, try again");
+
+                    //resets timer for deletion
+                    timer = new(10000);
+                    timer.Elapsed += async (sender, e) => await dttimer(timer, fileName, true);
+                    timer.Start();
                 }
+
                 //resets timer for deletion
-                timer.Close();
                 timer = new(10000);
                 timer.Elapsed += async (sender, e) => await dttimer(timer, fileName, true);
                 timer.Start();
