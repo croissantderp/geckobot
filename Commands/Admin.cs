@@ -24,7 +24,7 @@ namespace GeckoBot.Commands
         }
         
         //temporary command to set name
-        [Command("set")]
+        [Command("set name")]
         [Summary("Sets geckobot's internal name from the array of names.")]
         public async Task set([Summary("The name of the instance to change.")] string name, [Summary("The value of the internal name array to change the instance name to.")] int value)
         {
@@ -39,7 +39,7 @@ namespace GeckoBot.Commands
         }
 
         //temporary command to set name
-        [Command("change")]
+        [Command("change name")]
         [Summary("Changes geckobot's internal name to the specified string.")]
         public async Task change([Summary("The value of the internal name array to change.")] int value, [Summary("The new name to change that name to.")][Remainder]string newName)
         {
