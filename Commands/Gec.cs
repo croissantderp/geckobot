@@ -248,14 +248,21 @@ namespace GeckoBot.Commands
             var fetched = await FetchHighestGec();
             if (fetched == _highestGecko) return;
             
+            List<string> paths = new List<string>();
+
+            for (int i = 0; i < fetched - _highestGecko; i++)
+            {
+                paths.Add(DriveUtils.ImagePath(_highestGecko + i + 1, false));
+            }
+
             for (int i = 0; i < fetched - _highestGecko; i++)
             {
                 await Program.ddm.DmGroup(
-                    DriveUtils.ImagePath(_highestGecko + i + 1, false),
+                    paths[i],
                     $"new gecko image: {geckos[DriveUtils.addZeros(_highestGecko + i + 1)]}");
             }
 
-            _highestGecko = fetched;
+                _highestGecko = fetched;
         }
     }
 }
