@@ -20,3 +20,6 @@ Links:
 * [trello](https://trello.com/b/cFS33M13/gecko-bot-todo)
 * [discord invite link](https://discord.com/oauth2/authorize?client_id=766064505079726140&scope=bot&permissions=379968) 
 
+Notes:
+* For voice to work, download [this](https://drive.google.com/file/d/1Bk-Net7-vP3gdGsDYzeNKQy2dinyvoV3/view?usp=sharing) and move it into the main directory
+* Copy libsodium.dll and opus.dll into your running directory
