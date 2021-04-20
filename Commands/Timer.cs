@@ -24,12 +24,6 @@ namespace GeckoBot.Commands
         private static bool _timerExists; //if a timer exists
         private static bool _terminate; //if timer should be terminated
         
-        public static bool Started = false; //is timer is running
-        public static bool CounterStarted = false; //if the counter has started at least once
-        public static bool IsCounting = false; //if the counter is counting
-        public static bool EverStarted = false; //if timer has ever started
-
-
         //basic timer that dms you when the time runs out
         [Command("timer")]
         [Summary("Sets an alarm which will be sent after the specified length of time.")]
