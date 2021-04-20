@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Discord;
 using System;
+using System.Linq;
 using Discord.Commands;
 using GeckoBot.Utils;
 
@@ -21,6 +22,13 @@ namespace GeckoBot.Commands
 
             //adds reaction
             await Context.Message.AddReactionAsync(new Emoji("✅"));
+        }
+
+        [Command("pins")]
+        [Summary("Gets number of pins in current channel.")]
+        public async Task pins()
+        {
+            await ReplyAsync("There are " + (await Context.Channel.GetPinnedMessagesAsync()).Count().ToString() + " pins");
         }
 
         [Command("shard")]

@@ -24,8 +24,6 @@ namespace GeckoBot
 
         public static readonly DailyDM ddm = new ();
         public static readonly Gec gec = new ();
-        //public static VoiceCall vc;
-        //public static LavaNode _lavaNode;
 
         static void Main(string[] args)
         {
@@ -61,22 +59,16 @@ namespace GeckoBot
             _client = new DiscordSocketClient(_config);
             _commands = new CommandService();
             _services = new ServiceCollection()
-                //.AddSingleton(new VoiceCallService())
-                //.AddSingleton<LavaNode>()
-                //.AddSingleton<LavaConfig>()
                 .AddSingleton(new VoiceCallService())
                 .AddSingleton(_client)
                 .AddSingleton(_commands)
                 .BuildServiceProvider();
-            //_lavaNode = _services.GetRequiredService<LavaNode>();
 
             string token = Top.secret;
 
             _client.Log += _client_Log;
 
             await RegisterCommandsAsync();
-
-            //_lavaNode.OnTrackEnded += VoiceCall.OnTrackEnded;
 
             await _client.LoginAsync(TokenType.Bot, token);
 
@@ -90,12 +82,6 @@ namespace GeckoBot
 
         private async Task ReadyAsync()
         {
-            /*if (!_lavaNode.IsConnected)
-            {
-                await _lavaNode.ConnectAsync();
-                vc = new VoiceCall(_lavaNode);
-            }*/
-
             ddm._client = _client;
 
             //sets activity

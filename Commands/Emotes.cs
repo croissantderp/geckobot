@@ -214,13 +214,21 @@ namespace GeckoBot.Commands
             await EmoteSave(yes1, yes, false);
         }
 
-        //save function
         [Command("ee")]
-        [Summary("Edits a key to the dictionary.")]
+        [Summary("Edits a key's value in the dictionary.")]
         public async Task ee([Summary("The key of the value.")] string yes1, [Summary("The value to change the previous value to.")][Remainder] string yes)
         {
             await EmoteRemove(yes1, false);
             await EmoteSave(yes1, yes, false);
+        }
+
+        [Command("en")]
+        [Summary("Edits a key in the dictionary while maintaining the value.")]
+        public async Task en([Summary("The key of the value.")] string yes1, [Summary("The new key to change the previous key to.")][Remainder] string yes)
+        {
+            string temp = EmoteDict[yes1];
+            await EmoteRemove(yes1, false);
+            await EmoteSave(yes, temp, false);
         }
 
         //big save function

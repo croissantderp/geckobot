@@ -39,7 +39,7 @@ namespace GeckoBot.Commands
         {
             var voiceState = Context.User as IVoiceState;
 
-            if (!_service.channels.ContainsKey(Context.Guild.Id))//!_lavaNode.HasPlayer(Context.Guild))
+            if (!_service.channels.ContainsKey(Context.Guild.Id))
             {
                 if (voiceState?.VoiceChannel == null)
                 {
@@ -49,7 +49,6 @@ namespace GeckoBot.Commands
                 else
                 {
                     await _service.JoinAudio(Context.Guild, voiceState.VoiceChannel);
-                    //await _lavaNode.LeaveAsync(voiceState.VoiceChannel);
 
                     await Context.Message.AddReactionAsync(new Emoji("⏫"));
                 }
@@ -68,7 +67,7 @@ namespace GeckoBot.Commands
         {
             var voiceState = Context.User as IVoiceState;
 
-            if (_service.channels.ContainsKey(Context.Guild.Id))//!_lavaNode.HasPlayer(Context.Guild))
+            if (_service.channels.ContainsKey(Context.Guild.Id))
             {
                 if (voiceState?.VoiceChannel == null)
                 {
@@ -77,8 +76,6 @@ namespace GeckoBot.Commands
                 }
                 else
                 {
-                    //await _service.JoinAudio(Context.Guild, voiceState.VoiceChannel);
-                    //await _lavaNode.LeaveAsync(voiceState.VoiceChannel);
                     await _service.LeaveAudio(Context.Guild);
 
                     await Context.Message.AddReactionAsync(new Emoji("⏬"));
@@ -89,61 +86,6 @@ namespace GeckoBot.Commands
                 await ReplyAsync("I am not in a voice channel");
             }
         }
-
-
-
-        //private readonly LavaNode _lavaNode;
-
-        //public VoiceCall(LavaNode lavaNode) => _lavaNode = lavaNode;
-
-
-        // You *MUST* mark these commands with 'RunMode.Async'
-        // otherwise the bot will not respond until the Task times out.
-        /*[Command("join2", RunMode = RunMode.Async)]
-        public async Task Join()
-        {
-            if (_lavaNode.HasPlayer(Context.Guild))
-            {
-                await ReplyAsync("I'm already connected to a voice channel!");
-                return;
-            }
-
-            var voiceState = Context.User as IVoiceState;
-            if (voiceState?.VoiceChannel == null)
-            {
-                await ReplyAsync("You must be connected to a voice channel!");
-                return;
-            }
-
-            await _lavaNode.JoinAsync(voiceState.VoiceChannel, Context.Channel as ITextChannel);
-            await Context.Message.AddReactionAsync(new Emoji("✅"));
-        }
-
-        // Remember to add preconditions to your commands,
-        // this is merely the minimal amount necessary.
-        // Adding more commands of your own is also encouraged.
-        [Command("leave2")]
-        public async Task Leave()
-        {
-            var voiceState = Context.User as IVoiceState;
-
-            if (_lavaNode.HasPlayer(Context.Guild))
-            {
-                if (voiceState?.VoiceChannel == null)
-                {
-                    await ReplyAsync("You must be connected to a voice channel!");
-                }
-                else
-                {
-                    Console.WriteLine(voiceState.VoiceChannel.Id);
-
-
-                    await Context.Message.AddReactionAsync(new Emoji("✅"));
-                }
-                return;
-            }
-            await ReplyAsync("I am not in a voice channel!");
-        }*/
 
         [Command("sa")]
         [Summary("Synthesizes an audio file using DECtalk, credit for this feature goes to [this](https://github.com/freddyGiant/study-bot).")]
@@ -192,7 +134,7 @@ namespace GeckoBot.Commands
         {
             var voiceState = Context.User as IVoiceState;
 
-            if (!_service.channels.ContainsKey(Context.Guild.Id))//!_lavaNode.HasPlayer(Context.Guild))
+            if (!_service.channels.ContainsKey(Context.Guild.Id))
             {
                 if (voiceState?.VoiceChannel == null)
                 {
@@ -202,7 +144,6 @@ namespace GeckoBot.Commands
                 else
                 {
                     await _service.JoinAudio(Context.Guild, voiceState.VoiceChannel);
-                    //await _lavaNode.LeaveAsync(voiceState.VoiceChannel);
 
                     await Context.Message.AddReactionAsync(new Emoji("⏫"));
                 }
@@ -249,7 +190,6 @@ namespace GeckoBot.Commands
         {
             timer.Close();
 
-            //await SendAudioAsync(Context.Guild, Context.Channel, fileName);
             try
             {
                 await Context.Channel.SendFileAsync(fileName);
@@ -271,88 +211,9 @@ namespace GeckoBot.Commands
             timer.Start();
         }
 
-        /*[Command("Play")]
-        public async Task PlayAsync([Remainder] string searchQuery)
-        {
-            if (string.IsNullOrWhiteSpace(searchQuery))
-            {
-                await ReplyAsync("Please provide search terms.");
-                return;
-            }
-
-            if (!_lavaNode.HasPlayer(Context.Guild))
-            {
-                await ReplyAsync("I'm not connected to a voice channel.");
-                return;
-            }
-
-            var queries = searchQuery.Split(' ');
-            foreach (var query in queries)
-            {
-                var searchResponse = await _lavaNode.SearchAsync(query);
-                if (searchResponse.LoadStatus == LoadStatus.LoadFailed ||
-                    searchResponse.LoadStatus == LoadStatus.NoMatches)
-                {
-                    await ReplyAsync($"I wasn't able to find anything for `{query}`.");
-                    return;
-                }
-
-                var player = _lavaNode.GetPlayer(Context.Guild);
-
-                if (player.PlayerState == PlayerState.Playing || player.PlayerState == PlayerState.Paused)
-                {
-                    if (!string.IsNullOrWhiteSpace(searchResponse.Playlist.Name))
-                    {
-                        foreach (var track in searchResponse.Tracks)
-                        {
-                            player.Queue.Enqueue(track);
-                        }
-
-                        await ReplyAsync($"Enqueued {searchResponse.Tracks.Count} tracks.");
-                    }
-                    else
-                    {
-                        var track = searchResponse.Tracks[0];
-                        player.Queue.Enqueue(track);
-                        await ReplyAsync($"Enqueued: {track.Title}");
-                    }
-                }
-                else
-                {
-                    var track = searchResponse.Tracks[0];
-
-                    if (!string.IsNullOrWhiteSpace(searchResponse.Playlist.Name))
-                    {
-                        for (var i = 0; i < searchResponse.Tracks.Count; i++)
-                        {
-                            if (i == 0)
-                            {
-                                await player.PlayAsync(track);
-                                await ReplyAsync($"Now Playing: {track.Title}");
-                            }
-                            else
-                            {
-                                player.Queue.Enqueue(searchResponse.Tracks[i]);
-                            }
-                        }
-
-                        await ReplyAsync($"Enqueued {searchResponse.Tracks.Count} tracks.");
-                    }
-                    else
-                    {
-                        await player.PlayAsync(track);
-                        await ReplyAsync($"Now Playing: {track.Title}");
-                    }
-                }
-            }
-        }*/
-
         public async Task vcdttimer(System.Timers.Timer timer, string fileName)
         {
             timer.Close();
-            //var player = _lavaNode.GetPlayer(Context.Guild);
-            
-            //var track = await _lavaNode.SearchAsync(fileName);
 
             if (!queue.ContainsKey(Context.Guild.Id))
             {
@@ -363,7 +224,6 @@ namespace GeckoBot.Commands
             {
                 queue[Context.Guild.Id].Add(fileName);
             }
-            //player.Queue.Enqueue(track.Tracks.First());
         }
 
         public static void delayDelete(System.Timers.Timer timer, string fileName)
@@ -371,34 +231,6 @@ namespace GeckoBot.Commands
             File.Delete(fileName);
             timer.Close();
         }
-
-        /*public static async Task OnTrackEnded(TrackEndedEventArgs args)
-        {
-            if (!args.Reason.ShouldPlayNext())
-            {
-                return;
-            }
-
-            var player = args.Player;
-            if (!player.Queue.TryDequeue(out var queueable))
-            {
-                return;
-            }
-
-            if (!(queueable is LavaTrack track))
-            {
-                return;
-            }
-
-            //timer for deletion
-            System.Timers.Timer timer = new(10000);
-            timer.Elapsed += (sender, e) => delayDelete(timer, queue[player.VoiceServer.Guild.Id][0]);
-            timer.Start();
-
-            queue[player.VoiceServer.Guild.Id].RemoveAt(0);
-
-            await args.Player.PlayAsync(track);
-        }*/
 
         private Process DecTalk(string filePath, string content)
         {
