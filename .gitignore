@@ -1,4 +1,6 @@
-bin/
+/bin/
+/ffmpeg-4.4-full_build
+qeckobot/bin
 obj/
 /packages/
 modules/
