@@ -150,7 +150,7 @@ namespace GeckoBot.Commands
         }
         
         // Initialize timers and run initial checks
-        public void initiatethings()
+        public async Task initiatethings()
         {
             //sets timer to amount of time until next hour plus a little bit
             System.Timers.Timer timer = new((60 - DateTime.Now.Minute)* 60 * 1000 + 1000);
@@ -161,10 +161,11 @@ namespace GeckoBot.Commands
 
             Timer.IsCounting = true;
 
-            //slight delay to work around issues
-            System.Timers.Timer timer2 = new(10000);
-            timer2.Elapsed += async (sender, e) => await lateStart(timer2);
-            timer2.Start();
+            //checks
+            await runChecks();
+
+            //sets activity
+            await _client.SetGameAsync("`what do you do?");
         }
 
         // Runs checks every hour
@@ -211,18 +212,6 @@ namespace GeckoBot.Commands
             await Program.gec.RefreshHighestGec();
 
             return wasRefreshed;
-        }
-
-        //task that runs a few seconds aftrer initialize to make sure client is connected
-        private async Task lateStart(System.Timers.Timer timer)
-        {
-            //checks
-            await runChecks();
-
-            //sets activity
-            await _client.SetGameAsync("`what do you do?");
-
-            timer.Stop();
         }
 
         // Starts the loop and runs first check

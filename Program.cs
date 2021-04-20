@@ -6,12 +6,14 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Audio;
 using Discord.Commands;
 using Discord.WebSocket;
 using GeckoBot.Commands;
 using GeckoBot.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text.RegularExpressions;
+using Victoria;
 
 namespace GeckoBot
 {
@@ -19,28 +21,54 @@ namespace GeckoBot
     {
         static readonly string[] Scopes = { DriveService.Scope.DriveReadonly };
         static string ApplicationName = "GeckoBot";
-        
-        public static readonly DailyDM ddm = new();
-        public static readonly Gec gec = new();
+
+        public static readonly DailyDM ddm = new ();
+        public static readonly Gec gec = new ();
+        //public static VoiceCall vc;
+        //public static LavaNode _lavaNode;
 
         static void Main(string[] args)
         {
-            ddm.initiatethings();
             new Program().RunBotAsync().GetAwaiter().GetResult();
         }
+
         public DiscordSocketClient _client;
         private CommandService _commands;
         private IServiceProvider _services;
 
         public async Task RunBotAsync()
         {
-            _client = new DiscordSocketClient();
-            _commands = new CommandService();
+            var _config = new DiscordSocketConfig();
 
+            _config.GatewayIntents = 
+                GatewayIntents.DirectMessageReactions 
+                | GatewayIntents.DirectMessages 
+                //| GatewayIntents.DirectMessageTyping 
+                //| GatewayIntents.GuildBans 
+                //| GatewayIntents.GuildEmojis
+                //| GatewayIntents.GuildIntegrations
+                //| GatewayIntents.GuildInvites
+                //| GatewayIntents.GuildMembers
+                //| GatewayIntents.GuildMessageReactions
+                | GatewayIntents.GuildMessages
+                | GatewayIntents.GuildMessageTyping
+                | GatewayIntents.GuildPresences
+                | GatewayIntents.Guilds
+                | GatewayIntents.GuildVoiceStates
+                //| GatewayIntents.GuildWebhooks
+                ;
+
+            _client = new DiscordSocketClient(_config);
+            _commands = new CommandService();
             _services = new ServiceCollection()
+                //.AddSingleton(new VoiceCallService())
+                //.AddSingleton<LavaNode>()
+                //.AddSingleton<LavaConfig>()
+                .AddSingleton(new VoiceCallService())
                 .AddSingleton(_client)
                 .AddSingleton(_commands)
                 .BuildServiceProvider();
+            //_lavaNode = _services.GetRequiredService<LavaNode>();
 
             string token = Top.secret;
 
@@ -48,13 +76,28 @@ namespace GeckoBot
 
             await RegisterCommandsAsync();
 
+            //_lavaNode.OnTrackEnded += VoiceCall.OnTrackEnded;
+
             await _client.LoginAsync(TokenType.Bot, token);
 
             await _client.StartAsync();
 
-            ddm._client = _client;
+
+            _client.Ready += ReadyAsync;
 
             await Task.Delay(-1);
+        }
+
+        private async Task ReadyAsync()
+        {
+            /*if (!_lavaNode.IsConnected)
+            {
+                await _lavaNode.ConnectAsync();
+                vc = new VoiceCall(_lavaNode);
+            }*/
+
+            ddm._client = _client;
+            await ddm.initiatethings();
         }
 
         private Task _client_Log(LogMessage arg)

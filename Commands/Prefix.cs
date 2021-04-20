@@ -31,7 +31,8 @@ namespace GeckoBot.Commands
         [Command("change prefix")]
         [Summary("Changes the bot's prefix in the current server, only works in guilds.")]
         [RequireContext(ContextType.Guild)]
-        [RequireUserPermission(GuildPermission.ManageGuild)]
+        [RequireUserPermission(GuildPermission.ManageGuild, Group = "Permissions")]
+        [RequireGeckobotAdmin(Group = "Permissions")]
         public async Task change([Summary("The new prefix.")][Remainder]string prefix)
         {
             RefreshPrefixDict();
