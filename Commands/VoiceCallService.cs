@@ -24,8 +24,8 @@ namespace GeckoBot.Commands
     public class VoiceCallService : ModuleBase<SocketCommandContext>
     {
         public static readonly ConcurrentDictionary<ulong, IAudioClient> ConnectedChannels = new ConcurrentDictionary<ulong, IAudioClient>();
-        public Dictionary<ulong, IVoiceChannel> channels = new Dictionary<ulong, IVoiceChannel>();
-        public Dictionary<ulong, AudioOutStream> streams = new Dictionary<ulong, AudioOutStream>();
+        public static Dictionary<ulong, IVoiceChannel> channels = new Dictionary<ulong, IVoiceChannel>();
+        public static  Dictionary<ulong, AudioOutStream> streams = new Dictionary<ulong, AudioOutStream>();
 
         public async Task JoinAudio(IGuild guild, IVoiceChannel target)
         {

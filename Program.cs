@@ -70,6 +70,8 @@ namespace GeckoBot
 
             await RegisterCommandsAsync();
 
+            await RegisterDisconnectAsync();
+
             await _client.LoginAsync(TokenType.Bot, token);
 
             await _client.StartAsync();
@@ -94,6 +96,27 @@ namespace GeckoBot
         {
             Console.WriteLine(arg);
             return Task.CompletedTask;
+        }
+
+        public async Task RegisterDisconnectAsync()
+        {
+            _client.UserVoiceStateUpdated += HandleDisconnectAsync;
+            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
+        }
+
+        private async Task HandleDisconnectAsync(SocketUser user, SocketVoiceState state, SocketVoiceState state2)
+        {
+            if (user.Id == _client.CurrentUser.Id)
+            {
+                if (state2.VoiceChannel == null)
+                {
+                    IAudioClient client;
+                    VoiceCallService.ConnectedChannels.TryRemove(state.VoiceChannel.Guild.Id, out client);
+                    await VoiceCallService.channels[state.VoiceChannel.Guild.Id].DisconnectAsync();
+                    VoiceCallService.channels.Remove(state.VoiceChannel.Guild.Id);
+                    VoiceCallService.streams.Remove(state.VoiceChannel.Guild.Id);
+                }
+            }
         }
 
         public async Task RegisterCommandsAsync()

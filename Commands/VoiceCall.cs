@@ -39,7 +39,7 @@ namespace GeckoBot.Commands
         {
             var voiceState = Context.User as IVoiceState;
 
-            if (!_service.channels.ContainsKey(Context.Guild.Id))
+            if (!VoiceCallService.channels.ContainsKey(Context.Guild.Id))
             {
                 if (voiceState?.VoiceChannel == null)
                 {
@@ -67,7 +67,7 @@ namespace GeckoBot.Commands
         {
             var voiceState = Context.User as IVoiceState;
 
-            if (_service.channels.ContainsKey(Context.Guild.Id))
+            if (VoiceCallService.channels.ContainsKey(Context.Guild.Id))
             {
                 if (voiceState?.VoiceChannel == null)
                 {
@@ -134,7 +134,7 @@ namespace GeckoBot.Commands
         {
             var voiceState = Context.User as IVoiceState;
 
-            if (!_service.channels.ContainsKey(Context.Guild.Id))
+            if (!VoiceCallService.channels.ContainsKey(Context.Guild.Id))
             {
                 if (voiceState?.VoiceChannel == null)
                 {
