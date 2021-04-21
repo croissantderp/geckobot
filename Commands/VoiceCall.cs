@@ -149,6 +149,13 @@ namespace GeckoBot.Commands
                 }
             }
 
+            if (voiceState?.VoiceChannel == null)
+            {
+                await ReplyAsync("You must be connected to a voice channel!");
+                return;
+            }
+
+
             string fileName = @"../../../dectalk/" + Context.Message.Id.ToString() + ".wav";
 
             if (Context.Message.Attachments.Count != 0)
