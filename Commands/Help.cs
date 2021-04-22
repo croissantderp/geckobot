@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -20,6 +21,13 @@ namespace GeckoBot.Commands
         public async Task identify()
         {
             await ReplyAsync("geckobot" + Globals.names[Globals.CurrentName]);
+        }
+
+        [Command("command count")]
+        [Summary("Identifies the total amount of commands.")]
+        public async Task cc()
+        {
+            await ReplyAsync(_commands.Commands.ToList().Count.ToString());
         }
 
         [Command("links")]
@@ -94,15 +102,15 @@ namespace GeckoBot.Commands
             } 
             else // If no argument was given, send a list of commands
             {
-                List<string> desc = commands.Select(FormatCommand).ToList();
-
-                embedBuilder.Title = "Command List:";
-                embedBuilder.Description = "The prefix for this server is " + Prefix.returnPrefix(Context.Guild != null ? Context.Guild.Id.ToString() : "") + "\n" + string.Join(", ", desc);
+                
+                //embedBuilder.Title = "Command List:";
+                //embedBuilder.Description = "The prefix for this server is " + Prefix.returnPrefix(Context.Guild != null ? Context.Guild.Id.ToString() : ""); //+ "\n" + string.Join(", ", desc);
             }
 
             embedBuilder.WithColor(180, 212, 85);
 
             await ReplyAsync(embed: embedBuilder.Build());
+
         }
         
         // Formats the command by adding the module prefix to the command name
@@ -150,6 +158,45 @@ namespace GeckoBot.Commands
             var embed2 = embed.Build();
 
             await ReplyAsync(embed: embed2);
+        }
+
+        [Command("command list")]
+        [Summary("Sends a list of all the commands.")]
+        public async Task cl()
+        {
+            List<CommandInfo> commands = _commands.Commands.ToList();
+
+            List<string> desc = commands.Select(a => FormatCommand(a).Trim()).ToList();
+
+            string final = "";
+
+            for (int i = 0; i < desc.Count(); i++)
+            {
+                if (i + 1 == desc.Count())
+                {
+                    final += desc[i];
+                    Console.WriteLine("end");
+                    break;
+                }
+
+                final += desc[i] + ", ";
+
+                if ((i + 1) % 5 == 0)
+                {
+                    final += "\n";
+                }
+            }
+
+            using (StreamWriter file = new(@"../../cache/commands.txt"))
+            {
+                await file.WriteAsync(
+                    "𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗟𝗶𝘀𝘁:\n" +
+                    "The prefix for this server is " + Prefix.returnPrefix(Context.Guild != null ? Context.Guild.Id.ToString() : "") + "\n" +
+                    final
+                    );
+            }
+
+            await Context.Channel.SendFileAsync(@"../../cache/commands.txt");
         }
 
         //instructions

@@ -35,6 +35,7 @@ namespace GeckoBot.Commands
         // You *MUST* mark these commands with 'RunMode.Async'
         // otherwise the bot will not respond until the Task times out.
         [Command("join", RunMode = RunMode.Async)]
+        [Summary("Has the bot join a voice call you are currently in.")]
         public async Task JoinCmd()
         {
             var voiceState = Context.User as IVoiceState;
@@ -63,6 +64,7 @@ namespace GeckoBot.Commands
         // this is merely the minimal amount necessary.
         // Adding more commands of your own is also encouraged.
         [Command("leave", RunMode = RunMode.Async)]
+        [Summary("Has the bot leave a voice call you are currently in.")]
         public async Task LeaveCmd()
         {
             var voiceState = Context.User as IVoiceState;
@@ -129,7 +131,7 @@ namespace GeckoBot.Commands
         }
 
         [Command("s", RunMode = RunMode.Async)]
-        [Summary("Plays dectalk in a voicecall using DECtalk, credit for this feature goes to [this](https://github.com/freddyGiant/study-bot).")]
+        [Summary("Plays dectalk in a voice call using DECtalk, credit for this feature goes to [this](https://github.com/freddyGiant/study-bot).")]
         public async Task s([Remainder][Summary("the text that DECtalk will synthesize, also could work with an attached text file.")] string text = null)
         {
             var voiceState = Context.User as IVoiceState;
