@@ -24,10 +24,10 @@ namespace GeckoBot.Commands
         }
 
         [Command("command count")]
-        [Summary("Identifies the total amount of commands.")]
+        [Summary("Identifies the total amount of modules and commands.")]
         public async Task cc()
         {
-            await ReplyAsync(_commands.Commands.ToList().Count.ToString());
+            await ReplyAsync(_commands.Modules.ToList().Count.ToString() + " modules \n" + _commands.Commands.ToList().Count.ToString() + " commands");
         }
 
         [Command("links")]
@@ -48,7 +48,7 @@ namespace GeckoBot.Commands
         [Command("help")]
         [Summary("Dynamic help command.")]
         public async Task help(
-            [Summary("The specific command or module to send info about.")] string target = null,
+            [Summary("The specific command or module to send info about. Enter 'list' if you want a list of commands under their respective modules.")] string target = null,
             [Summary("The index of the result.")] int result = 1)
         {
             result--;
@@ -63,7 +63,7 @@ namespace GeckoBot.Commands
                 embedBuilder.Title = "Command List:";
                 embedBuilder.Description = "The prefix for this server is " + Prefix.returnPrefix(Context.Guild != null ? Context.Guild.Id.ToString() : "");
                 
-                foreach (var module in modules.SkipLast(1))
+                foreach (var module in modules)
                 {
                     EmbedFieldBuilder field = new()
                     {
@@ -183,45 +183,46 @@ namespace GeckoBot.Commands
         }
 
         [Command("command list")]
-        [Summary("Sends a list of all the commands.")]
+        [Summary("Sends a list of all the commands as a text file.")]
         public async Task cl()
         {
             List<CommandInfo> commands = _commands.Commands.ToList();
+            List<ModuleInfo> modules = _commands.Modules.ToList();
 
-            List<string> desc = commands.Select(a => FormatCommand(a).Trim()).ToList();
+            string final = "𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗟𝗶𝘀𝘁:\n" +
+                    "The prefix for this server is " + Prefix.returnPrefix(Context.Guild != null ? Context.Guild.Id.ToString() : "") + "\n";
 
-            string final = "";
-
-            for (int i = 0; i < desc.Count(); i++)
+            foreach (var module in modules)
             {
-                if (i + 1 == desc.Count())
-                {
-                    final += desc[i];
-                    Console.WriteLine("end");
-                    break;
-                }
+                final += module.Name + ": ";
+                final += string.Join(", ", module.Commands.Select(FormatCommand)) + "\n";
+                   
+            }
 
-                final += desc[i] + ", ";
+            final += "\n\n";
 
-                if ((i + 1) % 5 == 0)
-                {
-                    final += "\n";
-                }
+            foreach (var command in commands)
+            {
+                var fields = command.Parameters;
+
+                final += 
+                    FormatCommand(command) + ": " + command.Summary + 
+                    "\nUsage: " + $"{command.Name} {string.Join(" ", fields.Select(FormatParameter))}\n"; 
+                
+                if (fields.Count > 0)
+                    final += "Parameters: " + string.Join(" | ", fields.Select(FormatParameterLong)) + "\n";
+
+                final += "Module: " + command.Module.Name + "\n\n";
             }
 
             using (StreamWriter file = new(@"../../cache/commands.txt"))
             {
-                await file.WriteAsync(
-                    "𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗟𝗶𝘀𝘁:\n" +
-                    "The prefix for this server is " + Prefix.returnPrefix(Context.Guild != null ? Context.Guild.Id.ToString() : "") + "\n" +
-                    final
-                    );
+                await file.WriteAsync(final);
             }
 
             await Context.Channel.SendFileAsync(@"../../cache/commands.txt");
         }
 
-        //instructions
         [Command("admins")]
         [Summary("Gets a list of current geckobot admins.")]
         public async Task admins()

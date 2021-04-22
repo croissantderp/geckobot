@@ -27,7 +27,7 @@ namespace GeckoBot.Commands
         //coin flip but cheating is not allowed
         [Command("coin")]
         [Summary("**Info**\nA game where you encrypt five bits in rectilinear or diagonal fashion. Somebody else then has to guess the type of encryption by randomly testing the bits. (See https://en.wikipedia.org/wiki/Quantum_coin_flipping for more reference).\n\n" +
-            "**Instructions**\nThe sender encrypts the bits. The recipitant will guess using '`guess [rect/diag]'. The sender would then '`confirm' or '`deny' the guess. The recipitant will recieve that result and '`confirm' or '`deny' it. The bot then sends the winner and other statistics.")]
+            "**Instructions**\nThe sender encrypts the bits. The recipitant will guess using '[prefix]guess [rect/diag]'. The sender would then '[prefix]confirm' or '[prefix]deny' the guess. The recipitant will recieve that result and '[prefix]confirm' or '[prefix]deny' it. The bot then sends the winner and other statistics.")]
         public async Task coin([Summary("The id of your opponent, playing against yourself is supported if you put your own id")] string recipitantid, [Summary("A string of bits (0 or 1) seperated by $")] string bits, [Summary("Type of encoding used, rectilinear or diagonal. ('rect' or 'diag')")] string encoding)
         {
             var recipitant = Context.Client.GetUser(ulong.Parse(recipitantid));
