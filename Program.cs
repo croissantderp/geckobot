@@ -129,7 +129,7 @@ namespace GeckoBot
             
             string prefix = Prefix.returnPrefix(context.Guild != null ? context.Guild.Id.ToString() : "");
             
-            Regex regex = new Regex(@"(?<!\\)" + prefix + "i");
+            Regex regex = new Regex(@"(?<!(\\|\`))" + prefix + "i");
 
             if (message.HasStringPrefix(prefix, ref argPos) || message.HasStringPrefix("\\" + prefix, ref argPos))
             {
