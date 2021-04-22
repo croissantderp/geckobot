@@ -159,62 +159,114 @@ namespace GeckoBot.Commands
             return $"{param.Name}: {param.Summary}";
         }
 
-        //instructions
         [Command("what do you do?")]
-        [Summary(@"I gave up maintaining this ¯\_(ツ)_/¯, use `help.")]
+        [Summary("Sends a load of info as a text file.")]
         public async Task instructions()
-        {
-            //embed
-            var embed = new EmbedBuilder
-            {
-            Title = "geckobot" + Globals.names[Globals.CurrentName] + " 4/13/2021 instruction manual",
-            Description = "my prefix is " + Prefix.returnPrefix(Context.Guild != null ? Context.Guild.Id.ToString() : "") + " and [prefix]i for inline commands." + System.Environment.NewLine +
-                "if there's a problem, ping a geckobot admin " + System.Environment.NewLine +
-                "links: [trello](https://trello.com/invite/b/cFS33M13/8fddf3ac42bd0fe419e482c6f4414e01/gecko-bot-todo) [github](https://github.com/croissantderp/geckobot) [invite](https://discord.com/oauth2/authorize?client_id=766064505079726140&scope=bot&permissions=379968)" + System.Environment.NewLine +
-                "'[prefix]what do you do?' quick start guide" + System.Environment.NewLine +
-                "'[prefix]help [command]' cool help command"
-            };
-            embed.WithFooter("It has been " + (DateTime.Now - Globals.lastReset).ToString() + " since this bot has been restarted");
-            embed.WithColor(180, 212, 85);
-
-            var embed2 = embed.Build();
-
-            await ReplyAsync(embed: embed2);
-        }
-
-        [Command("command list")]
-        [Summary("Sends a list of all the commands as a text file.")]
-        public async Task cl()
         {
             List<CommandInfo> commands = _commands.Commands.ToList();
             List<ModuleInfo> modules = _commands.Modules.ToList();
 
-            string final = "𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗟𝗶𝘀𝘁:\n" +
-                    "The prefix for this server is " + Prefix.returnPrefix(Context.Guild != null ? Context.Guild.Id.ToString() : "") + "\n";
+            //constructing long list
+            string final = "";
+
+            //logo
+            final += 
+                @"         _              _             _             _              _            _               _          _       " + "\n" +
+                @"        /\ \           /\ \         /\ \           /\_\           /\ \         / /\            /\ \       /\ \     " + "\n" +
+                @"       /  \ \         /  \ \       /  \ \         / / /  _       /  \ \       / /  \          /  \ \      \_\ \    " + "\n" +
+                @"      / /\ \_\       / /\ \ \     / /\ \ \       / / /  /\_\    / /\ \ \     / / /\ \        / /\ \ \     /\__ \   " + "\n" +
+                @"     / / /\/_/      / / /\ \_\   / / /\ \ \     / / /__/ / /   / / /\ \ \   / / /\ \ \      / / /\ \ \   / /_ \ \  " + "\n" +
+                @"    / / / ______   / /_/_ \/_/  / / /  \ \_\   / /\_____/ /   / / /  \ \_\ / / /\ \_\ \    / / /  \ \_\ / / /\ \ \ " + "\n" +
+                @"   / / / /\_____\ / /____/\    / / /    \/_/  / /\_______/   / / /   / / // / /\ \ \___\  / / /   / / // / /  \/_/ " + "\n" +
+                @"  / / /  \/____ // /\____\/   / / /          / / /\ \ \     / / /   / / // / /  \ \ \__/ / / /   / / // / /        " + "\n" +
+                @" / / /_____/ / // / /______  / / /________  / / /  \ \ \   / / /___/ / // / /____\_\ \  / / /___/ / // / /         " + "\n" +
+                @"/ / /______\/ // / /_______\/ / /_________\/ / /    \ \ \ / / /____\/ // / /__________\/ / /____\/ //_/ /          " + "\n" +
+                @"\/___________/ \/__________/\/____________/\/_/      \_\_\\/_________/ \/_____________/\/_________/ \_\/           " + "\n" +
+                "\n\n";
+
+
+            //intro
+            final += "geckobot" + Globals.names[Globals.CurrentName] + " 4/22/2021 instruction manual:\n"+
+                "   If there's a problem, ping a geckobot admin\n" +
+                "   quick links: " +
+                "       [trello](https://trello.com/invite/b/cFS33M13/8fddf3ac42bd0fe419e482c6f4414e01/gecko-bot-todo) \n" +
+                "       [github](https://github.com/croissantderp/geckobot) \n" +
+                "       [invite](https://discord.com/oauth2/authorize?client_id=766064505079726140&scope=bot&permissions=379968)\n" +
+                "   '[prefix]what do you do?' quick start guide\n" +
+                "   '[prefix]help [command]' cool help command\n" +
+                "   The generic prefix is '`', the prefix set for this server is " + Prefix.returnPrefix(Context.Guild != null ? Context.Guild.Id.ToString() : "") + 
+                ".\n\n";
+
+
+            //quick module/command list
+            final += "Modules and their respective commands:\n";
 
             foreach (var module in modules)
             {
-                final += module.Name + ": ";
-                final += string.Join(", ", module.Commands.Select(FormatCommand)) + "\n";
-                   
+                final += 
+                    "   " + module.Name + ": ";
+                final += 
+                    "   " + string.Join(", ", module.Commands.Select(FormatCommand)) + "\n";
             }
+            final += "\n";
 
-            final += "\n\n";
+
+            //long command list
+            final += "Command List:\n";
 
             foreach (var command in commands)
             {
                 var fields = command.Parameters;
 
                 final += 
-                    FormatCommand(command) + ": " + command.Summary + 
-                    "\nUsage: " + $"{command.Name} {string.Join(" ", fields.Select(FormatParameter))}\n"; 
+                    "   " + FormatCommand(command) + ": " + command.Summary + "\n" +
+                    "       Usage: " + $"{command.Name} {string.Join(" ", fields.Select(FormatParameter))}\n"; 
                 
                 if (fields.Count > 0)
-                    final += "Parameters: " + string.Join(" | ", fields.Select(FormatParameterLong)) + "\n";
+                    final += 
+                        "       Parameters: " + string.Join(" | ", fields.Select(FormatParameterLong)) + "\n";
 
-                final += "Module: " + command.Module.Name + "\n\n";
+                final += 
+                    "       Module: " + command.Module.Name + "\n\n";
             }
 
+
+            //setup
+            final += "setup:\n" + 
+                "   Download the code from the github and FFmpeg which is linked below. \n" +
+                "   Move the extracted FFmpeg folder into the main directory. \n" +
+                "   Then open and build the solution in an ide (Visual Studios recommended). \n" +
+                "   After building for the first time, copy libsodium.dll and opus.dll into your runtime folder for voice features to work. \n" +
+                "   Recommended setup is to use Task Scheduler or something similar to run the bot in the background. \n" + 
+                "\n";
+
+
+            //references & full link list
+            final += "Links and references:\n" +
+                "   trello: https://trello.com/invite/b/cFS33M13/8fddf3ac42bd0fe419e482c6f4414e01/gecko-bot-todo \n" +
+                "   github: https://github.com/croissantderp/geckobot \n" +
+                "   discord bot invite: https://discord.com/oauth2/authorize?client_id=766064505079726140&scope=bot&permissions=379968 \n" +
+                "   Quantum component library: https://github.com/microsoft/Quantum \n" +
+                "   DECtalk credit: https://github.com/freddyGiant/study-bot \n" +
+                "   Gecko Collection: https://drive.google.com/drive/folders/1Omwv0NNV0k_xlECZq3d4r0MbSbuHC_Og \n" +
+                "   FFmpeg: https://ffmpeg.org" +
+                "   FFmpeg download shortcut: https://drive.google.com/file/d/1Bk-Net7-vP3gdGsDYzeNKQy2dinyvoV3/view \n" +
+                "   Discord.net: https://github.com/discord-net/Discord.Net \n" +
+                "   Google Drive API: https://developers.google.com/drive/api/v3/about-sdk \n" +
+                "   Tutorials: https://www.youtube.com/watch?v=e2iaRVf4sho https://www.youtube.com/watch?v=dQw4w9WgXcQ \n" +
+                "   Text generator: https://ascii.co.uk/text \n" +
+                "   Contributors: https://github.com/ky28059 https://github.com/croissantderp \n" +
+                "   Other cool bots: https://github.com/ky28059/RBot https://github.com/BubbyBabur/PeepsBot https://github.com/freddyGiant/study-bot \n" +
+                "\n";
+
+
+            //ending
+            final += "Thanks and credits: \n" + 
+                "   Special thanks to :lemonthink:, crested geckos and viewers like you who have the attention span to scroll to the bottom of the page. \n" + 
+                "   ";
+
+
+            //saving and sending file
             using (StreamWriter file = new(@"../../cache/commands.txt"))
             {
                 await file.WriteAsync(final);

@@ -1,22 +1,9 @@
-﻿using System;
-using System.Text.RegularExpressions;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Timers;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Threading;
-using System.Management.Automation;
-using System.Management.Automation.Runspaces;
 using Discord;
 using Discord.Audio;
-using Discord.Commands;
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.IO;
-using System.Net;
-using Victoria;
-using Victoria.Enums;
 
 namespace GeckoBot.Commands
 {

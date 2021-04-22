@@ -13,7 +13,6 @@ using GeckoBot.Commands;
 using GeckoBot.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text.RegularExpressions;
-using Victoria;
 
 namespace GeckoBot
 {
