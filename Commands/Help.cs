@@ -263,7 +263,7 @@ namespace GeckoBot.Commands
             //ending
             final += "Thanks and credits: \n" + 
                 "   Special thanks to :lemonthink:, crested geckos and viewers like you who have the attention span to scroll to the bottom of the page. \n" + 
-                "   ";
+                "   Sponsored by lemonth inc. in partnership with F Period Bio";
 
 
             //saving and sending file
