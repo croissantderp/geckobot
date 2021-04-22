@@ -39,15 +39,15 @@ namespace GeckoBot
             var _config = new DiscordSocketConfig();
 
             _config.GatewayIntents = 
-                GatewayIntents.DirectMessageReactions 
+                  GatewayIntents.DirectMessageReactions 
                 | GatewayIntents.DirectMessages 
-                //| GatewayIntents.DirectMessageTyping 
+                | GatewayIntents.DirectMessageTyping 
                 //| GatewayIntents.GuildBans 
-                //| GatewayIntents.GuildEmojis
+                | GatewayIntents.GuildEmojis
                 //| GatewayIntents.GuildIntegrations
                 //| GatewayIntents.GuildInvites
-                //| GatewayIntents.GuildMembers
-                //| GatewayIntents.GuildMessageReactions
+                | GatewayIntents.GuildMembers
+                | GatewayIntents.GuildMessageReactions
                 | GatewayIntents.GuildMessages
                 | GatewayIntents.GuildMessageTyping
                 | GatewayIntents.GuildPresences
