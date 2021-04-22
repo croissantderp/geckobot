@@ -21,7 +21,7 @@ using Victoria.Enums;
 namespace GeckoBot.Commands
 {
 
-    public class VoiceCallService : ModuleBase<SocketCommandContext>
+    public class VoiceCallService
     {
         public static readonly ConcurrentDictionary<ulong, IAudioClient> ConnectedChannels = new ConcurrentDictionary<ulong, IAudioClient>();
         public static Dictionary<ulong, IVoiceChannel> channels = new Dictionary<ulong, IVoiceChannel>();

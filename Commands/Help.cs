@@ -56,9 +56,25 @@ namespace GeckoBot.Commands
             List<CommandInfo> commands = _commands.Commands.ToList();
             List<ModuleInfo> modules = _commands.Modules.ToList();
             EmbedBuilder embedBuilder = new ();
-            
-            // If there was an argument given, send info about that argument
-            if (target != null)
+
+            // If list is specified, send the command list
+            if (target == "list")
+            {
+                embedBuilder.Title = "Command List:";
+                embedBuilder.Description = "The prefix for this server is " + Prefix.returnPrefix(Context.Guild != null ? Context.Guild.Id.ToString() : "");
+                
+                foreach (var module in modules.SkipLast(1))
+                {
+                    EmbedFieldBuilder field = new()
+                    {
+                        Name = module.Name,
+                        Value = string.Join(", ", module.Commands.Select(FormatCommand)),
+                        IsInline = true
+                    };
+                    embedBuilder.AddField(field);
+                }
+            }
+            else if (target != null) // If there was an argument given, send info about that argument
             {
                 var matchedCommands = commands.FindAll(cmd => cmd.Aliases.Contains(target, StringComparer.InvariantCultureIgnoreCase) || FormatCommand(cmd) == target);
                 var matchedModules = modules.FindAll(m => m.Name.Equals(target, StringComparison.InvariantCultureIgnoreCase));
@@ -100,11 +116,17 @@ namespace GeckoBot.Commands
                     return;
                 }
             } 
-            else // If no argument was given, send a list of commands
+            else // If no argument was given, send the generic help text
             {
-                
-                //embedBuilder.Title = "Command List:";
-                //embedBuilder.Description = "The prefix for this server is " + Prefix.returnPrefix(Context.Guild != null ? Context.Guild.Id.ToString() : ""); //+ "\n" + string.Join(", ", desc);
+                embedBuilder.Title = "geckobot" + Globals.names[Globals.CurrentName] + " 4/13/2021 instruction manual";
+                embedBuilder.Description =
+                    "my prefix is " + Prefix.returnPrefix(Context.Guild != null ? Context.Guild.Id.ToString() : "") +
+                    " and [prefix]i for inline commands." + Environment.NewLine +
+                    "if there's a problem, ping a geckobot admin " + Environment.NewLine +
+                    "links: [trello](https://trello.com/invite/b/cFS33M13/8fddf3ac42bd0fe419e482c6f4414e01/gecko-bot-todo) [github](https://github.com/croissantderp/geckobot) [invite](https://discord.com/oauth2/authorize?client_id=766064505079726140&scope=bot&permissions=379968)" +
+                    Environment.NewLine +
+                    "'[prefix]what do you do?' quick start guide" + Environment.NewLine +
+                    "'[prefix]help [command]' cool help command";
             }
 
             embedBuilder.WithColor(180, 212, 85);
@@ -118,7 +140,7 @@ namespace GeckoBot.Commands
         {
             ModuleInfo module = command.Module;
 
-            string space = command.Name != "" && module.Group != "" ? " " : ""; // Unfortunate but oh well
+            string space = command.Name != "" && module.Group != null ? " " : ""; // Unfortunate but oh well
 
             return $"{module.Group}{space}{command.Name}";
         }

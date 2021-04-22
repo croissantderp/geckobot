@@ -101,7 +101,6 @@ namespace GeckoBot
         public async Task RegisterDisconnectAsync()
         {
             _client.UserVoiceStateUpdated += HandleDisconnectAsync;
-            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
         }
 
         private async Task HandleDisconnectAsync(SocketUser user, SocketVoiceState state, SocketVoiceState state2)
