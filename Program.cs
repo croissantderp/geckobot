@@ -68,14 +68,11 @@ namespace GeckoBot
 
             _client.Log += _client_Log;
 
-            await RegisterCommandsAsync();
-
-            await RegisterDisconnectAsync();
+            await RegisterThingsAsync();
 
             await _client.LoginAsync(TokenType.Bot, token);
 
             await _client.StartAsync();
-
 
             _client.Ready += ReadyAsync;
 
@@ -98,16 +95,19 @@ namespace GeckoBot
             return Task.CompletedTask;
         }
 
-        public async Task RegisterDisconnectAsync()
+        public async Task RegisterThingsAsync()
         {
+            _client.MessageReceived += HandleCommandAsync;
             _client.UserVoiceStateUpdated += HandleDisconnectAsync;
+
+            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
         }
 
         private async Task HandleDisconnectAsync(SocketUser user, SocketVoiceState state, SocketVoiceState state2)
         {
-            if (user.Id == _client.CurrentUser.Id)
+            if (user.Id == _client.CurrentUser.Id && state.VoiceChannel != null)
             {
-                if (state2.VoiceChannel == null)
+                if (!state.VoiceChannel.Users.Select(a => a.Id).Contains(_client.CurrentUser.Id) && VoiceCallService.ConnectedChannels.ContainsKey(state.VoiceChannel.Guild.Id))
                 {
                     IAudioClient client;
                     VoiceCallService.ConnectedChannels.TryRemove(state.VoiceChannel.Guild.Id, out client);
@@ -116,12 +116,6 @@ namespace GeckoBot
                     VoiceCallService.streams.Remove(state.VoiceChannel.Guild.Id);
                 }
             }
-        }
-
-        public async Task RegisterCommandsAsync()
-        {
-            _client.MessageReceived += HandleCommandAsync;
-            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
         }
 
         private async Task HandleCommandAsync(SocketMessage arg)
