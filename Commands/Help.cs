@@ -169,6 +169,11 @@ namespace GeckoBot.Commands
             //constructing long list
             string final = "";
 
+
+            //note
+            final += "For the best reading Experience, \n      click the 'View Whole File' button next to the 'Expand' option...\n";
+
+
             //logo
             final += 
                 @"         _              _             _             _              _            _               _          _       " + "\n" +
@@ -189,9 +194,9 @@ namespace GeckoBot.Commands
             final += "geckobot" + Globals.names[Globals.CurrentName] + " 4/22/2021 instruction manual:\n"+
                 "   If there's a problem, ping a geckobot admin\n" +
                 "   quick links: " +
-                "       [trello](https://trello.com/invite/b/cFS33M13/8fddf3ac42bd0fe419e482c6f4414e01/gecko-bot-todo) \n" +
-                "       [github](https://github.com/croissantderp/geckobot) \n" +
-                "       [invite](https://discord.com/oauth2/authorize?client_id=766064505079726140&scope=bot&permissions=379968)\n" +
+                "      [trello](https://trello.com/invite/b/cFS33M13/8fddf3ac42bd0fe419e482c6f4414e01/gecko-bot-todo) \n" +
+                "      [github](https://github.com/croissantderp/geckobot) \n" +
+                "      [invite](https://discord.com/oauth2/authorize?client_id=766064505079726140&scope=bot&permissions=379968)\n" +
                 "   '[prefix]what do you do?' quick start guide\n" +
                 "   '[prefix]help [command]' cool help command\n" +
                 "   The generic prefix is '`', the prefix set for this server is " + Prefix.returnPrefix(Context.Guild != null ? Context.Guild.Id.ToString() : "") + 
@@ -220,14 +225,14 @@ namespace GeckoBot.Commands
 
                 final += 
                     "   " + FormatCommand(command) + ": " + command.Summary.Replace("\n", "\n   ") + "\n" +
-                    "       Usage: " + $"{command.Name} {string.Join(" ", fields.Select(FormatParameter))}\n"; 
+                    "      Usage: " + $"{command.Name} {string.Join(" ", fields.Select(FormatParameter))}\n"; 
                 
                 if (fields.Count > 0)
                     final +=
-                        "       Parameters:\n         " + string.Join("\n         ", fields.Select(FormatParameterLong)) + "\n";
+                        "      Parameters:\n         " + string.Join("\n         ", fields.Select(FormatParameterLong)) + "\n";
 
-                final += 
-                    "       Module: " + command.Module.Name + "\n\n";
+                final +=
+                    "      Module: " + command.Module.Name + "\n\n";
             }
 
 
@@ -256,7 +261,13 @@ namespace GeckoBot.Commands
                 "   Tutorials: https://www.youtube.com/watch?v=e2iaRVf4sho https://www.youtube.com/watch?v=dQw4w9WgXcQ \n" +
                 "   Text generator: https://ascii.co.uk/text \n" +
                 "   Contributors: https://github.com/ky28059 https://github.com/croissantderp \n" +
-                "   Other cool bots: https://github.com/ky28059/RBot https://github.com/BubbyBabur/PeepsBot https://github.com/freddyGiant/study-bot \n" +
+                "   Other cool bots: \n" +
+                "      https://github.com/ky28059/RBot \n" +
+                "      https://github.com/BubbyBabur/PeepsBot \n" +
+                "      https://github.com/freddyGiant/study-bot \n" +
+                "      https://github.com/ky28059/PortalBot \n" +
+                "      https://github.com/SheepTester/ornery-bot \n" +
+                "      https://github.com/UnsignedByte/markbot \n" +
                 "\n";
 
 
