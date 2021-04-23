@@ -170,10 +170,6 @@ namespace GeckoBot.Commands
             string final = "";
 
 
-            //note
-            final += "For the best reading Experience, \n      click the 'View Whole File' button next to the 'Expand' option...\n";
-
-
             //logo
             final += 
                 @"         _              _             _             _              _            _               _          _       " + "\n" +
@@ -283,7 +279,9 @@ namespace GeckoBot.Commands
                 await file.WriteAsync(final);
             }
 
-            await Context.Channel.SendFileAsync(@"../../cache/commands.txt");
+            await Context.Channel.SendFileAsync(
+                @"../../cache/commands.txt",
+                "Click the 'View Whole File' button next to the 'Expand' option for the best viewing experience. If you are on mobile, use '" + Prefix.returnPrefix(Context.Guild != null ? Context.Guild.Id.ToString() : "") + "help' for help.");
         }
 
         [Command("admins")]

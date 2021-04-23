@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.IO;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Audio;
@@ -24,10 +26,13 @@ namespace GeckoBot.Commands
 
         public async Task LeaveAudio(IGuild guild)
         {
-            IAudioClient client;
-            ConnectedChannels.Remove(guild.Id, out client);
-            await channels[guild.Id].Item1.DisconnectAsync();
-            channels.Remove(guild.Id);
+            if (ConnectedChannels.ContainsKey(guild.Id))
+            {
+                IAudioClient client;
+                ConnectedChannels.Remove(guild.Id, out client);
+                await channels[guild.Id].Item1.DisconnectAsync();
+                channels.Remove(guild.Id);
+            }
         }
 
         public async Task SendAudioAsync(IGuild guild)
@@ -38,16 +43,21 @@ namespace GeckoBot.Commands
 
             ConnectedChannels.TryGetValue(guild.Id, out client);
 
-            using (var ffmpeg = CreateProcess(path))
+            try
             {
-                await ffmpeg.StandardOutput.BaseStream.CopyToAsync(channels[guild.Id].Item2);
-                await channels[guild.Id].Item2.FlushAsync();
+                using (var ffmpeg = CreateProcess(path))
+                {
+                    await ffmpeg.StandardOutput.BaseStream.CopyToAsync(channels[guild.Id].Item2);
+                    await channels[guild.Id].Item2.FlushAsync();
+                }
+            }
+            catch
+            {
 
-                //await stream.DisposeAsync();
             }
 
             //timer for deletion
-            System.Timers.Timer timer = new(10000);
+            System.Timers.Timer timer = new(1000);
             timer.Elapsed += (sender, e) => VoiceCall.delayDelete(timer, path);
             timer.Start();
 
