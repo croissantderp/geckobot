@@ -110,9 +110,8 @@ namespace GeckoBot
                 {
                     IAudioClient client;
                     VoiceCallService.ConnectedChannels.TryRemove(state.VoiceChannel.Guild.Id, out client);
-                    await VoiceCallService.channels[state.VoiceChannel.Guild.Id].DisconnectAsync();
+                    await VoiceCallService.channels[state.VoiceChannel.Guild.Id].Item1.DisconnectAsync();
                     VoiceCallService.channels.Remove(state.VoiceChannel.Guild.Id);
-                    VoiceCallService.streams.Remove(state.VoiceChannel.Guild.Id);
                 }
             }
         }

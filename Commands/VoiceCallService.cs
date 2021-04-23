@@ -11,26 +11,23 @@ namespace GeckoBot.Commands
     public class VoiceCallService
     {
         public static readonly ConcurrentDictionary<ulong, IAudioClient> ConnectedChannels = new ConcurrentDictionary<ulong, IAudioClient>();
-        public static Dictionary<ulong, IVoiceChannel> channels = new Dictionary<ulong, IVoiceChannel>();
-        public static  Dictionary<ulong, AudioOutStream> streams = new Dictionary<ulong, AudioOutStream>();
+        public static Dictionary<ulong, (IVoiceChannel, AudioOutStream)> channels = new Dictionary<ulong, (IVoiceChannel, AudioOutStream)>();
 
         public async Task JoinAudio(IGuild guild, IVoiceChannel target)
         {
             var audioClient = await target.ConnectAsync();
             ConnectedChannels.TryAdd(guild.Id, audioClient);
-            channels.Add(guild.Id, target);
 
             var stream = audioClient.CreatePCMStream(AudioApplication.Mixed);
-            streams.Add(guild.Id, stream);
+            channels.Add(guild.Id, (target, stream));
         }
 
         public async Task LeaveAudio(IGuild guild)
         {
             IAudioClient client;
             ConnectedChannels.Remove(guild.Id, out client);
-            await channels[guild.Id].DisconnectAsync();
+            await channels[guild.Id].Item1.DisconnectAsync();
             channels.Remove(guild.Id);
-            streams.Remove(guild.Id);
         }
 
         public async Task SendAudioAsync(IGuild guild)
@@ -43,8 +40,8 @@ namespace GeckoBot.Commands
 
             using (var ffmpeg = CreateProcess(path))
             {
-                await ffmpeg.StandardOutput.BaseStream.CopyToAsync(streams[guild.Id]);
-                await streams[guild.Id].FlushAsync();
+                await ffmpeg.StandardOutput.BaseStream.CopyToAsync(channels[guild.Id].Item2);
+                await channels[guild.Id].Item2.FlushAsync();
 
                 //await stream.DisposeAsync();
             }

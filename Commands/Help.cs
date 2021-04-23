@@ -219,12 +219,12 @@ namespace GeckoBot.Commands
                 var fields = command.Parameters;
 
                 final += 
-                    "   " + FormatCommand(command) + ": " + command.Summary + "\n" +
+                    "   " + FormatCommand(command) + ": " + command.Summary.Replace("\n", "\n   ") + "\n" +
                     "       Usage: " + $"{command.Name} {string.Join(" ", fields.Select(FormatParameter))}\n"; 
                 
                 if (fields.Count > 0)
-                    final += 
-                        "       Parameters: " + string.Join(" | ", fields.Select(FormatParameterLong)) + "\n";
+                    final +=
+                        "       Parameters:\n         " + string.Join("\n         ", fields.Select(FormatParameterLong)) + "\n";
 
                 final += 
                     "       Module: " + command.Module.Name + "\n\n";
