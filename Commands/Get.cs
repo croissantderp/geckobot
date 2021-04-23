@@ -103,7 +103,7 @@ namespace GeckoBot.Commands
                 {
                     foreach (IEmote e in a.Emotes)
                     {
-                        if (e.Name.Equals(emote, StringComparison.InvariantCultureIgnoreCase))
+                        if (Globals.FuzzyMatch(e.Name, emote, out int value))
                         {
                             await ReplyAsync("guild: `" + a.Name + "`, id: `" + a.Id + "`\n" +
                                 "emote: " + e + " `id: " + e + "`", allowedMentions: Globals.notAllowed);
@@ -119,7 +119,7 @@ namespace GeckoBot.Commands
         [Summary("gets all emotes organized into pages of 5")]
         public async Task getAllEmote([Summary("The emote name.")] string emote, [Summary("The page of results.")] int page = 1)
         {
-            List<string> final = new ();
+            List<(string, int)> final = new ();
 
             int counter = 0;
 
@@ -127,34 +127,32 @@ namespace GeckoBot.Commands
 
             int pageCounter = 1;
 
-            final.Add("temp");
-
             foreach (IGuild a in Context.Client.Guilds)
             {
                 foreach (IEmote e in a.Emotes)
                 {
-                    if (e.Name.Equals(emote, StringComparison.InvariantCultureIgnoreCase))
+                    if (Globals.FuzzyMatch(e.Name, emote, out int value))
                     {
                         if (counter >= 5)
                         {
                             pageCounter++;
                             counter = 0;
                         }
-                        if (pageCounter == page)
-                        {
-                            final.Add(e + ":\n`" + e.ToString() + "`\n");
-                        }
+
+                        final.Add((e + ":\n`" + e.ToString() + "`\n", value));
+
                         counter++;
                         total++;
                     }
                 }
             }
 
-            final[0] = "page " + page + " of " + pageCounter + " of results for " + emote + " (result " + (page * 5 - 4) + " - " + (page != pageCounter ? (page * 5) : page * 5 - 5 + (total % 5)) + " of " + total + ")" + "\n";
-
-            if (final.Count > 1)
+            List<string> finalfinal = final.OrderByDescending(a => a.Item2).Select(a => a.Item1).ToList().GetRange((page-1)*5, page != pageCounter ? 5 : (total % 5));
+            finalfinal.Insert(0, "page " + page + " of " + pageCounter + " of results for " + emote + " (result " + (page * 5 - 4) + " - " + (page != pageCounter ? (page * 5) : page * 5 - 5 + (total % 5)) + " of " + total + ")" + "\n");
+            
+            if (final.Count > 0)
             {
-                await ReplyAsync(string.Join("", final), allowedMentions: Globals.notAllowed);
+                await ReplyAsync(string.Join("", finalfinal), allowedMentions: Globals.notAllowed);
             }
             else
             {
