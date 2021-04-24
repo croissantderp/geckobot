@@ -196,6 +196,7 @@ namespace GeckoBot.Commands
         }
 
         [Command("s", RunMode = RunMode.Async)]
+        [Alias("say")]
         [Summary("Plays dectalk in a voice call using DECtalk, credit for this feature goes to [this](https://github.com/freddyGiant/study-bot).")]
         public async Task s([Remainder][Summary("the text that DECtalk will synthesize, also could work with an attached text file.")] string text = null)
         {

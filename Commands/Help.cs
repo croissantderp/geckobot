@@ -173,6 +173,7 @@ namespace GeckoBot.Commands
             //constructing long list
             string final = "";
 
+            string prefix = Prefix.returnPrefix(Context.Guild != null ? Context.Guild.Id.ToString() : "");
 
             //logo
             final += 
@@ -193,14 +194,18 @@ namespace GeckoBot.Commands
             //intro
             final += "geckobot" + Globals.names[Globals.CurrentName] + " 4/22/2021 instruction manual:\n"+
                 "   If there's a problem, ping a geckobot admin\n" +
-                "   quick links: " +
-                "      [trello](https://trello.com/invite/b/cFS33M13/8fddf3ac42bd0fe419e482c6f4414e01/gecko-bot-todo) \n" +
-                "      [github](https://github.com/croissantderp/geckobot) \n" +
-                "      [invite](https://discord.com/oauth2/authorize?client_id=766064505079726140&scope=bot&permissions=379968)\n" +
-                "   '[prefix]what do you do?' quick start guide\n" +
-                "   '[prefix]help [command]' cool help command\n" +
-                "   The generic prefix is '`', the prefix set for this server is " + Prefix.returnPrefix(Context.Guild != null ? Context.Guild.Id.ToString() : "") + 
+                "   quick links: \n" +
+                "      trello: https://trello.com/invite/b/cFS33M13/8fddf3ac42bd0fe419e482c6f4414e01/gecko-bot-todo \n" +
+                "      github: https://github.com/croissantderp/geckobot \n" +
+                "      invite: https://discord.com/oauth2/authorize?client_id=766064505079726140&scope=bot&permissions=379968 \n" +
+                "   '" + prefix + "what do you do?' quick start guide\n" +
+                "   '" + prefix + "help [command]' cool help command\n" +
+                "   The default prefix is `, the prefix set for this server is " + prefix + 
                 ".\n\n";
+
+
+            //'`what do you do?' note
+            final += "NOTE: '`what do you do?' remains constant in every server and can be used to retrieve the local prefix for said server.\n\n";
 
 
             //quick module/command list
@@ -222,7 +227,7 @@ namespace GeckoBot.Commands
 
                 final += 
                     "   " + FormatCommand(command) + (command.Aliases.Count == 1 ? "" : " (aliases: " + string.Join(", ", command.Aliases) + ")") + ": " + command.Summary.Replace("\n", "\n   ") + "\n" +
-                    "      Usage: " + $"{command.Name} {string.Join(" ", fields.Select(FormatParameter))}\n"; 
+                    "      Usage: " + $"{prefix}{command.Name} {string.Join(" ", fields.Select(FormatParameter))}\n"; 
                 
                 if (fields.Count > 0)
                     final +=
@@ -249,7 +254,8 @@ namespace GeckoBot.Commands
                 "   github: https://github.com/croissantderp/geckobot \n" +
                 "   discord bot invite: https://discord.com/oauth2/authorize?client_id=766064505079726140&scope=bot&permissions=379968 \n" +
                 "   Quantum component library: https://github.com/microsoft/Quantum \n" +
-                "   DECtalk credit: https://github.com/freddyGiant/study-bot \n" +
+                "   DECtalk resources: https://en.wikipedia.org/wiki/DECtalk http://chrisnestrud.com/projects/dectalk http://theflameofhope.co/SONGS.html https://steamcommunity.com/sharedfiles/filedetails/?id=482628855 \n" +
+                "   DECtalk idea credit: https://github.com/freddyGiant/study-bot \n" +
                 "   Gecko Collection: https://drive.google.com/drive/folders/1Omwv0NNV0k_xlECZq3d4r0MbSbuHC_Og \n" +
                 "   FFmpeg: https://ffmpeg.org" +
                 "   FFmpeg download shortcut: https://drive.google.com/file/d/1Bk-Net7-vP3gdGsDYzeNKQy2dinyvoV3/view \n" +
