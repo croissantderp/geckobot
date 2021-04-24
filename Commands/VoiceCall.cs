@@ -79,6 +79,11 @@ namespace GeckoBot.Commands
             }
         }
 
+        static string DectalkReplace(string original)
+        {
+            return original.Replace("'", "''").Replace("\n", " ").Replace("’", "''").Replace("\t", " ");
+        }
+
         [Command("sa")]
         [Summary("Synthesizes an audio file using DECtalk, credit for this feature goes to [this](https://github.com/freddyGiant/study-bot).")]
         public async Task say([Remainder][Summary("the text that DECtalk will synthesize, also could work with an attached text file.")] string text = null)
@@ -108,7 +113,7 @@ namespace GeckoBot.Commands
             }
 
             //cleans strings
-            string cleanText = text.Replace("'", "").Replace("\n", "");
+            string cleanText = DectalkReplace(text);
 
             DecTalk(@"./" + Context.Message.Id.ToString() + ".wav", cleanText);
 
@@ -147,7 +152,6 @@ namespace GeckoBot.Commands
                 return;
             }
 
-
             string fileName = @"../../../dectalk/" + Context.Message.Id.ToString() + ".wav";
 
             if (Context.Message.Attachments.Count != 0)
@@ -171,7 +175,7 @@ namespace GeckoBot.Commands
                 }
             }
 
-            string cleanText = text.Replace("'", "").Replace("\n", "");
+            string cleanText = DectalkReplace(text);
 
             DecTalk(@"./" + Context.Message.Id.ToString() + ".wav", cleanText);
 
