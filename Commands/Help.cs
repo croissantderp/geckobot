@@ -47,11 +47,15 @@ namespace GeckoBot.Commands
         
         [Command("help")]
         [Summary("Dynamic help command.")]
-        public async Task help(
-            [Summary("The specific command or module to send info about. Enter 'list' if you want a list of commands under their respective modules.")] string target = null,
-            [Summary("The index of the result.")] int result = 1)
+        public async Task help([Remainder][Summary("The specific command or module to send info about. Enter 'list' if you want a list of commands under their respective modules. Add a space and a number at the end for the index of the result.")] string all)
         {
-            result--;
+            string target = all;
+            int result;
+            if (int.TryParse(all.Split(" ").Last(), out result))
+            {
+                result--;
+                target = string.Join(" ", all.Split(" ").SkipLast(1));
+            }
 
             List<CommandInfo> commands = _commands.Commands.ToList();
             List<ModuleInfo> modules = _commands.Modules.ToList();
@@ -204,10 +208,7 @@ namespace GeckoBot.Commands
 
             foreach (var module in modules)
             {
-                final += 
-                    "   " + module.Name + ": ";
-                final += 
-                    "   " + string.Join(", ", module.Commands.Select(FormatCommand)) + "\n";
+                final += "   " + module.Name + ": " + string.Join(", ", module.Commands.Select(FormatCommand)) + "\n";
             }
             final += "\n";
 
