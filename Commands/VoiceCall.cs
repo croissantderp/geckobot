@@ -79,6 +79,30 @@ namespace GeckoBot.Commands
             }
         }
 
+        [Command("dectalk help")]
+        [Summary("Give some helpful information about DECtalk")]
+        public async Task dhelp()
+        {
+            //buils an embed
+            var embed = new EmbedBuilder
+            {
+                Title = "DECtalk help",
+                Description = (
+                "DECtalk is a simple speech synthesizer integrated into discord calls with geckobot and [studybot](https://github.com/freddyGiant/study-bot)" + "\n" +
+                "DECtalk can also sing, be sure to add '[:phoneme on]' at the beginning though" + "\n" +
+                "More information:" + "\n" +
+                "[Wikipedia](https://en.wikipedia.org/wiki/DECtalk)" + "\n" +
+                "[Command information and phonemes](http://chrisnestrud.com/projects/dectalk)" + "\n" +
+                "Example songs for phoneme:" + "\n" +
+                "[The flame of hope collection](http://theflameofhope.co/SONGS.html)" + "\n" +
+                "[Steam collection](https://steamcommunity.com/sharedfiles/filedetails/?id=482628855)")
+            };
+
+            embed.WithColor(180, 212, 85);
+
+            await ReplyAsync(embed: embed.Build());
+        }
+
         static string DectalkReplace(string original)
         {
             return original.Replace("'", "''").Replace("\n", " ").Replace("’", "''").Replace("‘", "''").Replace("\t", " ");
