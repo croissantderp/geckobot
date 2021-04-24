@@ -28,6 +28,7 @@ namespace GeckoBot.Commands
         }
 
         [Command("pl")]
+        [Alias("poll list")]
         [Summary("Sends the poll list.")]
         public async Task plist()
         {
@@ -35,6 +36,7 @@ namespace GeckoBot.Commands
         }
 
         [Command("pc")]
+        [Alias("create poll")]
         [Summary("Creates a poll.")]
         public async Task create([Summary("The content of the poll.")] [Remainder]string poll)
         {
@@ -55,6 +57,7 @@ namespace GeckoBot.Commands
         }
 
         [Command("pv")]
+        [Alias("vote poll")]
         [Summary("Votes on a poll.")]
         public async Task vote([Summary("The content of the poll to vote on.")] string poll, [Summary("The fraction to submit in ##/## (denominator has to be greatest and numerator has to be positive).")] string fraction)
         {
@@ -96,6 +99,7 @@ namespace GeckoBot.Commands
         }
 
         [Command("ps")]
+        [Alias("poll results")]
         [Summary("see results of a poll")]
         public async Task results([Summary("The content of the poll to see results for.")] [Remainder]string poll)
         {
@@ -111,6 +115,7 @@ namespace GeckoBot.Commands
         }
 
         [Command("pr")]
+        [Alias("remove poll")]
         [Summary("removes polls, only creator of poll can remove")]
         public async Task remove([Summary("The content of the poll to remove.")] [Remainder]string poll)
         {

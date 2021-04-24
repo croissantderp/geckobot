@@ -51,7 +51,7 @@ namespace GeckoBot.Commands
 
         //command which constructs a quantum circuit which is simulated
         [Command("circuit")]
-        [Summary("Construct quantum circuits using up to 5 qubits, current supported operations are " +
+        [Summary("Construct quantum circuits using up to 5 qubits, current supported operations are \n" +
             "H(qubit index) \n" +
             "I(qubit index) \n" +
             "X(qubit index) \n" +
@@ -183,6 +183,7 @@ namespace GeckoBot.Commands
 
         //https://github.com/microsoft/Quantum/blob/main/samples/algorithms/database-search/Program.cs
         [Command("grover")]
+        [Alias("grover search")]
         [Summary("search in sqrt(n) time")]
         public async Task grover([Summary("number of qubits to use")] int qubits,  [Summary("the indices (seperated by '$') of the marked values")] string matcher, [Summary("number of search iterations")] int iterations = 0, [Summary("number of search repetitions")] int repetitions = 0)
         {

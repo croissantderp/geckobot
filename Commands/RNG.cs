@@ -21,6 +21,7 @@ namespace GeckoBot.Commands
 
         //generates a random order of characters
         [Command("fek")]
+        [Alias("rsg")]
         [Summary("Generates a random string.")]
         public async Task fek(int length = 0)
         {
@@ -46,6 +47,7 @@ namespace GeckoBot.Commands
 
         //how to stonks
         [Command("lottery")]
+        [Alias("gamble")]
         [Summary("Gambles your life savings away.")]
         public async Task lottery()
         {
@@ -117,6 +119,7 @@ namespace GeckoBot.Commands
         
         //contest function
         [Command("contest")]
+        [Alias("duel")]
         [Summary("Launches a contest between you and someone else to see who wins!")]
         public async Task contest([Summary("The user to hold a contest with.")] IUser user)
         {

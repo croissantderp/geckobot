@@ -147,7 +147,7 @@ namespace GeckoBot.Commands
         
         //pauses the timer and countdown
         [RequireGeckobotAdmin]
-        [Command("pause")]
+        [Command("pause countdown")]
         [Summary("Pauses the countdown.")]
         public async Task pause()
         {
@@ -157,7 +157,7 @@ namespace GeckoBot.Commands
         
         //unpauses the timer and countdown
         [RequireGeckobotAdmin]
-        [Command("unpause")]
+        [Command("unpause countdown")]
         [Summary("Unpauses the countdown.")]
         public async Task unpause()
         {
@@ -198,8 +198,6 @@ namespace GeckoBot.Commands
                     _terminate = false;
                 }
             }
-            // Shouldn't other catch statements also log errors in Bugs or is Bugs specifically targeted towards timer errors?
-            // bugs is currently targeted towards timer errors
             catch(Exception ex)
             {
                 FileUtils.checkForExistance();

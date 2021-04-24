@@ -86,6 +86,7 @@ namespace GeckoBot.Commands
         // Force updates
         [RequireGeckobotAdmin]
         [Command("fcheck")]
+        [Alias("force check")]
         [Summary("Force updates the daily dm.")]
         public async Task fcheck()
         {
@@ -95,6 +96,7 @@ namespace GeckoBot.Commands
 
         //sets up daily dms
         [Command("dm")]
+        [Alias("sign up")]
         [Summary("Signs you up for daily dm.")]
         public async Task dmgec([Summary("Bool whether you want to sign up or not.")] bool yes)
         {

@@ -25,6 +25,7 @@ namespace GeckoBot.Commands
         // You *MUST* mark these commands with 'RunMode.Async'
         // otherwise the bot will not respond until the Task times out.
         [Command("join", RunMode = RunMode.Async)]
+        [Alias("connect")]
         [Summary("Has the bot join a voice call you are currently in.")]
         public async Task JoinCmd()
         {
@@ -54,6 +55,7 @@ namespace GeckoBot.Commands
         // this is merely the minimal amount necessary.
         // Adding more commands of your own is also encouraged.
         [Command("leave", RunMode = RunMode.Async)]
+        [Alias("disconnect", "dc")]
         [Summary("Has the bot leave a voice call you are currently in.")]
         public async Task LeaveCmd()
         {

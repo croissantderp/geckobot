@@ -220,7 +220,7 @@ namespace GeckoBot.Commands
                 var fields = command.Parameters;
 
                 final += 
-                    "   " + FormatCommand(command) + ": " + command.Summary.Replace("\n", "\n   ") + "\n" +
+                    "   " + FormatCommand(command) + (command.Aliases.Count == 1 ? "" : " (aliases: " + string.Join(", ", command.Aliases) + ")") + ": " + command.Summary.Replace("\n", "\n   ") + "\n" +
                     "      Usage: " + $"{command.Name} {string.Join(" ", fields.Select(FormatParameter))}\n"; 
                 
                 if (fields.Count > 0)

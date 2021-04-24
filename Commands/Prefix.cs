@@ -29,6 +29,7 @@ namespace GeckoBot.Commands
 
         //command that changes the prefix
         [Command("change prefix")]
+        [Alias("set prefix")]
         [Summary("Changes the bot's prefix in the current server, only works in guilds.")]
         [RequireContext(ContextType.Guild)]
         [RequireUserPermission(GuildPermission.ManageGuild, Group = "Permissions")]

@@ -54,6 +54,7 @@ namespace GeckoBot.Commands
         
         //sends a message with a link to the gecko collection
         [Command("GecColle")]
+        [Alias("gecko collection")]
         [Summary("Links the gecko collection Google Drive folder.")]
         public async Task gecColle()
         {
@@ -75,6 +76,7 @@ namespace GeckoBot.Commands
         }
 
         [Command("gecko gang")]
+        [Alias("subscribers")]
         [Summary("Lists people who are part of the gecko gang.")]
         public async Task gang()
         {

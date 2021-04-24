@@ -45,6 +45,22 @@ namespace GeckoBot.Commands
             await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
 
+        [Command("a")]
+        [Summary("")]
+        public async Task seeAlert()
+        {
+            RefreshAlertsDict();
+
+            if (!alerts.ContainsKey(Context.User.Id.ToString()))
+            {
+                await ReplyAsync("you do not have any alerts");
+            }
+            else
+            {
+                await ReplyAsync(alerts[Context.User.Id.ToString()]);
+            }
+        }
+
         [Command("ar")]
         [Summary("Removes an alert phrase for the user")]
         public async Task RemoveAlert()
