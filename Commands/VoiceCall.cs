@@ -236,7 +236,7 @@ namespace GeckoBot.Commands
             return Process.Start(new ProcessStartInfo
             {
                 FileName = "powershell.exe",
-                Arguments = $"sl ../../../dectalk | ../../../dectalk/say.exe -w {filePath} -p [:phoneme on] '{content}'",
+                Arguments = $"sl ../../../dectalk | ../../../dectalk/say.exe -w {filePath} -p '{content}'",
                 UseShellExecute = false
             });
         }
