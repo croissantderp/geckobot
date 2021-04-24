@@ -14,6 +14,7 @@ namespace GeckoBot.Commands
     {
         public static readonly ConcurrentDictionary<ulong, IAudioClient> ConnectedChannels = new ConcurrentDictionary<ulong, IAudioClient>();
         public static Dictionary<ulong, (IVoiceChannel, AudioOutStream)> channels = new Dictionary<ulong, (IVoiceChannel, AudioOutStream)>();
+        public static Dictionary<ulong, ulong> captureChannels = new Dictionary<ulong, ulong>();
 
         public async Task JoinAudio(IGuild guild, IVoiceChannel target)
         {
@@ -28,6 +29,11 @@ namespace GeckoBot.Commands
         {
             if (ConnectedChannels.ContainsKey(guild.Id))
             {
+                if (captureChannels.ContainsKey(guild.Id))
+                {
+                    captureChannels.Remove(guild.Id);
+                }
+
                 IAudioClient client;
                 ConnectedChannels.Remove(guild.Id, out client);
                 await channels[guild.Id].Item1.DisconnectAsync();

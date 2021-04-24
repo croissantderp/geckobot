@@ -81,6 +81,50 @@ namespace GeckoBot.Commands
             }
         }
 
+        [Command("start capture")]
+        [Summary("Starts capturing all the text and transmitting it into a voicecall.")]
+        public async Task capture()
+        {
+            if (VoiceCallService.channels.ContainsKey(Context.Guild.Id))
+            {
+                if (!VoiceCallService.captureChannels.ContainsKey(Context.Guild.Id))
+                {
+                    VoiceCallService.captureChannels.Add(Context.Guild.Id, Context.Channel.Id);
+                    await ReplyAsync("Capturing channel, the capture will end either when 'end capture' is called or the bot leaves the voice channel");
+                }
+                else
+                {
+                    await ReplyAsync("I am already capturing");
+                }
+            }
+            else
+            {
+                await ReplyAsync("I am not in a voice channel");
+            }
+        }
+
+        [Command("end capture")]
+        [Summary("Ends a current text to speech capture")]
+        public async Task capturent()
+        {
+            if (VoiceCallService.channels.ContainsKey(Context.Guild.Id))
+            {
+                if (VoiceCallService.captureChannels.ContainsKey(Context.Guild.Id))
+                {
+                    VoiceCallService.captureChannels.Remove(Context.Guild.Id);
+                    await ReplyAsync("Capture ended");
+                }
+                else
+                {
+                    await ReplyAsync("I am already not capturing");
+                }
+            }
+            else
+            {
+                await ReplyAsync("I am not in a voice channel");
+            }
+        }
+
         [Command("dectalk help")]
         [Summary("Give some helpful information about DECtalk")]
         public async Task dhelp()
@@ -209,10 +253,26 @@ namespace GeckoBot.Commands
 
             //starts a timer with desired amount of time
             System.Timers.Timer t = new(1000);
-            t.Elapsed += async (sender, e) => await vcdttimer(t, fullPath);
+            t.Elapsed += async (sender, e) => await vcdttimer(t, fullPath, Context.Guild);
             t.Start();
 
             await Context.Message.AddReactionAsync(new Emoji("✅"));
+        }
+
+        public void dectalkcapture(ulong message, string text, IGuild guild)
+        {
+            string fileName = @"../../../dectalk/" + message + ".wav";
+
+            string cleanText = DectalkReplace(text);
+
+            DecTalk(@"./" + message + ".wav", cleanText);
+
+            string fullPath = new FileInfo(fileName).FullName;
+
+            //starts a timer with desired amount of time
+            System.Timers.Timer t = new(1000);
+            t.Elapsed += async (sender, e) => await vcdttimer(t, fullPath, guild);
+            t.Start();
         }
 
         public async Task dttimer(System.Timers.Timer timer, string fileName)
@@ -240,18 +300,18 @@ namespace GeckoBot.Commands
             timer.Start();
         }
 
-        public async Task vcdttimer(System.Timers.Timer timer, string fileName)
+        public async Task vcdttimer(System.Timers.Timer timer, string fileName, IGuild guild)
         {
             timer.Close();
 
-            if (!queue.ContainsKey(Context.Guild.Id))
+            if (!queue.ContainsKey(guild.Id))
             {
-                queue.Add(Context.Guild.Id, new List<string>() { fileName });
-                await _service.SendAudioAsync(Context.Guild);
+                queue.Add(guild.Id, new List<string>() { fileName });
+                await _service.SendAudioAsync(guild);
             }
             else
             {
-                queue[Context.Guild.Id].Add(fileName);
+                queue[guild.Id].Add(fileName);
             }
         }
 

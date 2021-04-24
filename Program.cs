@@ -59,6 +59,7 @@ namespace GeckoBot
             _commands = new CommandService();
             _services = new ServiceCollection()
                 .AddSingleton(new VoiceCallService())
+                .AddSingleton(new VoiceCall(new VoiceCallService()))
                 .AddSingleton(_client)
                 .AddSingleton(_commands)
                 .BuildServiceProvider();
@@ -109,6 +110,7 @@ namespace GeckoBot
                 if (!state.VoiceChannel.Users.Select(a => a.Id).Contains(_client.CurrentUser.Id) && VoiceCallService.ConnectedChannels.ContainsKey(state.VoiceChannel.Guild.Id))
                 {
                     IAudioClient client;
+                    VoiceCallService.captureChannels.Remove(state.VoiceChannel.Guild.Id);
                     VoiceCallService.ConnectedChannels.TryRemove(state.VoiceChannel.Guild.Id, out client);
                     await VoiceCallService.channels[state.VoiceChannel.Guild.Id].Item1.DisconnectAsync();
                     VoiceCallService.channels.Remove(state.VoiceChannel.Guild.Id);
@@ -122,9 +124,13 @@ namespace GeckoBot
             var context = new SocketCommandContext(_client, message);
             if (message.Author.IsBot) return;
 
+            if (VoiceCallService.captureChannels.ContainsValue(context.Channel.Id))
+            {
+                _services.GetService<VoiceCall>().dectalkcapture(context.Channel.Id, context.Message.ToString(), context.Guild);
+            }
+
             int argPos = 0;
 
-            
             string prefix = Prefix.returnPrefix(context.Guild != null ? context.Guild.Id.ToString() : "");
             
             Regex regex = new Regex(@"(?<!(\\|\`))" + prefix + "i");
