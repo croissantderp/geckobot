@@ -40,7 +40,10 @@ namespace GeckoBot.Commands
                 }
                 else
                 {
-                    await _service.JoinAudio(Context.Guild, voiceState.VoiceChannel);
+                    //starts a timer with desired amount of time
+                    System.Timers.Timer timer = new(1000);
+                    timer.Elapsed += async (sender, e) => await _service.JoinAudio(timer, Context.Guild, voiceState.VoiceChannel);
+                    timer.Start();
 
                     await Context.Message.AddReactionAsync(new Emoji("⏫"));
                 }
@@ -219,7 +222,10 @@ namespace GeckoBot.Commands
                 }
                 else
                 {
-                    await _service.JoinAudio(Context.Guild, voiceState.VoiceChannel);
+                    //starts a timer with desired amount of time
+                    System.Timers.Timer timer = new(1000);
+                    timer.Elapsed += async (sender, e) => await _service.JoinAudio(timer, Context.Guild, voiceState.VoiceChannel);
+                    timer.Start();
 
                     await Context.Message.AddReactionAsync(new Emoji("⏫"));
                 }

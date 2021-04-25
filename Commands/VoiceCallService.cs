@@ -16,8 +16,10 @@ namespace GeckoBot.Commands
         public static Dictionary<ulong, (IVoiceChannel, AudioOutStream)> channels = new Dictionary<ulong, (IVoiceChannel, AudioOutStream)>();
         public static Dictionary<ulong, ulong> captureChannels = new Dictionary<ulong, ulong>();
 
-        public async Task JoinAudio(IGuild guild, IVoiceChannel target)
+        public async Task JoinAudio(System.Timers.Timer timer, IGuild guild, IVoiceChannel target)
         {
+            timer.Close();
+
             var audioClient = await target.ConnectAsync();
             ConnectedChannels.TryAdd(guild.Id, audioClient);
 

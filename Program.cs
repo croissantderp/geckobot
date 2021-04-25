@@ -126,7 +126,7 @@ namespace GeckoBot
 
             if (VoiceCallService.captureChannels.ContainsValue(context.Channel.Id))
             {
-                _services.GetService<VoiceCall>().dectalkcapture(context.Channel.Id, context.Message.ToString(), context.Guild);
+                 _services.GetService<VoiceCall>().dectalkcapture(context.Message.Id, context.Message.ToString(), context.Guild);
             }
 
             int argPos = 0;
