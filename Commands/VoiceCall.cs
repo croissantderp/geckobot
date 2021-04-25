@@ -125,6 +125,14 @@ namespace GeckoBot.Commands
             }
         }
 
+
+        [Command("dectalk")]
+        [Summary("Sends a desktop app version of dectalk.")]
+        public async Task dectalk()
+        {
+            await Context.Channel.SendFileAsync(@"../../../dectalk/DECTALK 5.0.zip");
+        }
+
         [Command("dectalk help")]
         [Summary("Give some helpful information about DECtalk")]
         public async Task dhelp()
