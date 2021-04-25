@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
 using Discord;
 using Discord.Commands;
 using System.Diagnostics;
@@ -228,6 +229,8 @@ namespace GeckoBot.Commands
                     timer.Start();
 
                     await Context.Message.AddReactionAsync(new Emoji("⏫"));
+
+                    Thread.Sleep(1000);
                 }
             }
 
