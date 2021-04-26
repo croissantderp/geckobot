@@ -111,6 +111,8 @@ namespace GeckoBot.Commands
 
             year = year2;
 
+            FileUtils.Save(year + "$" + _lastRun.ToString(), @"..\..\Cache\gecko4.gek");
+
             await ReplyAsync("year updated to " + year);
         }
 
