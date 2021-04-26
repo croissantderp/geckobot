@@ -124,11 +124,6 @@ namespace GeckoBot
             var context = new SocketCommandContext(_client, message);
             if (message.Author.IsBot) return;
 
-            if (VoiceCallService.captureChannels.ContainsValue(context.Channel.Id))
-            {
-                 _services.GetService<VoiceCall>().dectalkcapture(context.Message.Id, context.Message.ToString(), context.Guild);
-            }
-
             int argPos = 0;
 
             string prefix = Prefix.returnPrefix(context.Guild != null ? context.Guild.Id.ToString() : "");
@@ -184,9 +179,12 @@ namespace GeckoBot
                     //saves updated info
                     FileUtils.Save(Globals.DictToString(Alert.alerts, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko9.gek");
                 }
-                return;
             }
 
+            if (VoiceCallService.captureChannels.ContainsValue(context.Channel.Id))
+            {
+                _services.GetService<VoiceCall>().dectalkcapture(context.Message.Id, context.Message.ToString(), context.Guild);
+            }
         }
     }
 }
