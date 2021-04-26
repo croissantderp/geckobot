@@ -20,6 +20,7 @@ namespace GeckoBot.Commands
         private static System.Timers.Timer dmTimer = new(); //the primary timer for dms
         private static System.Timers.Timer dmTimer2 = new(); //the secondary timer for dms
 
+        public static int year = 1;
         private static int _lastRun = DateTime.Now.DayOfYear; //last time bot was run and daily geckoimage was sent
         private static DateTime _lastCheck = DateTime.Now;
         
@@ -94,6 +95,25 @@ namespace GeckoBot.Commands
             await ReplyAsync("force updated");
         }
 
+        [RequireGeckobotAdmin]
+        [Command("year")]
+        [Summary("Sets a new year for the daily dm.")]
+        public async Task setyear(int year2)
+        {
+            // Refresh highest gecko
+            await Program.gec.RefreshHighestGec();
+
+            if (year2 > (Gec._highestGecko % 367))
+            {
+                await ReplyAsync("this year does not exist yet");
+                return;
+            }
+
+            year = year2;
+
+            await ReplyAsync("year updated to " + year);
+        }
+
         //sets up daily dms
         [Command("dm")]
         [Alias("sign up")]
@@ -163,7 +183,11 @@ namespace GeckoBot.Commands
         // to prevent null reference exceptions during initialization if RefreshHighestGec finds a new highest gecko and calls dmGroup
         public async Task<bool> runChecks(bool force = false)
         {
-            _lastRun = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek"));
+            // Refresh highest gecko
+            await Program.gec.RefreshHighestGec();
+
+            year = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek").Split("$")[0]);
+            _lastRun = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek").Split("$")[1]);
             bool wasRefreshed = false;
             
             DateTime time = DateTime.Now;
@@ -195,9 +219,6 @@ namespace GeckoBot.Commands
                 await dailydm();
                 wasRefreshed = true;
             }
-
-            // Refresh highest gecko
-            await Program.gec.RefreshHighestGec();
 
             return wasRefreshed;
         }
@@ -241,23 +262,35 @@ namespace GeckoBot.Commands
         //sends daily dm
         async Task dailydm()
         {
+            Gec.RefreshGec();
+
             //generates statement to send
             DateTime date = DateTime.Today;
             
+            string final = $"Today is {date.ToString("d")}. Day {date.DayOfYear} of the year {date.Year} (gecko: {Gec.geckos[DriveUtils.addZeros(((year - 1) * 367) + (date.DayOfYear - 1))]}) \n" +
+                $"Other geckos of today include: ";
+
+            int i = 0;
+            while ((date.DayOfYear - 1) + (i * 367) < Gec._highestGecko)
+            {
+                final += $" {Gec.geckos[DriveUtils.addZeros((date.DayOfYear - 1) + (i * 367))]}";
+                i++;
+            }
+
             //DMs everybody on the list
             await DmGroup(
-                DriveUtils.ImagePath(date.DayOfYear - 1, false),
-                $"Today is {date.ToString("d")}. Day {date.DayOfYear} of the year {date.Year} (gecko: {Gec.geckos[DriveUtils.addZeros(date.DayOfYear - 1)]})");
+                DriveUtils.ImagePath(((year - 1) * 367) + (date.DayOfYear - 1), false),
+                final);
 
             //changes geckobot's profile to new gecko
             Utils.Utils.changeProfile(
                 _client, 
-                DriveUtils.ImagePath(date.DayOfYear - 1, false));
+                DriveUtils.ImagePath(((year - 1) * 367) + (date.DayOfYear - 1), false));
 
             //updates last run counter
             _lastRun = DateTime.Now.DayOfYear;
 
-            FileUtils.Save(_lastRun.ToString(), @"..\..\Cache\gecko4.gek");
+            FileUtils.Save(year + "$" + _lastRun.ToString(), @"..\..\Cache\gecko4.gek");
         }
 
         // Dms a group of users

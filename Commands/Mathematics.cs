@@ -68,5 +68,21 @@ namespace GeckoBot.Commands
 
             await ReplyAsync(finalTime.ToString());
         }
+
+        [Command("day of the year")]
+        [Summary("Gets the day of the year for a specified date.")]
+        public async Task dayofYear([Remainder][Summary("The specified date.")] string num1)
+        {
+            DateTime finalTime = Timer.parseDate(num1);
+
+            await ReplyAsync(finalTime.DayOfYear.ToString());
+        }
+
+        [Command("count")]
+        [Summary("Counts characters.")]
+        public async Task count([Remainder][Summary("The string to count.")] string text)
+        {
+            await ReplyAsync(text.Length.ToString());
+        }
     }
 }

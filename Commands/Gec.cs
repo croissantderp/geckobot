@@ -15,7 +15,7 @@ namespace GeckoBot.Commands
     [Summary("Integration of the [gecko collection](https://drive.google.com/drive/folders/1Omwv0NNV0k_xlECZq3d4r0MbSbuHC_Og?usp=sharing).")]
     public class Gec : ModuleBase<SocketCommandContext>
     {
-        private int _highestGecko = FetchHighestGec().Result;
+        public static int _highestGecko = FetchHighestGec().Result;
         public static Dictionary<string, string> geckos = new();
         
         // Force cache a gecko image
@@ -36,20 +36,52 @@ namespace GeckoBot.Commands
             .Where(part => part.Length == 2)
             .ToDictionary(sp => sp[0], sp => sp[1]);
         }
-        
+
+        //gets daily gecko image
+        [Command("ygec")]
+        [Summary("Sends all geckos for a specified day")]
+        public async Task ygec(int dayNum)
+        {
+            RefreshGec();
+
+            string final = "";
+            int i = 0;
+            while (dayNum + (i * 367) < _highestGecko)
+            {
+                final += $"{geckos[DriveUtils.addZeros(dayNum + (i * 367))]} ";
+                i++;
+            }
+
+            await ReplyAsync(final);
+        }
+
         //gets daily gecko image
         [Command("gec")]
         [Summary("Sends the daily gecko.")]
         public async Task gec()
         {
+            RefreshGec();
+
+            await RefreshHighestGec();
+
+            int year = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek").Split("$")[0]);
+
             //gets day of the year
             DateTime date = DateTime.Today;
-            int final = (date.DayOfYear - 1);
+
+            string final = $"Today is {date.ToString("d")}. Day {date.DayOfYear} of the year {date.Year} (gecko: {geckos[DriveUtils.addZeros(((year - 1) * 367) + (date.DayOfYear - 1))]})\n" +
+                $"Other geckos of today include: ";
+            int i = 0;
+            while ((date.DayOfYear - 1) + (i * 367) < _highestGecko)
+            {
+                final += $" {geckos[DriveUtils.addZeros((date.DayOfYear - 1) + (i * 367))]}";
+                i++;
+            }
 
             //sends file with exception for leap years
             await Context.Channel.SendFileAsync(
-                DriveUtils.ImagePath(date.DayOfYear - 1, false), 
-                $"Today is {date.ToString("d")}. Day {date.DayOfYear} of the year {date.Year} (gecko: {geckos[DriveUtils.addZeros(final)]})");
+                DriveUtils.ImagePath(((year - 1) * 367) + (date.DayOfYear - 1), false), final
+                );
         }
         
         //sends a message with a link to the gecko collection
@@ -113,6 +145,8 @@ namespace GeckoBot.Commands
         [Summary("Sends a random gecko.")]
         public async Task rgec()
         {
+            RefreshGec();
+
             //gets random value
             Random random = new Random();
             int numb = random.Next(0, _highestGecko + 1);

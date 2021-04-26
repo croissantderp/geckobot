@@ -42,7 +42,7 @@ namespace GeckoBot.Utils
             // gecko1 stores exceptions and reported bugs
             // gecko2 stores the emote dictionary
             // gecko3 stores the list of users who have signed up for the daily dm
-            // gecko4 stores the last time the daily dm was executed
+            // gecko4 stores the most recent gecko
             // gecko5 stores rate dictionary
             // gecko6 stores custom commands
             // gecko7 stores gecko names and other info
@@ -66,7 +66,7 @@ namespace GeckoBot.Utils
                     if (cache == 4)
                     {
                         using StreamWriter file = new(path);
-                        file.Write(System.DateTime.Now.DayOfYear.ToString());
+                        file.Write("1$" + System.DateTime.Now.DayOfYear.ToString());
                     }
                 }
             }
