@@ -147,8 +147,8 @@ namespace GeckoBot.Commands
                 }
             }
 
-            List<string> finalfinal = final.OrderByDescending(a => a.Item2).Select(a => a.Item1).ToList().GetRange((page-1)*5, page != pageCounter ? 5 : (total % 5));
-            finalfinal.Insert(0, "page " + page + " of " + pageCounter + " of results for " + emote + " (result " + (page * 5 - 4) + " - " + (page != pageCounter ? (page * 5) : page * 5 - 5 + (total % 5)) + " of " + total + ")" + "\n");
+            List<string> finalfinal = final.OrderByDescending(a => a.Item2).Select(a => a.Item1).ToList().GetRange((page-1)*5, page != pageCounter ? 5 : ((total % 5) == 0 ? 5 : (total % 5)));
+            finalfinal.Insert(0, "page " + page + " of " + pageCounter + " of results for " + emote + " (result " + (page * 5 - 4) + " - " + (page != pageCounter ? (page * 5) : page * 5 - 5 + ((total % 5) == 0 ? 5 : (total % 5))) + " of " + total + ")" + "\n");
             
             if (final.Count > 0)
             {

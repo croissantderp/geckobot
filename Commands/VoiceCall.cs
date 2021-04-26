@@ -163,7 +163,7 @@ namespace GeckoBot.Commands
 
         static string DectalkReplace(string original)
         {
-            return original.Replace("'", "''").Replace("\n", " ").Replace("’", "''").Replace("‘", "''").Replace("\t", " ");
+            return original.Replace("'", "''").Replace("\n", " ").Replace("’", "''").Replace("‘", "''").Replace("\t", " ").Replace("“", "\"").Replace("”", "\"");
         }
 
         [Command("sa")]
