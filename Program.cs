@@ -179,12 +179,13 @@ namespace GeckoBot
                     //saves updated info
                     FileUtils.Save(Globals.DictToString(Alert.alerts, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko9.gek");
                 }
+
+                if (VoiceCallService.captureChannels.ContainsValue(context.Channel.Id))
+                {
+                    _services.GetService<VoiceCall>().dectalkcapture(context.Message.Id, context.Message.ToString(), context.Guild, _client);
+                }
             }
 
-            if (VoiceCallService.captureChannels.ContainsValue(context.Channel.Id))
-            {
-                _services.GetService<VoiceCall>().dectalkcapture(context.Message.Id, context.Message.ToString(), context.Guild);
-            }
         }
     }
 }

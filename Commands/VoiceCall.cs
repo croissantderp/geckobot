@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -161,8 +163,16 @@ namespace GeckoBot.Commands
             await ReplyAsync(embed: embed.Build());
         }
 
-        static string DectalkReplace(string original)
+        string DectalkReplace(string original, DiscordSocketClient client)
         {
+            Regex eregex = new Regex(@"\<\w?\:\w*\:\d{18}\>");
+            Regex cregex = new Regex(@"\<\#\d{18}\>");
+            Regex mregex = new Regex(@"\<\@\!\d{18}\>");
+
+            original = eregex.Replace(original, a => a.ToString().Split(":")[1]);
+            original = cregex.Replace(original, a => client.GetChannel(ulong.Parse(a.ToString().Remove(0, 2).Remove(18, 1))).ToString());
+            original = mregex.Replace(original, a => client.GetUser(ulong.Parse(a.ToString().Remove(0, 3).Remove(18, 1))).Username);
+
             return original.Replace("'", "''").Replace("\n", " ").Replace("’", "''").Replace("‘", "''").Replace("\t", " ").Replace("“", "\"").Replace("”", "\"");
         }
 
@@ -195,7 +205,7 @@ namespace GeckoBot.Commands
             }
 
             //cleans strings
-            string cleanText = DectalkReplace(text);
+            string cleanText = DectalkReplace(text, Context.Client);
 
             DecTalk(@"./" + Context.Message.Id.ToString() + ".wav", cleanText);
 
@@ -263,7 +273,7 @@ namespace GeckoBot.Commands
                 }
             }
 
-            string cleanText = DectalkReplace(text);
+            string cleanText = DectalkReplace(text, Context.Client);
 
             DecTalk(@"./" + Context.Message.Id.ToString() + ".wav", cleanText);
 
@@ -277,11 +287,11 @@ namespace GeckoBot.Commands
             await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
 
-        public void dectalkcapture(ulong message, string text, IGuild guild)
+        public void dectalkcapture(ulong message, string text, IGuild guild, DiscordSocketClient client)
         {
             string fileName = @"../../../dectalk/" + message + ".wav";
 
-            string cleanText = DectalkReplace(text);
+            string cleanText = DectalkReplace(text, client);
 
             DecTalk(@"./" + message + ".wav", cleanText);
 
