@@ -109,6 +109,19 @@ namespace GeckoBot.Commands
             }
         }
 
+        [Command("capture")]
+        public async Task Currentcapture()
+        {
+            if (VoiceCallService.captureChannels.ContainsKey(Context.Guild.Id))
+            {
+                await ReplyAsync("Currently capturing <#" + VoiceCallService.captureChannels[Context.Guild.Id].ToString() + ">");
+            }
+            else
+            {
+                await ReplyAsync("No ongoing captures in this guild.");
+            }
+        }
+
         [Command("end capture")]
         [Summary("Ends a current text to speech capture")]
         public async Task capturent()

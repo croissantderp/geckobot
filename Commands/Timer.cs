@@ -71,6 +71,15 @@ namespace GeckoBot.Commands
             timer2.Close();
         }
 
+
+        [Command("za warudo")]
+        [Summary("Pauses time for 9 seconds.")]
+        public async Task theWorld()
+        {
+            await ReplyAsync("Time is stopped");
+            await ReplyAsync("Time has started");
+        }
+
         //visible timer command
         [RequireGeckobotAdmin]
         [Command("countdown")]
