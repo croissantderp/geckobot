@@ -28,7 +28,14 @@ namespace GeckoBot.Commands
         [Summary("Gets number of pins in current channel.")]
         public async Task pins()
         {
-            await ReplyAsync("There are " + (await Context.Channel.GetPinnedMessagesAsync()).Count().ToString() + " pins");
+            await ReplyAsync((await Context.Channel.GetPinnedMessagesAsync()).Count().ToString() + " pins");
+        }
+
+        [Command("guilds")]
+        [Summary("Gets number of guilds the bot is in.")]
+        public async Task guilds()
+        {
+            await ReplyAsync(Context.Client.Guilds.Count.ToString() + " guilds");
         }
 
         [Command("shard")]

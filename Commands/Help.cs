@@ -47,7 +47,7 @@ namespace GeckoBot.Commands
         
         [Command("help")]
         [Summary("Dynamic help command.")]
-        public async Task help([Remainder][Summary("The specific command or module to send info about. Enter 'list' if you want a list of commands under their respective modules. Add a space and a number at the end for the index of the result.")] string all)
+        public async Task help([Remainder][Summary("The specific command or module to send info about. Enter 'list' if you want a list of commands under their respective modules. Add a space and a number at the end for the index of the result.")] string all = "")
         {
             string target = all;
             int result;
@@ -78,7 +78,7 @@ namespace GeckoBot.Commands
                     embedBuilder.AddField(field);
                 }
             }
-            else if (target != null) // If there was an argument given, send info about that argument
+            else if (target != "") // If there was an argument given, send info about that argument
             {
                 var matchedCommands = commands.FindAll(cmd => cmd.Aliases.Contains(target, StringComparer.InvariantCultureIgnoreCase) || FormatCommand(cmd) == target);
                 var matchedModules = modules.FindAll(m => m.Name.Equals(target, StringComparison.InvariantCultureIgnoreCase));
