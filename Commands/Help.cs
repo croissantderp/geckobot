@@ -225,6 +225,7 @@ namespace GeckoBot.Commands
             {
                 var fields = command.Parameters;
 
+
                 final += 
                     "   " + FormatCommand(command) + (command.Aliases.Count == 1 ? "" : " (aliases: " + string.Join(", ", command.Aliases) + ")") + ": " + command.Summary.Replace("\n", "\n   ") + "\n" +
                     "      Usage: " + $"{prefix}{command.Name} {string.Join(" ", fields.Select(FormatParameter))}\n"; 
@@ -278,7 +279,6 @@ namespace GeckoBot.Commands
             final += "Thanks and credits: \n" + 
                 "   Special thanks to :lemonthink:, crested geckos and viewers like you who have the attention span to scroll to the bottom of the page. \n" + 
                 "   Sponsored by lemonth inc. in partnership with F Period Bio";
-
 
             //saving and sending file
             using (StreamWriter file = new(@"../../cache/commands.txt"))

@@ -110,6 +110,7 @@ namespace GeckoBot.Commands
         }
 
         [Command("capture")]
+        [Summary("Gets the current capture channel if it exists.")]
         public async Task Currentcapture()
         {
             if (VoiceCallService.captureChannels.ContainsKey(Context.Guild.Id))
