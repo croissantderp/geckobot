@@ -58,16 +58,23 @@ namespace GeckoBot.Commands
         //gets daily gecko image
         [Command("gec")]
         [Summary("Sends the daily gecko.")]
-        public async Task gec()
+        public async Task gec([Summary("Optional year.")] int year = 0)
         {
-            RefreshGec();
-
-            await RefreshHighestGec();
-
-            int year = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek").Split("$")[0]);
-
             //gets day of the year
             DateTime date = DateTime.Today;
+
+            RefreshGec();
+
+            _highestGecko = await FetchHighestGec();
+
+            if ((date.DayOfYear - 1) + ((year-1) * 367) > _highestGecko)
+            {
+                await ReplyAsync("year does not exist yet");
+                return;
+            }
+
+            year = year == 0 ? int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek").Split("$")[0]) : year;
+
 
             string final = $"Today is {date.ToString("d")}. Day {date.DayOfYear} of the year {date.Year} (gecko: {geckos[DriveUtils.addZeros(((year - 1) * 367) + (date.DayOfYear - 1))]})\n" +
                 $"Other geckos of today include: ";
@@ -78,7 +85,7 @@ namespace GeckoBot.Commands
                 i++;
             }
 
-            //sends file with exception for leap years
+            //sends file
             await Context.Channel.SendFileAsync(
                 DriveUtils.ImagePath(((year - 1) * 367) + (date.DayOfYear - 1), false), final
                 );
@@ -242,12 +249,13 @@ namespace GeckoBot.Commands
         public async Task hgec()
         {
             RefreshGec();
-            int num = _highestGecko;
-            
+
+            _highestGecko = await FetchHighestGec();
+
             //sends file
             await Context.Channel.SendFileAsync(
-                DriveUtils.ImagePath(num, false), 
-                $"gecko: {geckos[DriveUtils.addZeros(num)]}");
+                DriveUtils.ImagePath(_highestGecko, false), 
+                $"gecko: {geckos[DriveUtils.addZeros(_highestGecko)]}");
         }
 
         // Fetches the highest gecko from Google Drive
