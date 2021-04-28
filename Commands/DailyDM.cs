@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.IO;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -213,6 +214,21 @@ namespace GeckoBot.Commands
                 //sets some variables so stats show up
                 Started = false;
                 IsCounting = true;
+            }
+
+            DirectoryInfo dir = new DirectoryInfo(@"../../../dectalk/audio/");
+
+            //clears files in dectalk audio cache if some still exist for some reason
+            foreach (FileInfo file in dir.GetFiles())
+            {
+                try
+                {
+                    file.Delete();
+                }
+                catch
+                {
+                    continue;
+                }
             }
 
             // Run daily dm if it has been a day since the last dm

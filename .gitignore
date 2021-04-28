@@ -3,6 +3,7 @@
 qeckobot/bin
 obj/
 /packages/
+dectalk/audio/
 modules/
 riderModule.iml
 /_ReSharper.Caches/

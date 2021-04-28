@@ -306,7 +306,7 @@ namespace GeckoBot.Commands
                     $"new gecko image: {geckos[DriveUtils.addZeros(_highestGecko + i + 1)]}");
             }
 
-                _highestGecko = fetched;
+            _highestGecko = fetched;
         }
     }
 }

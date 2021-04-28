@@ -109,6 +109,28 @@ namespace GeckoBot.Commands
             }
         }
 
+        [Command("clear dectalk cache")]
+        [Summary("Gets the current capture channel if it exists.")]
+        public async Task clearFiles()
+        {
+            DirectoryInfo dir = new DirectoryInfo(@"../../../dectalk/audio/");
+
+            //clears files in dectalk audio cache if some still exist for some reason
+            foreach (FileInfo file in dir.GetFiles())
+            {
+                try
+                {
+                    file.Delete();
+                }
+                catch
+                {
+                    continue;
+                }
+            }
+
+            await ReplyAsync("cleared");
+        }
+
         [Command("capture")]
         [Summary("Gets the current capture channel if it exists.")]
         public async Task Currentcapture()
@@ -196,7 +218,7 @@ namespace GeckoBot.Commands
         [Summary("Synthesizes an audio file using DECtalk, credit for this feature goes to [this](https://github.com/freddyGiant/study-bot).")]
         public async Task say([Remainder][Summary("the text that DECtalk will synthesize, also could work with an attached text file.")] string text = null)
         {
-            string fileName = @"../../../dectalk/" + Context.Message.Id.ToString() + ".wav";
+            string fileName = @"../../../dectalk/audio/" + Context.Message.Id.ToString() + ".wav";
 
             //.txt file support
             if (Context.Message.Attachments.Count != 0)
@@ -223,7 +245,7 @@ namespace GeckoBot.Commands
             //cleans strings
             string cleanText = DectalkReplace(text, Context.Client);
 
-            DecTalk(@"./" + Context.Message.Id.ToString() + ".wav", cleanText);
+            DecTalk(@"./audio/" + Context.Message.Id.ToString() + ".wav", cleanText);
 
             //starts a timer with desired amount of time
             System.Timers.Timer t = new(1000);
@@ -266,7 +288,7 @@ namespace GeckoBot.Commands
                 return;
             }
 
-            string fileName = @"../../../dectalk/" + Context.Message.Id.ToString() + ".wav";
+            string fileName = @"../../../dectalk/audio/" + Context.Message.Id.ToString() + ".wav";
 
             if (Context.Message.Attachments.Count != 0)
             {
@@ -291,7 +313,7 @@ namespace GeckoBot.Commands
 
             string cleanText = DectalkReplace(text, Context.Client);
 
-            DecTalk(@"./" + Context.Message.Id.ToString() + ".wav", cleanText);
+            DecTalk(@"./audio/" + Context.Message.Id.ToString() + ".wav", cleanText);
 
             string fullPath = new FileInfo(fileName).FullName;
 
@@ -305,11 +327,11 @@ namespace GeckoBot.Commands
 
         public void dectalkcapture(ulong message, string text, IGuild guild, DiscordSocketClient client)
         {
-            string fileName = @"../../../dectalk/" + message + ".wav";
+            string fileName = @"../../../dectalk/audio/" + message + ".wav";
 
             string cleanText = DectalkReplace(text, client);
 
-            DecTalk(@"./" + message + ".wav", cleanText);
+            DecTalk(@"./audio/" + message + ".wav", cleanText);
 
             string fullPath = new FileInfo(fileName).FullName;
 
