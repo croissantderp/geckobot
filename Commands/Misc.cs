@@ -31,6 +31,25 @@ namespace GeckoBot.Commands
             await ReplyAsync((await Context.Channel.GetPinnedMessagesAsync()).Count().ToString() + " pins");
         }
 
+        [Command("now")]
+        [Summary("NOW. You're looking at now, sir. Everything that happens now is happening now. Go back to then! What? THEN! I can't! Why not? We passed it! When? Just now! When will then be now? soon.")]
+        public async Task now()
+        {
+            var n = DateTimeOffset.Now.UtcDateTime;
+            var n2 = DateTimeOffset.Now.DateTime;
+
+            long secondsSince = DateTimeOffset.Now.ToUnixTimeSeconds();
+
+            await ReplyAsync(
+                $"{n.ToLongDateString()} ({n.ToShortDateString()}), {n.Hour}:{n.Minute}:{n.Second}.{n.Millisecond} UTC \n" + //simple now date and time
+                $"{secondsSince} ({new TimeSpan(secondsSince * 10000000)}) seconds since midnight 1 / 1 / 1970 \n" + //unix epoch
+                $"The {DateTime.Now.DayOfYear} day of the year{(DateTime.IsLeapYear(DateTime.Now.Year) ? " (which is a leap year)" : "")}, {DateTime.Now.DayOfWeek} \n" + //days
+                $"Geckobot is currently running in the {TimeZoneInfo.Local.Id} time zone ({TimeZoneInfo.Local.DisplayName}) which currently is {(DateTime.Now.IsDaylightSavingTime() ? "" : "not ")}in daylight savings time \n" + //local time
+                $"local time is {n2.ToLongDateString()} ({n2.ToShortDateString()}), {n2.Hour}:{n2.Minute}:{n2.Second}.{n2.Millisecond} \n" + //local time
+                $""
+                );
+        }
+
         [Command("guilds")]
         [Summary("Gets number of guilds the bot is in.")]
         public async Task guilds()
