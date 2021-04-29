@@ -91,12 +91,22 @@ namespace GeckoBot.Commands
         [Summary("Starts capturing all the text and transmitting it into a voicecall.")]
         public async Task capture()
         {
+            var voiceState = Context.User as IVoiceState;
+
             if (VoiceCallService.channels.ContainsKey(Context.Guild.Id))
             {
                 if (!VoiceCallService.captureChannels.ContainsKey(Context.Guild.Id))
                 {
-                    VoiceCallService.captureChannels.Add(Context.Guild.Id, Context.Channel.Id);
-                    await ReplyAsync("Capturing channel, the capture will end either when 'end capture' is called or the bot leaves the voice channel");
+                    if (voiceState?.VoiceChannel == null)
+                    {
+                        await ReplyAsync("You must be connected to a voice channel!");
+                        return;
+                    }
+                    else
+                    {
+                        VoiceCallService.captureChannels.Add(Context.Guild.Id, Context.Channel.Id);
+                        await ReplyAsync("Capturing channel, the capture will end either when 'end capture' is called or the bot leaves the voice channel");
+                    }
                 }
                 else
                 {
@@ -149,16 +159,26 @@ namespace GeckoBot.Commands
         [Summary("Ends a current text to speech capture")]
         public async Task capturent()
         {
+            var voiceState = Context.User as IVoiceState;
+
             if (VoiceCallService.channels.ContainsKey(Context.Guild.Id))
             {
-                if (VoiceCallService.captureChannels.ContainsKey(Context.Guild.Id))
+                if (voiceState?.VoiceChannel == null)
                 {
-                    VoiceCallService.captureChannels.Remove(Context.Guild.Id);
-                    await ReplyAsync("Capture ended");
+                    await ReplyAsync("You must be connected to a voice channel!");
+                    return;
                 }
                 else
                 {
-                    await ReplyAsync("I am already not capturing");
+                    if (VoiceCallService.captureChannels.ContainsKey(Context.Guild.Id))
+                    {
+                        VoiceCallService.captureChannels.Remove(Context.Guild.Id);
+                        await ReplyAsync("Capture ended");
+                    }
+                    else
+                    {
+                        await ReplyAsync("I am already not capturing");
+                    }
                 }
             }
             else

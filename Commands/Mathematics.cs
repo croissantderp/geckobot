@@ -11,30 +11,59 @@ namespace GeckoBot.Commands
         //maf
         [Command("add")]
         [Summary("Adds two numbers.")]
-        public async Task add([Summary("First number.")] decimal num1, [Summary("Number to add to first number.")] decimal num2)
+        public async Task add([Remainder][Summary("Numbers to add, seperated by spaces.")] string numstring)
         {
-            await ReplyAsync((num1 + num2).ToString());
+            decimal[] nums = numstring.Split(" ").Select(a => decimal.Parse(a)).ToArray();
+
+            await ReplyAsync(nums.Sum().ToString());
         }
 
         [Command("subtract")]
         [Summary("Subtracts two numbers.")]
-        public async Task subtract([Summary("First number.")] decimal num1, [Summary("Number to add to first number.")] decimal num2)
+        public async Task subtract([Remainder][Summary("Numbers to subtract, seperated by spaces.")] string numstring)
         {
-            await ReplyAsync((num1 - num2).ToString());
+            decimal[] nums = numstring.Split(" ").Select(a => decimal.Parse(a)).ToArray();
+
+            decimal final = nums[0];
+
+            foreach (decimal num in nums.Skip(1))
+            {
+                final -= num;
+            }
+
+            await ReplyAsync(final.ToString());
         }
 
         [Command("multiply")]
         [Summary("Multiplies two numbers.")]
-        public async Task multiply([Summary("First number.")] decimal num1, [Summary("Number to multiply first number by.")] decimal num2)
+        public async Task multiply([Remainder][Summary("Numbers to multiply, seperated by spaces.")] string numstring)
         {
-            await ReplyAsync((num1 * num2).ToString());
+            decimal[] nums = numstring.Split(" ").Select(a => decimal.Parse(a)).ToArray();
+
+            decimal final = nums[0];
+
+            foreach (decimal num in nums.Skip(1))
+            {
+                final *= num;
+            }
+
+            await ReplyAsync(final.ToString());
         }
 
         [Command("divide")]
         [Summary("Divides two numbers.")]
-        public async Task divide([Summary("First number.")] decimal num1, [Summary("Number to divide first number by.")] decimal num2)
+        public async Task divide([Remainder][Summary("Numbers to divide, seperated by spaces.")] string numstring)
         {
-            await ReplyAsync((num1 / num2).ToString());
+            decimal[] nums = numstring.Split(" ").Select(a => decimal.Parse(a)).ToArray();
+
+            decimal final = nums[0];
+
+            foreach (decimal num in nums.Skip(1))
+            {
+                final /= num;
+            }
+
+            await ReplyAsync(final.ToString());
         }
 
         //maf but time
