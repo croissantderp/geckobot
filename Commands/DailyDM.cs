@@ -312,7 +312,7 @@ namespace GeckoBot.Commands
         }
 
         // Dms a group of users
-        public async Task DmGroup(string path, string content)
+        public async Task DmGroup(string path, string content, bool isFile = true)
         {
             RefreshDmGroup();
             DiscordSocketClient client = _client;
@@ -332,10 +332,17 @@ namespace GeckoBot.Commands
             //DMs everybody on the list
             foreach (var a in users)
             {
-                //sends file with exception for leap years
-                await a.SendFileAsync(
-                    path,
-                    content);
+                if (isFile)
+                {
+                    //sends file with exception for leap years
+                    await a.SendFileAsync(
+                        path,
+                        content);
+                }
+                else
+                {
+                    await a.SendMessageAsync(content);
+                }
 
                 if (isBirthday)
                 {

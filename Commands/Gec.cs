@@ -37,6 +37,28 @@ namespace GeckoBot.Commands
             .ToDictionary(sp => sp[0], sp => sp[1]);
         }
 
+        // Force updates
+        [RequireGeckobotAdmin]
+        [Command("set highest")]
+        [Summary("Sets highest gecko to something else.")]
+        public async Task seth(int num)
+        {
+            RefreshGec();
+
+            await RefreshHighestGec();
+
+            if (num > _highestGecko)
+            {
+                await ReplyAsync("new highest gecko cannot be higher than the actual one");
+                return;
+            }
+            _highestGecko = num;
+
+            await RefreshHighestGec();
+
+            await ReplyAsync("force highest gecko to " + _highestGecko);
+        }
+
         //gets daily gecko image
         [Command("ygec")]
         [Summary("Sends all geckos for a specified day")]
@@ -294,16 +316,34 @@ namespace GeckoBot.Commands
             
             List<string> paths = new List<string>();
 
-            for (int i = 0; i < fetched - _highestGecko; i++)
+            int total = fetched - _highestGecko;
+
+            int baseline = _highestGecko;
+
+            int trunicated = 0;
+
+            if (total > 5)
             {
-                paths.Add(DriveUtils.ImagePath(_highestGecko + i + 1, false));
+                trunicated = total - 5;
+                baseline = fetched - 5;
+                total = 5;
             }
 
-            for (int i = 0; i < fetched - _highestGecko; i++)
+            for (int i = 0; i < total; i++)
+            {
+                paths.Add(DriveUtils.ImagePath(baseline + i + 1, false));
+            }
+
+            for (int i = 0; i < total; i++)
             {
                 await Program.ddm.DmGroup(
                     paths[i],
-                    $"new gecko image: {geckos[DriveUtils.addZeros(_highestGecko + i + 1)]}");
+                    $"new gecko image: {geckos[DriveUtils.addZeros(baseline + i + 1)]}");
+            }
+
+            if (trunicated != 0)
+            {
+                await Program.ddm.DmGroup("", $"{trunicated} more new geckoimages", false);
             }
 
             _highestGecko = fetched;
