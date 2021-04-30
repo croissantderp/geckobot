@@ -65,7 +65,7 @@ namespace GeckoBot.Commands
 
             RefreshGec();
 
-            _highestGecko = await FetchHighestGec();
+            await RefreshHighestGec();
 
             if ((date.DayOfYear - 1) + ((year-1) * 367) > _highestGecko)
             {
@@ -250,7 +250,7 @@ namespace GeckoBot.Commands
         {
             RefreshGec();
 
-            _highestGecko = await FetchHighestGec();
+            await RefreshHighestGec();
 
             //sends file
             await Context.Channel.SendFileAsync(
