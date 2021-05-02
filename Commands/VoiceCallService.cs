@@ -20,11 +20,12 @@ namespace GeckoBot.Commands
         {
             timer.Close();
 
-            var audioClient = await target.ConnectAsync();
+            var audioClient = await target.ConnectAsync(selfDeaf: true);
             ConnectedChannels.TryAdd(guild.Id, audioClient);
 
             var stream = audioClient.CreatePCMStream(AudioApplication.Mixed);
             channels.Add(guild.Id, (target, stream));
+
         }
 
         public async Task LeaveAudio(IGuild guild)

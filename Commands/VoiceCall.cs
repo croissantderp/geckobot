@@ -196,6 +196,7 @@ namespace GeckoBot.Commands
         }
 
         [Command("dectalk help")]
+        [Alias("dhelp")]
         [Summary("Give some helpful information about DECtalk")]
         public async Task dhelp()
         {
