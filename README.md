@@ -23,3 +23,4 @@ Links:
 Notes:
 * For voice to work, download [this](https://drive.google.com/file/d/1Bk-Net7-vP3gdGsDYzeNKQy2dinyvoV3/view?usp=sharing) and move it into the main directory
 * Copy libsodium.dll and opus.dll into your running directory
+* For the bot to work, create a Top.cs in the main directory and fill the following information inside of it ![image](https://user-images.githubusercontent.com/70451529/116836486-8378ef00-ab7b-11eb-861f-6a688ddb06bf.png)
