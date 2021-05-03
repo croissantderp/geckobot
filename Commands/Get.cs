@@ -233,24 +233,30 @@ namespace GeckoBot.Commands
         }
 
         [Command("emote")]
-        [Summary("gets an emote using id (takes a while)")]
+        [Summary("gets an emote using id (for some reason discord's copy emote id is wack so the only way to obtain the emote id is through the escaped string)")]
         public async Task findEmote([Summary("The emote id.")] string emote)
         {
-            foreach (IGuild a in Context.Client.Guilds)
+            List<(ulong, ulong)> emotes = new List<(ulong, ulong)>();
+
+            foreach (IGuild b in Context.Client.Guilds)
             {
-                try
-                {
-                    var emote2 = await a.GetEmoteAsync(ulong.Parse(emote));
-                    await ReplyAsync("guild: `" + (emote2 as IGuild).Name + "`, id: `" + (emote2 as IGuild).Id + "`\n" +
-                        "emote: " + emote2 + " `id: " + emote2 + "`", allowedMentions: new AllowedMentions(Discord.AllowedMentionTypes.None));
-                    return;
-                }
-                catch
-                {
-                    continue;
-                }
+                emotes.AddRange(b.Emotes.Select(a => (a.Id, b.Id)));
             }
-            await ReplyAsync("emote not found");
+
+            Dictionary<ulong, ulong> emotes2 = emotes.ToDictionary(a => a.Item1, b => b.Item2);
+            Console.WriteLine(emotes2.First());
+            if (emotes2.ContainsKey(ulong.Parse(emote)))
+            {
+                var guild = Context.Client.GetGuild(emotes2[ulong.Parse(emote)]);
+
+                var emote2 = await guild.GetEmoteAsync(ulong.Parse(emote));
+                await ReplyAsync("guild: `" + guild.Name + "`, id: `" + guild.Id + "`\n" +
+                    "emote: " + emote2 + " `id: " + emote2 + "`", allowedMentions: new AllowedMentions(AllowedMentionTypes.None));
+            }
+            else
+            {
+                await ReplyAsync("emote not found");
+            }
         }
     }
 }
