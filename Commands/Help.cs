@@ -242,6 +242,12 @@ namespace GeckoBot.Commands
             //setup
             final += "setup:\n" + 
                 "   Download the code from the github and FFmpeg which is linked below. \n" +
+                "   Create a Top.cs in the main directory, put the following text in the file and fill out the information \nˇˇˇˇ\n" +
+                "   public class Top\n" +
+                "   {\n" +
+                "      public static string secret = \"[token here]\";\n" +
+                "      public static string SecretName = \"[instance name]\";\n" +
+                "   }\n^^^^\n" + 
                 "   Move the extracted FFmpeg folder into the main directory. \n" +
                 "   Then open and build the solution in an ide (Visual Studios recommended). \n" +
                 "   After building for the first time, copy libsodium.dll and opus.dll into your runtime folder for voice features to work. \n" +
