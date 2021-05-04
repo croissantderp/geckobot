@@ -57,6 +57,33 @@ namespace GeckoBot.Commands
             }
         }
 
+        // You *MUST* mark these commands with 'RunMode.Async'
+        // otherwise the bot will not respond until the Task times out.
+        [Command("skip", RunMode = RunMode.Async)]
+        [Summary("Skips the current playing thing.")]
+        public async Task skipCmd()
+        {
+            var voiceState = Context.User as IVoiceState;
+
+            if (VoiceCallService.channels.ContainsKey(Context.Guild.Id))
+            {
+                if (voiceState?.VoiceChannel == null)
+                {
+                    await ReplyAsync("You must be connected to a voice channel!");
+                    return;
+                }
+                else
+                {
+                    _service.skip(Context.Guild);
+                    await Context.Message.AddReactionAsync(new Emoji("↩️"));
+                }
+            }
+            else
+            {
+                await ReplyAsync("I am not in a voice channel");
+            }
+        }
+
         // Remember to add preconditions to your commands,
         // this is merely the minimal amount necessary.
         // Adding more commands of your own is also encouraged.

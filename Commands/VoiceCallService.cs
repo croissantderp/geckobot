@@ -14,6 +14,7 @@ namespace GeckoBot.Commands
     {
         public static readonly ConcurrentDictionary<ulong, IAudioClient> ConnectedChannels = new ConcurrentDictionary<ulong, IAudioClient>();
         public static Dictionary<ulong, (IVoiceChannel, AudioOutStream)> channels = new Dictionary<ulong, (IVoiceChannel, AudioOutStream)>();
+        public static Dictionary<ulong, Process> ffmpegs = new Dictionary<ulong, Process>();
         public static Dictionary<ulong, ulong> captureChannels = new Dictionary<ulong, ulong>();
 
         public async Task JoinAudio(System.Timers.Timer timer, IGuild guild, IVoiceChannel target)
@@ -44,6 +45,18 @@ namespace GeckoBot.Commands
             }
         }
 
+        public void skip(IGuild guild)
+        {
+            try
+            {
+                ffmpegs[guild.Id].Kill();
+            }
+            catch
+            {
+
+            }
+        }
+
         public async Task SendAudioAsync(IGuild guild)
         {
             IAudioClient client;
@@ -56,8 +69,10 @@ namespace GeckoBot.Commands
             {
                 using (var ffmpeg = CreateProcess(path))
                 {
+                    ffmpegs.Add(guild.Id, ffmpeg);
                     await ffmpeg.StandardOutput.BaseStream.CopyToAsync(channels[guild.Id].Item2);
                     await channels[guild.Id].Item2.FlushAsync();
+                    ffmpegs.Remove(guild.Id);
                 }
             }
             catch
