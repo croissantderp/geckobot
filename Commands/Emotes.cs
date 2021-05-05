@@ -141,6 +141,8 @@ namespace GeckoBot.Commands
 
                 await chnl.SendMessageAsync(EmoteUtils.emoteReplace(message), allowedMentions: Globals.allowed);
             }
+
+            await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
 
         //simple retrieval function

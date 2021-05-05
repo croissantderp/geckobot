@@ -65,8 +65,10 @@ namespace GeckoBot.Utils
                     // Initialize cache 4 with current datetime
                     if (cache == 4)
                     {
-                        using StreamWriter file = new(path);
-                        file.Write("1$" + System.DateTime.Now.DayOfYear.ToString());
+                        using (StreamWriter file = new(path))
+                        {
+                            file.Write("1$" + System.DateTime.Now.DayOfYear.ToString());
+                        }
                     }
                 }
             }
