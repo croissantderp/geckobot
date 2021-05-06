@@ -373,8 +373,31 @@ namespace GeckoBot.Commands
         {
             await EmoteRemove(yes1, true);
         }
-        
-        
+
+        [RequireGeckobotAdmin]
+        [Command("aee")]
+        [Summary("Edits a key's value in the dictionary.")]
+        public async Task aee([Summary("New text for the message.")] string yes1, [Summary("First input, either link or channel id.")] string input = null, [Summary("Second input, message id or leave blank for link.")] string input2 = null)
+        {
+            string[] ids = (await Globals.getIds(input, input2, Context)).ToString().Split("$");
+            string channel = ids[0];
+            string message = ids[1];
+
+            //parses message id provided and gets message from channel
+            var message2 = await (Context.Client.GetChannel(ulong.Parse(channel)) as IMessageChannel).GetMessageAsync(ulong.Parse(message)) as IUserMessage;
+
+            if (message2.Author.Id != Context.Client.CurrentUser.Id)
+            {
+                await ReplyAsync("cannot edit message not sent by geckobot.");
+                return;
+            }
+
+            await message2.ModifyAsync(a => a.Content = yes1);
+
+            //adds check emote after done
+            await Context.Message.AddReactionAsync(new Emoji("✅"));
+        }
+
         // Saves an emote to the dictionary
         private async Task EmoteSave(string key, string value, bool withAdmin)
         {
