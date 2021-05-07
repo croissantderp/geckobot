@@ -236,7 +236,6 @@ namespace GeckoBot.Commands
                 "DECtalk can also sing, be sure to add '[:phoneme on]' at the beginning though" + "\n" +
                 "More information:" + "\n" +
                 "[Wikipedia](https://en.wikipedia.org/wiki/DECtalk)" + "\n" +
-                "[Command information and phonemes](http://chrisnestrud.com/projects/dectalk)" + "\n" +
                 "Example songs for phoneme:" + "\n" +
                 "[The flame of hope collection](http://theflameofhope.co/SONGS.html)" + "\n" +
                 "[Steam collection](https://steamcommunity.com/sharedfiles/filedetails/?id=482628855)")
@@ -244,7 +243,7 @@ namespace GeckoBot.Commands
 
             embed.WithColor(180, 212, 85);
 
-            await ReplyAsync(embed: embed.Build());
+            await Context.Channel.SendFileAsync(@"../../../dectalk/info.txt", embed: embed.Build());
         }
 
         string DectalkReplace(string original, DiscordSocketClient client)
