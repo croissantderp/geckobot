@@ -110,7 +110,18 @@ namespace GeckoBot
                 if (!state.VoiceChannel.Users.Select(a => a.Id).Contains(_client.CurrentUser.Id) && VoiceCallService.ConnectedChannels.ContainsKey(state.VoiceChannel.Guild.Id))
                 {
                     IAudioClient client;
-                    VoiceCallService.captureChannels.Remove(state.VoiceChannel.Guild.Id);
+
+                    if (VoiceCallService.captureChannels.ContainsKey(state.VoiceChannel.Guild.Id))
+                    {
+                        VoiceCallService.captureChannels.Remove(state.VoiceChannel.Guild.Id);
+                    }
+
+                    if (VoiceCallService.ffmpegs.ContainsKey(state.VoiceChannel.Guild.Id))
+                    {
+                        VoiceCallService.ffmpegs[state.VoiceChannel.Guild.Id].Dispose();
+                        VoiceCallService.ffmpegs.Remove(state.VoiceChannel.Guild.Id);
+                    }
+
                     VoiceCallService.ConnectedChannels.TryRemove(state.VoiceChannel.Guild.Id, out client);
                     await VoiceCallService.channels[state.VoiceChannel.Guild.Id].Item1.DisconnectAsync();
                     VoiceCallService.channels.Remove(state.VoiceChannel.Guild.Id);

@@ -21,12 +21,19 @@ namespace GeckoBot.Commands
         {
             timer.Close();
 
-            var audioClient = await target.ConnectAsync(selfDeaf: true);
-            ConnectedChannels.TryAdd(guild.Id, audioClient);
+            try
+            {
+                var audioClient = await target.ConnectAsync(selfDeaf: true);
 
-            var stream = audioClient.CreatePCMStream(AudioApplication.Mixed);
-            channels.Add(guild.Id, (target, stream));
+                ConnectedChannels.TryAdd(guild.Id, audioClient);
 
+                var stream = audioClient.CreatePCMStream(AudioApplication.Mixed);
+                channels.Add(guild.Id, (target, stream));
+            }
+            catch
+            {
+
+            }
         }
 
         public async Task LeaveAudio(IGuild guild)
@@ -36,6 +43,12 @@ namespace GeckoBot.Commands
                 if (captureChannels.ContainsKey(guild.Id))
                 {
                     captureChannels.Remove(guild.Id);
+                }
+
+                if (ffmpegs.ContainsKey(guild.Id))
+                {
+                    ffmpegs[guild.Id].Dispose();
+                    ffmpegs.Remove(guild.Id);
                 }
 
                 IAudioClient client;
