@@ -79,6 +79,11 @@ namespace GeckoBot.Commands
 
             ConnectedChannels.TryGetValue(guild.Id, out client);
 
+            if (ffmpegs.ContainsKey(guild.Id))
+            {
+                ffmpegs[guild.Id].Dispose();
+            }
+
             try
             {
                 using (var ffmpeg = CreateProcess(path))
@@ -87,6 +92,7 @@ namespace GeckoBot.Commands
                     await ffmpeg.StandardOutput.BaseStream.CopyToAsync(channels[guild.Id].Item2);
                     await channels[guild.Id].Item2.FlushAsync();
                     ffmpegs.Remove(guild.Id);
+                    ffmpeg.Dispose();
                 }
             }
             catch
