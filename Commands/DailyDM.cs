@@ -194,18 +194,18 @@ namespace GeckoBot.Commands
             bool wasRefreshed = false;
             
             DateTime time = DateTime.Now;
-            int minutes = time.Minute;
+            int seconds = time.Minute * 60 + time.Second;
 
             _lastCheck = DateTime.Now;
 
             // If the hour loop is misaligned, reset timer and rerun FirstStart at the strike of the next hour
-            if (minutes > 0)
+            if (time.Minute > 0)
             {
                 //stops current timer
                 dmTimer.Close();
 
                 //sets timer to amount of time until next hour plus a little bit
-                System.Timers.Timer timer2 = new((60 - minutes) * 60 * 1000 + 1000);
+                System.Timers.Timer timer2 = new((3601 - seconds) * 1000);
                 timer2.Elapsed += async (sender, e) => await FirstStart(timer2, false);
                 timer2.Start();
 
@@ -247,8 +247,6 @@ namespace GeckoBot.Commands
         {
             timer.Close();
             
-            await runChecks();
-
             Start();
 
             if (!CounterStarted)
@@ -325,16 +323,11 @@ namespace GeckoBot.Commands
             // Map ids to users
             var users = DmUsers.Select(client.GetUser);
             
-            //Console.WriteLine(DmUsers);
-            // Note: line 349 throws concurrent modification on my computer
-            // Should get around to fixing that some time
-
             //DMs everybody on the list
-            foreach (var a in users)
+            foreach (var a in users.Distinct().ToList())
             {
                 if (isFile)
                 {
-                    //sends file with exception for leap years
                     await a.SendFileAsync(
                         path,
                         content);

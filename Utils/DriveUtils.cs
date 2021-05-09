@@ -180,17 +180,8 @@ namespace GeckoBot.Utils
                     string name = file.Name.Remove(3);
 
                     if (name.Contains("b")) name = file.Name.Remove(4);
-                    if (CheckCache(name) == null || !Commands.Gec.geckos.ContainsKey(name))
+                    if (CheckCache(name) == null)
                     {
-                        //adds name of gecko to list
-                        if (!Commands.Gec.geckos.ContainsKey(name))
-                        {
-                            Commands.Gec.geckos.Add(name, file.Name);
-
-                            if (CheckCache(name) != null) continue;
-                        }
-
-                        //Console.WriteLine(file.MimeType);
                         string type = file.MimeType.Replace("image/", ""); // sorta hacky solution to get file type
 
                         using var fileStream = new FileStream(
@@ -201,6 +192,21 @@ namespace GeckoBot.Utils
 
                         amount++;
                     }
+
+                    if (!Commands.Gec.geckos.ContainsKey(name))
+                    {
+                        Commands.Gec.geckos.Add(name, file.Name);
+
+                        if (CheckCache(name) != null) continue;
+                    }
+                    else if (!Commands.Gec.geckos.ContainsValue(file.Name))
+                    {
+                        Commands.Gec.geckos.Remove(name);
+                        Commands.Gec.geckos.Add(name, file.Name);
+                    }
+
+
+
                     totalAmount++;
                 }
                 listRequest.PageToken = files2.NextPageToken;

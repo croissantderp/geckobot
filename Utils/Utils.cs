@@ -17,10 +17,17 @@ namespace GeckoBot.Utils
 
             Image image = new (path);
 
-            await self.ModifyAsync(x =>
+            try
             {
-                x.Avatar = image;
-            });
+                await self.ModifyAsync(x =>
+                {
+                    x.Avatar = image;
+                });
+            }
+            catch
+            {
+
+            }
         }
 
         public static async void changeName(IDiscordClient client, string name)
