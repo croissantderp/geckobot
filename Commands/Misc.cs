@@ -78,6 +78,13 @@ namespace GeckoBot.Commands
             await ReplyAsync("latency is " + Context.Client.Latency.ToString() + "ms");
         }
 
+        [Command("test")]
+        [Summary("test")]
+        public async Task test()
+        {
+            await ReplyAsync("test");
+        }
+
         // This is probably a bad idea
         // Also, there's probably a better way of deleting large bot messages than using a delete command
         [Command("delete")]

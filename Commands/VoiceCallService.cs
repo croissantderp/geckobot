@@ -73,6 +73,11 @@ namespace GeckoBot.Commands
 
         public async Task SendAudioAsync(IGuild guild)
         {
+            if (!VoiceCall.queue.ContainsKey(guild.Id))
+            {
+                return;
+            }
+
             IAudioClient client;
 
             string path = VoiceCall.queue[guild.Id][0];
@@ -82,6 +87,7 @@ namespace GeckoBot.Commands
             if (ffmpegs.ContainsKey(guild.Id))
             {
                 ffmpegs[guild.Id].Dispose();
+                ffmpegs.Remove(guild.Id);
             }
 
             try

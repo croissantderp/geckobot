@@ -115,6 +115,7 @@ namespace GeckoBot.Commands
         }
 
         [Command("start capture")]
+        [Alias("begin capture")]
         [Summary("Starts capturing all the text and transmitting it into a voicecall.")]
         public async Task capture()
         {
@@ -183,6 +184,7 @@ namespace GeckoBot.Commands
         }
 
         [Command("end capture")]
+        [Alias("stop capture")]
         [Summary("Ends a current text to speech capture")]
         public async Task capturent()
         {
