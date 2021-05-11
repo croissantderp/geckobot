@@ -370,6 +370,7 @@ namespace GeckoBot.Commands
             
             //clears
             DmUsers.Clear();
+            Channelthings.Clear();
 
             //gets info
             string content = FileUtils.Load(@"..\..\Cache\gecko3.gek");
