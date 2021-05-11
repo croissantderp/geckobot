@@ -26,6 +26,7 @@ namespace GeckoBot.Commands
         private static DateTime _lastCheck = DateTime.Now;
         
         public static readonly List<ulong> DmUsers = new(); //people to dm for daily gecko images
+        public static readonly List<ulong> Channelthings = new(); //people to dm for daily gecko images
 
         public static bool Started = false; //is timer is running
         public static bool CounterStarted = false; //if the counter has started at least once
@@ -171,7 +172,7 @@ namespace GeckoBot.Commands
                 }
             }
         }
-        
+
         // Initialize timers and run initial checks
         public async Task initiatethings()
         {
@@ -321,8 +322,10 @@ namespace GeckoBot.Commands
             bool isBirthday = date.DayOfYear == 288;
             
             // Map ids to users
+
             var users = DmUsers.Select(client.GetUser);
-            
+            var channels = Channelthings.Select(client.GetChannel);
+
             //DMs everybody on the list
             foreach (var a in users.Distinct().ToList())
             {
@@ -342,10 +345,26 @@ namespace GeckoBot.Commands
                     await a.SendMessageAsync("happy birthday geckobot :cake:");
                 }
             }
+
+            //sends messages in channels
+            foreach (var a in channels.Distinct().ToList())
+            {
+                var temp = a as IMessageChannel;
+                if (isFile)
+                {
+                    await temp.SendFileAsync(
+                        path,
+                        content);
+                }
+                else
+                {
+                    await temp.SendMessageAsync(content);
+                }
+            }
         }
         
         // Updates the DmUsers list from the file
-        private static void RefreshDmGroup()
+        public static void RefreshDmGroup()
         {
             FileUtils.checkForExistance();
             
@@ -354,8 +373,11 @@ namespace GeckoBot.Commands
 
             //gets info
             string content = FileUtils.Load(@"..\..\Cache\gecko3.gek");
-            if (content != "") 
-                DmUsers.AddRange(content.Split(",").Select(ulong.Parse));
+            if (content != "")
+            {
+                DmUsers.AddRange(content.Split(",").Where(a => !a.Contains("c")).Select(ulong.Parse));
+                Channelthings.AddRange(content.Split(",").Where(a => a.Contains("c")).Select(a => ulong.Parse(a.Remove(0,1))));
+            }
         }
     }
 }

@@ -141,27 +141,20 @@ namespace GeckoBot.Commands
         [Summary("Lists people who are part of the gecko gang.")]
         public async Task gang()
         {
-            //if file exists, load it
-            if (FileUtils.Load(@"..\..\Cache\gecko3.gek") != null)
-            {
-                //clears
-                DailyDM.DmUsers.Clear();
-
-                //gets info
-                string[] temp = FileUtils.Load(@"..\..\Cache\gecko3.gek").Split(",");
-
-                //adds info to list
-                DailyDM.DmUsers.AddRange(temp.Select(ulong.Parse));
-            }
+            DailyDM.RefreshDmGroup();
 
             List<string> names = new List<string>();
             names.AddRange(DailyDM.DmUsers.Select(user => Context.Client.GetUser(user).Username));
+
+            List<string> channels = new List<string>();
+            channels.AddRange(DailyDM.Channelthings.Select(a => Context.Client.GetChannel(a).ToString()));
+
 
             //buils an embed
             var embed = new EmbedBuilder
             {
                 Title = "join the gecko gang",
-                Description = (string.Join("\n", names))
+                Description = string.Join("\n", names) + "\n\n" + string.Join("\n", channels)
             };
 
             embed.WithColor(180, 212, 85);
