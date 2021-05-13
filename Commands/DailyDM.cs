@@ -59,7 +59,7 @@ namespace GeckoBot.Commands
 
                 if (IsCounting)
                 {
-                    await ReplyAsync("hourly check already scheduled, will start in t - " + (60 - minutes) + " minutes");
+                    await ReplyAsync("hourly check already scheduled, will start in t - " + (dmTimer2.Interval / 60000) + " minutes");
                 }
                 else
                 {
@@ -68,7 +68,7 @@ namespace GeckoBot.Commands
 
                     IsCounting = true;
 
-                    await ReplyAsync("hourly check will start in t - " + (60 - minutes) + " minutes");
+                    await ReplyAsync("hourly check will start in t - " + (dmTimer2.Interval / 60000) + " minutes");
                 }
             }
         }
@@ -247,7 +247,10 @@ namespace GeckoBot.Commands
         private async Task FirstStart(System.Timers.Timer timer, bool reply)
         {
             timer.Close();
-            
+
+            //checks because timer does not check when first initialized. trust me, future self, this is necessary
+            await runChecks();
+
             Start();
 
             if (!CounterStarted)
