@@ -134,6 +134,7 @@ namespace GeckoBot
             var message = arg as SocketUserMessage;
             var context = new SocketCommandContext(_client, message);
             if (message.Author.IsBot) return;
+            if (Globals.tempBlocked.Contains(message.Author.Id)) return;
 
             int argPos = 0;
 

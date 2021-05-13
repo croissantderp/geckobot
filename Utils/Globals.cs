@@ -74,6 +74,8 @@ namespace GeckoBot.Utils
         //days since bot was reset
         public static DateTime lastReset = DateTime.Now;
 
+        public static List<ulong> tempBlocked = new List<ulong>();
+
         public static readonly string[] names =
         {
             Top.SecretName,

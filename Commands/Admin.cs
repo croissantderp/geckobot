@@ -11,6 +11,22 @@ namespace GeckoBot.Commands
     [Summary("Admin only GeckoBot commands.")]
     public class Admin : ModuleBase<SocketCommandContext>
     {
+        [Command("block")]
+        [Summary("Blocks a user.")]
+        public async Task tempblock([Summary("The user's id to block")][Remainder] string id)
+        {
+            Globals.tempBlocked.Add(ulong.Parse(id));
+            await ReplyAsync("block'd");
+        }
+
+        [Command("unblock")]
+        [Summary("Unblocks a user.")]
+        public async Task untempblock([Summary("The user's id to block")][Remainder] string id)
+        {
+            Globals.tempBlocked.Remove(ulong.Parse(id));
+            await ReplyAsync("unblock'd");
+        }
+
         //termination command
         [Command("terminate")]
         [Summary("Terminates the bot process.")]
