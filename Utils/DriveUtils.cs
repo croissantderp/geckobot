@@ -100,7 +100,7 @@ namespace GeckoBot.Utils
         }
 
         // Gets path from cache or downloads image to cache from drive
-        public static string ImagePath(int num, bool isAlt)
+        public static string ImagePath(int num, bool isAlt, bool refresh = false)
         {
             Commands.Gec.RefreshGec();
             FileUtils.checkForCacheExistance();
@@ -114,7 +114,21 @@ namespace GeckoBot.Utils
             
             // If image already exists in cache, use it
             string cached = CheckCache(name);
-            if (cached != null && Commands.Gec.geckos.ContainsKey(name)) return cached;
+            if (cached != null && Commands.Gec.geckos.ContainsKey(name)) 
+            {
+                if (!refresh)
+                {
+                    return cached;
+                }
+                
+                File.Delete(cached);
+                cached = null;
+            }
+
+            if (refresh && Commands.Gec.geckos.ContainsKey(name))
+            {
+                Commands.Gec.geckos.Remove(name);
+            }
 
             // Otherwise, fetch it from google drive
             DriveService driveService = AuthenticateServiceAccount(

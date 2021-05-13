@@ -197,6 +197,22 @@ namespace GeckoBot.Commands
         }
 
         //finds a gecko
+        [Command("rfgec")]
+        [Summary("Deletes and redownloads the specified gecko.")]
+        public async Task rfgec([Summary("The value of the gecko.")] int value)
+        {
+            RefreshGec();
+
+            //converts int to string
+            string final = DriveUtils.addZeros(value);
+
+            //sends files
+            await Context.Channel.SendFileAsync(
+                DriveUtils.ImagePath(value, false, true),
+                $"refreshed gecko: {geckos[final]}");
+        }
+
+        //finds a gecko
         [Command("sgec")]
         [Summary("Searches for the specified gecko.")]
         public async Task sgec([Summary("the search input.")] string input, [Summary("the result number.")] int index = 1)

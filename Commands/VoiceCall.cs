@@ -250,7 +250,7 @@ namespace GeckoBot.Commands
 
         string DectalkReplace(string original, DiscordSocketClient client)
         {
-            Regex eregex = new Regex(@"\<\w?\:\w*\:\d{18}\>");
+            Regex eregex = new Regex(@"\<a?\:\w*\:\d{18}\>");
             Regex cregex = new Regex(@"\<\#\d{18}\>");
             Regex mregex = new Regex(@"\<\@\!\d{18}\>");
             Regex rregex = new Regex(@"\<\@\&\d{18}\>");

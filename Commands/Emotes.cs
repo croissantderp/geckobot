@@ -245,6 +245,24 @@ namespace GeckoBot.Commands
 
             //number of emotes added
             int emotesAdded = 0;
+            int emotesRemoved = 0;
+
+            List<string> emotes = new List<string>();
+
+            foreach (IGuild b in Context.Client.Guilds)
+            {
+                emotes.AddRange(b.Emotes.Select(a => a.ToString()));
+            }
+
+            Regex eregex = new Regex(@"^\<a?\:\w*\:\d{18}\>$");
+
+            var matchedValues = EmoteDict.Where(a => eregex.IsMatch(a.Value)).Where(a => !emotes.Contains(a.Value)).Select(a => a.Key);
+
+            foreach(string key in matchedValues)
+            {
+                EmoteDict.Remove(key);
+                emotesRemoved++;
+            }
 
             foreach (IGuild a in guilds)
             {
@@ -284,16 +302,37 @@ namespace GeckoBot.Commands
                         name = EmoteUtils.escapeforbidden(name);
                         cstring = EmoteUtils.escapeforbidden(cstring);
 
-                        Regex regex = new Regex(@"^" + name + @"-\d+");
+                        Regex regex = new Regex(@"^" + name + @"-\d+$");
 
                         var arrayThing = EmoteDict.Keys.Where(a => regex.IsMatch(a));
-                        Console.WriteLine(string.Join(", ", arrayThing));
+
+                        var arrayThingButKeyValuePair = arrayThing.Select(a => new KeyValuePair<string, string>(a,EmoteDict[a]));
+
+                        var duplicateKeys = arrayThingButKeyValuePair.GroupBy(s => s.Value).SelectMany(grp => grp.Skip(1)).Distinct().Select(a => a.Key);
+
+                        foreach (string key in duplicateKeys)
+                        {
+                            Console.WriteLine(key);
+                            EmoteDict.Remove(key);
+                            emotesRemoved++;
+                        }
+
+                        arrayThing = EmoteDict.Keys.Where(a => regex.IsMatch(a));
+
                         int offset = 0;
 
                         if (arrayThing.Count() != 0)
                         {
-                            offset = int.Parse(arrayThing.Select(a => a.Split("-").Last()).OrderByDescending(a => int.Parse(a)).First());
-                            Console.WriteLine(name + " " + cstring + " -> " + offset);
+                            var numArray = arrayThing.Select(a => a.Split("-").Last()).OrderBy(a => int.Parse(a)).Select(a => int.Parse(a));
+
+                            foreach (int d in numArray)
+                            {
+                                if (!numArray.Contains(d + 1))
+                                {
+                                    offset = d;
+                                    break;
+                                }
+                            }
                         }
                         //adds to emote dictionary
                         EmoteDict.Add(name + "-" + (offset + 1).ToString(), cstring);
@@ -308,7 +347,7 @@ namespace GeckoBot.Commands
             FileUtils.Save(Globals.DictToString(EmoteDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko2.gek");
 
             //replies with number of new emotes added
-            await ReplyAsync(emotesAdded + " new emotes added");
+            await ReplyAsync(emotesAdded + " new emotes added, " + emotesRemoved + " emotes removed");
         }
         
         //emote react function
