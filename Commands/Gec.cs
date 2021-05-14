@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Threading;
 using Discord;
 using Discord.Commands;
 using GeckoBot.Utils;
@@ -61,10 +62,12 @@ namespace GeckoBot.Commands
 
         //gets daily gecko image
         [Command("ygec")]
-        [Summary("Sends all geckos for a specified day")]
-        public async Task ygec(int dayNum)
+        [Summary("Sends all geckos for a specified day.")]
+        public async Task ygec([Summary("The day to search for.")] int dayNum)
         {
             RefreshGec();
+
+            await RefreshHighestGec();
 
             string final = "";
             int i = 0;
@@ -73,6 +76,25 @@ namespace GeckoBot.Commands
                 final += $"{geckos[DriveUtils.addZeros(dayNum + (i * 367))]} ";
                 i++;
             }
+
+            await ReplyAsync(final);
+        }
+
+        //gets daily gecko image
+        [Command("ycgec")]
+        [Summary("Calculates the gecko number for a specific year.")]
+        public async Task ycgec([Summary("The specific year.")] int year, [Summary("The day to search for.")] int dayNum)
+        {
+            RefreshGec();
+
+            string final = "";
+
+            for (int i = 0; i < year; i++)
+            {
+                final += "year " + i + ": " + (dayNum + (i * 367)).ToString() + "\n";
+            }
+
+            final += $"year range: {year * 367} - {(year + 1) * 367}";
 
             await ReplyAsync(final);
         }
@@ -348,11 +370,12 @@ namespace GeckoBot.Commands
                 await Program.ddm.DmGroup(
                     paths[i],
                     $"new gecko image: {geckos[DriveUtils.addZeros(baseline + i + 1)]}");
+                Thread.Sleep(10000);
             }
 
             if (trunicated != 0)
             {
-                await Program.ddm.DmGroup("", $"{trunicated} more new geckoimages", false);
+                await Program.ddm.DmGroup("", $"{trunicated} more new geckoimages ({_highestGecko + 1} - {baseline})", false);
             }
 
             _highestGecko = fetched;

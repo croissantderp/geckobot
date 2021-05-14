@@ -54,9 +54,6 @@ namespace GeckoBot.Commands
             }
             else
             {
-                //getting minutes
-                int minutes = DateTime.Now.Minute;
-
                 if (IsCounting)
                 {
                     await ReplyAsync("hourly check already scheduled, will start in t - " + (dmTimer2.Interval / 60000) + " minutes");
@@ -364,7 +361,7 @@ namespace GeckoBot.Commands
         [RequireGeckobotAdmin]
         [Command("send to group")]
         [Summary("sends a message to the daily dm group.")]
-        public async Task test([Summary("the message to send to the group.")]string message)
+        public async Task test([Summary("the message to send to the group.")] [Remainder] string message)
         {
             await DmGroup("", message, false);
 
