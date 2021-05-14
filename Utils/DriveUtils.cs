@@ -158,10 +158,22 @@ namespace GeckoBot.Utils
                 //Console.WriteLine(file.MimeType);
                 string type = file.MimeType.Replace("image/", ""); // sorta hacky solution to get file type
 
-                using (var fileStream = new FileStream($"../../Cache/{name}_icon.{type}",FileMode.Create,FileAccess.Write))
+                for (int i = 0; i < 1000; i++)
                 {
-                    driveService.Files.Get(file.Id).Download(fileStream);
+                    try
+                    {
+                        using (var fileStream = new FileStream($"../../Cache/{name}_icon.{type}", FileMode.Create, FileAccess.Write))
+                        {
+                            driveService.Files.Get(file.Id).Download(fileStream);
+                        }
+                        break;
+                    }
+                    catch
+                    {
+                        continue;
+                    }
                 }
+
                 return CheckCache(name) ?? throw new Exception("Drive download failed!");
             }
             

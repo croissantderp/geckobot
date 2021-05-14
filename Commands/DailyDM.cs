@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -141,7 +141,7 @@ namespace GeckoBot.Commands
                     DmUsers.Add(user.Id);
 
                     //saves info
-                    FileUtils.Save(string.Join(",", DmUsers), @"..\..\Cache\gecko3.gek");
+                    FileUtils.Save(string.Join(",", DmUsers) + (Channelthings.Count > 0 ? ",c" + string.Join(",c", Channelthings) : ""), @"..\..\Cache\gecko3.gek");
 
                     //DMs the user
                     await user.SendMessageAsync("hi, daily gecko updates have been set up, cancel by '\\`dm false'");
@@ -160,7 +160,7 @@ namespace GeckoBot.Commands
                     DmUsers.Remove(user.Id);
 
                     //saves info
-                    FileUtils.Save(string.Join(",", DmUsers.ToArray()), @"..\..\Cache\gecko3.gek");
+                    FileUtils.Save(string.Join(",", DmUsers) + (Channelthings.Count > 0 ? ",c" + string.Join(",c", Channelthings) : ""), @"..\..\Cache\gecko3.gek");
 
                     //DMs the user
                     await user.SendMessageAsync("hi, daily gecko updates have been canceled");
@@ -171,6 +171,54 @@ namespace GeckoBot.Commands
                     await ReplyAsync("you are already not signed up!");
                 }
             }
+            //adds reaction
+            await Context.Message.AddReactionAsync(new Emoji("✅"));
+        }
+
+        [RequireGeckobotAdmin]
+        [Command("add channel")]
+        [Summary("adds a channel to the daily dm system.")]
+        public async Task addchannel([Summary("Bool whether you want to sign up or not.")] bool join, [Summary("The id of the channel you want to sign up.")] string strchannelid)
+        {
+            ulong channelid = ulong.Parse(strchannelid);
+
+            RefreshDmGroup();
+            if (join)
+            {
+                //if they are already signed up
+                if (Channelthings.Contains(channelid))
+                {
+                    await ReplyAsync("this channel is already signed up!");
+                }
+                else
+                {
+                    //adds id
+                    Channelthings.Add(channelid);
+
+                    //saves info
+                    FileUtils.Save(string.Join(",", DmUsers) + (Channelthings.Count > 0 ? ",c" + string.Join(",c", Channelthings) : ""), @"..\..\Cache\gecko3.gek");
+                }
+
+            }
+            else
+            {
+                //if the are already not signed up
+                if (Channelthings.Contains(channelid))
+                {
+                    //removes user form list
+                    Channelthings.Remove(channelid);
+
+                    //saves info
+                    FileUtils.Save(string.Join(",", DmUsers) + (Channelthings.Count > 0 ? ",c" + string.Join(",c", Channelthings) : ""), @"..\..\Cache\gecko3.gek");
+
+                }
+                else
+                {
+                    await ReplyAsync("this channel is already not signed up!");
+                }
+            }
+            //adds reaction
+            await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
 
         // Initialize timers and run initial checks
@@ -311,6 +359,16 @@ namespace GeckoBot.Commands
             _lastRun = DateTime.Now.DayOfYear;
 
             FileUtils.Save(year + "$" + _lastRun.ToString(), @"..\..\Cache\gecko4.gek");
+        }
+
+        [RequireGeckobotAdmin]
+        [Command("send to group")]
+        [Summary("sends a message to the daily dm group.")]
+        public async Task test([Summary("the message to send to the group.")]string message)
+        {
+            await DmGroup("", message, false);
+
+            await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
 
         // Dms a group of users
