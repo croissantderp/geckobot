@@ -12,7 +12,8 @@ namespace GeckoBot.Preconditions
         public static readonly List<ulong> GeckobotAdmins = new()
         {
             526863414635790356,
-            355534246439419904
+            355534246439419904,
+            603795745640022020
         };
         
         // Override the CheckPermissions method
