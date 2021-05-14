@@ -22,6 +22,7 @@ namespace GeckoBot
         static string ApplicationName = "GeckoBot";
 
         public static readonly DailyDM ddm = new ();
+        public static readonly highestDM hdm = new ();
         public static readonly Gec gec = new ();
 
         static void Main(string[] args)
@@ -82,11 +83,13 @@ namespace GeckoBot
         private async Task ReadyAsync()
         {
             ddm._client = _client;
+            hdm._client = _client;
 
             //sets activity
             await _client.SetGameAsync("`what do you do?");
 
             await ddm.initiatethings();
+            await hdm.initiatethings();
         }
 
         private Task _client_Log(LogMessage arg)

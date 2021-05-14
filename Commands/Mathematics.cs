@@ -76,6 +76,26 @@ namespace GeckoBot.Commands
             await ReplyAsync(finalTime.ToString());
         }
 
+        //maf but time
+        [Command("time convert")]
+        [Summary("Converts a time between two time zones.")]
+        public async Task Tconvert([Summary("Initial time.")] string num1, [Summary("Initial time zone.")] string timeZone, [Summary("Destination time zone.")] string timeZone2)
+        {
+            try
+            {
+                TimeZoneInfo tzinfo = TimeZoneInfo.FindSystemTimeZoneById(timeZone);
+                TimeZoneInfo tzinfo2 = TimeZoneInfo.FindSystemTimeZoneById(timeZone2);
+
+                DateTime final = TimeZoneInfo.ConvertTimeFromUtc(TimeZoneInfo.ConvertTimeToUtc(DateTime.Parse(num1), tzinfo), tzinfo2);
+                await ReplyAsync(final.ToString());
+            }
+            catch
+            {
+                await ReplyAsync("invalid time zone");
+            }
+
+        }
+
         [Command("time subtract")]
         [Summary("Subtracts two numbers.")]
         public async Task Tsubtract([Remainder][Summary("Times seperated by spaces")] string num1)

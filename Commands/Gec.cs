@@ -163,13 +163,13 @@ namespace GeckoBot.Commands
         [Summary("Lists people who are part of the gecko gang.")]
         public async Task gang()
         {
-            DailyDM.RefreshDmGroup();
+            DailyDM.RefreshUserDict();
 
             List<string> names = new List<string>();
-            names.AddRange(DailyDM.DmUsers.Select(user => Context.Client.GetUser(user).Username));
+            names.AddRange(DailyDM.DmUsers.Keys.Where(a => !DailyDM.DmUsers[a].Item1).Select(user => Context.Client.GetUser(user).Username));
 
             List<string> channels = new List<string>();
-            channels.AddRange(DailyDM.Channelthings.Select(a => Context.Client.GetChannel(a).ToString()));
+            channels.AddRange(DailyDM.DmUsers.Keys.Where(a => DailyDM.DmUsers[a].Item1).Select(a => Context.Client.GetChannel(a).ToString()));
 
 
             //buils an embed
@@ -367,7 +367,7 @@ namespace GeckoBot.Commands
 
             for (int i = 0; i < total; i++)
             {
-                await Program.ddm.DmGroup(
+                await Program.hdm.DmGroup(
                     paths[i],
                     $"new gecko image: {geckos[DriveUtils.addZeros(baseline + i + 1)]}");
                 Thread.Sleep(10000);
@@ -375,7 +375,7 @@ namespace GeckoBot.Commands
 
             if (trunicated != 0)
             {
-                await Program.ddm.DmGroup("", $"{trunicated} more new geckoimages ({_highestGecko + 1} - {baseline})", false);
+                await Program.hdm.DmGroup("", $"{trunicated} more new geckoimages ({_highestGecko + 1} - {baseline})", false);
             }
 
             _highestGecko = fetched;

@@ -8,6 +8,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using GeckoBot.Preconditions;
 using GeckoBot.Utils;
+using System.Text.RegularExpressions;
 using Microsoft.Win32;
 
 namespace GeckoBot.Commands
@@ -18,56 +19,74 @@ namespace GeckoBot.Commands
         // Receive the client via dependency injection
         public DiscordSocketClient _client { get; set; }
 
-        private static System.Timers.Timer dmTimer = new(); //the primary timer for dms
-        private static System.Timers.Timer dmTimer2 = new(); //the secondary timer for dms
-
-        public static int year = 1;
         private static int _lastRun = DateTime.Now.DayOfYear; //last time bot was run and daily geckoimage was sent
-        private static DateTime _lastCheck = DateTime.Now;
-        
-        public static readonly List<ulong> DmUsers = new(); //people to dm for daily gecko images
-        public static readonly List<ulong> Channelthings = new(); //people to dm for daily gecko images
+        private static int _year = 1;
 
-        public static bool Started = false; //is timer is running
-        public static bool CounterStarted = false; //if the counter has started at least once
-        public static bool IsCounting = false; //if the counter is counting
-        public static bool EverStarted = false; //if timer has ever started
+        //user/channel id, (is channel, year, last gecko, string)
+        public static Dictionary<ulong, (bool, int, int, string)> DmUsers = new(); //people to dm for daily gecko images
+        public static Dictionary<ulong, System.Timers.Timer> DmTimers = new Dictionary<ulong, System.Timers.Timer>();
 
-        [Command("last checked")]
-        [Summary("Gets the time since the daily dm was last checked.")]
-        public async Task last()
+        public static void LoadLocalInfo()
         {
-            await ReplyAsync(_lastCheck.ToString());
+            _year = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek").Split("$")[0]);
+            _lastRun = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek").Split("$")[1]);
         }
 
-        //starts timer for various checks
-        [Command("start")]
-        [Summary("Starts the timer.")]
-        public async Task start()
+        public static void SaveLocalInfo()
         {
-            await Context.Client.SetGameAsync("`what do you do?");
+            FileUtils.Save(_year + "$" + _lastRun, @"..\..\Cache\gecko4.gek");
+        }
 
-            //if started or not
-            if (Started)
+        //loads user dictionary as string and converts it back into dictionary
+        public static void RefreshUserDict()
+        {
+            DmUsers = Regex.Split(FileUtils.Load(@"..\..\Cache\gecko3.gek"), @"\s(?<!\\)ҩ\s")
+                .Select(part => Regex.Split(part, @"\s(?<!\\)\⁊\s"))
+                .Where(part => part.Length == 2)
+                .ToDictionary(
+                    sp => ulong.Parse(sp[0]), 
+                    sp => (bool.Parse(sp[1].Split(",")[0]), int.Parse(sp[1].Split(",")[1]), int.Parse(sp[1].Split(",")[2]), sp[1].Split(",")[3]));
+        }
+
+        //saves user dictionary into a file
+        public static void SaveUserDict()
+        {
+            Dictionary<string, string> parsedDict = 
+                DmUsers.Select(a => new KeyValuePair<string, string>(a.Key.ToString(), a.Value.Item1.ToString() + "," + a.Value.Item2.ToString() + "," + a.Value.Item3.ToString() + "," + a.Value.Item4))
+                .ToDictionary(a => a.Key, a => a.Value);
+
+            //saves info
+            FileUtils.Save(Globals.DictToString(parsedDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko3.gek");
+        }
+
+        //parses time in hh:mm:ss format
+        public static double returnTimeToNextCheck(string unparsed)
+        {
+            var parsed = unparsed
+                .Split(":")
+                .Select(int.Parse)
+                .ToArray();
+
+            var newTime = TimeZoneInfo.ConvertTimeFromUtc(new DateTime(
+                DateTime.Now.Year,
+                DateTime.Now.Month,
+                DateTime.Now.Day,
+                parsed[0],
+                parsed[1],
+                parsed[2]), TimeZoneInfo.Local);
+
+            if (newTime < DateTime.Now)
             {
-                await ReplyAsync("hourly check already started");
+                return (TimeZoneInfo.ConvertTimeFromUtc(new DateTime(
+                    DateTime.Now.Year,
+                    DateTime.Now.Month,
+                    DateTime.Now.Day + 1,
+                    parsed[0],
+                    parsed[1],
+                    parsed[2]), TimeZoneInfo.Local) - DateTime.Now).TotalMilliseconds;
             }
-            else
-            {
-                if (IsCounting)
-                {
-                    await ReplyAsync("hourly check already scheduled, will start in t - " + (dmTimer2.Interval / 60000) + " minutes");
-                }
-                else
-                {
-                    //checks
-                    await check();
 
-                    IsCounting = true;
-
-                    await ReplyAsync("hourly check will start in t - " + (dmTimer2.Interval / 60000) + " minutes");
-                }
-            }
+            return (newTime - DateTime.Now).TotalMilliseconds;
         }
 
         //checks
@@ -75,73 +94,178 @@ namespace GeckoBot.Commands
         [Summary("Checks whether the daily dm needs to be sent.")]
         public async Task check()
         {
-            var ran = await runChecks();
+            var ran = await runChecks(Context.User.Id);
             
             if (ran)
                 await ReplyAsync("checked and updated");
             else
                 await ReplyAsync("checked");
         }
-        
+
+        //checks
+        [Command("ddm info")]
+        [Summary("Sends your info.")]
+        public async Task info()
+        {
+            RefreshUserDict();
+
+            if (!DmUsers.ContainsKey(Context.User.Id))
+            {
+                await ReplyAsync("you have not signed up for the daily dm!");
+                return;
+            }
+
+            var a = DmUsers[Context.User.Id];
+            await ReplyAsync("year: " + a.Item2 + ", most recent gecko: " + a.Item3 + ", check time: " + a.Item4 + " UTC");
+        }
+
         // Force updates
-        [RequireGeckobotAdmin]
         [Command("fcheck")]
         [Alias("force check")]
         [Summary("Force updates the daily dm.")]
         public async Task fcheck()
         {
-            await runChecks(true);
+            await runChecks(Context.User.Id, false, true);
             await ReplyAsync("force updated");
         }
 
-        [RequireGeckobotAdmin]
         [Command("year")]
         [Summary("Sets a new year for the daily dm.")]
-        public async Task setyear(int year2)
+        public async Task setyear([Summary("The year to set")] int year)
         {
+            RefreshUserDict();
+
             // Refresh highest gecko
             await Program.gec.RefreshHighestGec();
 
-            if (year2 > (Gec._highestGecko % 367))
+            if (year > (Gec._highestGecko % 367))
             {
                 await ReplyAsync("this year does not exist yet");
                 return;
             }
 
-            year = year2;
+            var temp = DmUsers[Context.User.Id];
+            temp.Item2 = year;
+            DmUsers.Remove(Context.User.Id);
+            DmUsers.Add(Context.User.Id, temp);
 
-            FileUtils.Save(year + "$" + _lastRun.ToString(), @"..\..\Cache\gecko4.gek");
+            SaveUserDict();
 
-            await ReplyAsync("year updated to " + year);
+            //adds reaction
+            await Context.Message.AddReactionAsync(new Emoji("✅"));
+        }
+
+        [RequireGeckobotAdmin]
+        [Command("local year")]
+        [Summary("Sets a new year for geckobot's profile.")]
+        public async Task setlyear([Summary("The year to set.")] int year)
+        {
+            // Refresh highest gecko
+            await Program.gec.RefreshHighestGec();
+
+            if (year > (Gec._highestGecko % 367))
+            {
+                await ReplyAsync("this year does not exist yet");
+                return;
+            }
+
+            LoadLocalInfo();
+
+            _year = year;
+
+            SaveLocalInfo();
+            //adds reaction
+            await Context.Message.AddReactionAsync(new Emoji("✅"));
+        }
+
+        [Command("time")]
+        [Summary("Sets a new time for the daily dm.")]
+        public async Task settime([Summary("The new time to set.")] string time)
+        {
+            RefreshUserDict();
+
+            if (!validtime(time))
+            {
+                await ReplyAsync("please enter a valid time");
+                return;
+            }
+
+            var temp = DmUsers[Context.User.Id];
+            temp.Item4 = time;
+            DmUsers.Remove(Context.User.Id);
+            DmUsers.Add(Context.User.Id, temp);
+
+            SaveUserDict();
+
+            if (DmTimers.ContainsKey(Context.User.Id))
+            {
+                DmTimers[Context.User.Id].Dispose();
+                DmTimers.Remove(Context.User.Id);
+            }
+            initiateUserTimer(Context.User.Id);
+
+            //adds reaction
+            await Context.Message.AddReactionAsync(new Emoji("✅"));
+        }
+
+        bool validtime(string time)
+        {
+            var split = time.Split(":");
+            if (split.Length != 3)
+            {
+                return false;
+            }
+
+            int aaaaa = 0;
+
+            if (!int.TryParse(split[0], out aaaaa) || !int.TryParse(split[1], out aaaaa) || !int.TryParse(split[2], out aaaaa))
+            {
+                return false;
+            }
+
+            if (int.Parse(split[0]) > 23 || int.Parse(split[1]) > 59 || int.Parse(split[2]) > 59)
+            {
+                return false;
+            }
+            
+            return true;
         }
 
         //sets up daily dms
         [Command("dm")]
         [Alias("sign up")]
         [Summary("Signs you up for daily dm.")]
-        public async Task dmgec([Summary("Bool whether you want to sign up or not.")] bool yes)
+        public async Task dmgec([Summary("Bool whether you want to sign up or not.")] bool yes, [Summary("The year to sign up for.")] int year = 1, [Summary("The time to dens the notice everyday.")] string time = "")
         {
-            RefreshDmGroup();
             if (yes)
             {
+                if (!validtime(time))
+                {
+                    await ReplyAsync("please enter a valid time");
+                    return;
+                }
+
                 //gets current user
                 IUser user = Context.User;
 
                 //if they are already signed up
-                if (DmUsers.Contains(user.Id))
+                if (DmUsers.Keys.Contains(user.Id))
                 {
                     await ReplyAsync("you are already signed up!");
                 }
                 else
                 {
                     //adds id
-                    DmUsers.Add(user.Id);
+                    DmUsers.Add(user.Id, (false, year, DateTime.Now.DayOfYear, time));
 
                     //saves info
-                    FileUtils.Save(string.Join(",", DmUsers) + (Channelthings.Count > 0 ? ",c" + string.Join(",c", Channelthings) : ""), @"..\..\Cache\gecko3.gek");
+                    SaveUserDict();
 
                     //DMs the user
                     await user.SendMessageAsync("hi, daily gecko updates have been set up, cancel by '\\`dm false'");
+
+                    //adds reaction
+                    await Context.Message.AddReactionAsync(new Emoji("✅"));
                 }
 
             }
@@ -151,117 +275,98 @@ namespace GeckoBot.Commands
                 IUser user = Context.User;
 
                 //if the are already not signed up
-                if (DmUsers.Contains(user.Id))
+                if (DmUsers.Keys.Contains(user.Id))
                 {
                     //removes user form list
                     DmUsers.Remove(user.Id);
 
                     //saves info
-                    FileUtils.Save(string.Join(",", DmUsers) + (Channelthings.Count > 0 ? ",c" + string.Join(",c", Channelthings) : ""), @"..\..\Cache\gecko3.gek");
+                    SaveUserDict();
 
                     //DMs the user
                     await user.SendMessageAsync("hi, daily gecko updates have been canceled");
 
+                    //adds reaction
+                    await Context.Message.AddReactionAsync(new Emoji("✅"));
                 }
                 else
                 {
                     await ReplyAsync("you are already not signed up!");
                 }
             }
-            //adds reaction
-            await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
 
         [RequireGeckobotAdmin]
         [Command("add channel")]
         [Summary("adds a channel to the daily dm system.")]
-        public async Task addchannel([Summary("Bool whether you want to sign up or not.")] bool join, [Summary("The id of the channel you want to sign up.")] string strchannelid)
+        public async Task addchannel([Summary("Bool whether you want to sign up or not.")] bool join, [Summary("The id of the channel you want to sign up.")] string strchannelid, [Summary("The year to sign up for.")] int year, [Summary("The time to dens the notice everyday.")] string time)
         {
             ulong channelid = ulong.Parse(strchannelid);
 
-            RefreshDmGroup();
             if (join)
             {
+                if (!validtime(time))
+                {
+                    await ReplyAsync("please enter a valid time");
+                    return;
+                }
+
                 //if they are already signed up
-                if (Channelthings.Contains(channelid))
+                if (DmUsers.Keys.Contains(channelid))
                 {
                     await ReplyAsync("this channel is already signed up!");
                 }
                 else
                 {
                     //adds id
-                    Channelthings.Add(channelid);
+                    DmUsers.Add(channelid, (true, year, DateTime.Now.DayOfYear, time));
 
                     //saves info
-                    FileUtils.Save(string.Join(",", DmUsers) + (Channelthings.Count > 0 ? ",c" + string.Join(",c", Channelthings) : ""), @"..\..\Cache\gecko3.gek");
+                    SaveUserDict();
+
+                    //adds reaction
+                    await Context.Message.AddReactionAsync(new Emoji("✅"));
                 }
 
             }
             else
             {
                 //if the are already not signed up
-                if (Channelthings.Contains(channelid))
+                if (DmUsers.Keys.Contains(channelid))
                 {
                     //removes user form list
-                    Channelthings.Remove(channelid);
+                    DmUsers.Remove(channelid);
 
                     //saves info
-                    FileUtils.Save(string.Join(",", DmUsers) + (Channelthings.Count > 0 ? ",c" + string.Join(",c", Channelthings) : ""), @"..\..\Cache\gecko3.gek");
+                    SaveUserDict();
 
+                    //adds reaction
+                    await Context.Message.AddReactionAsync(new Emoji("✅"));
                 }
                 else
                 {
                     await ReplyAsync("this channel is already not signed up!");
                 }
             }
-            //adds reaction
-            await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
 
         // Initialize timers and run initial checks
         public async Task initiatethings()
         {
-            //checks
-            await runChecks();
+            RefreshUserDict();
+
+            foreach(ulong key in DmUsers.Keys)
+            {
+                await runChecks(key, true);
+            }
         }
 
-        // Runs checks every hour
-        // Returns a boolean indicating whether the daily dm was sent due to this function call
-        // Passing true to force forces the dailydm to be sent
-        // while passing true to skipHGecCheck will skip the refresh of the highest gecko
-        // to prevent null reference exceptions during initialization if RefreshHighestGec finds a new highest gecko and calls dmGroup
-        public async Task<bool> runChecks(bool force = false)
+        public async Task<bool> runChecks(ulong id, bool natural = false, bool force = false)
         {
-            // Refresh highest gecko
-            await Program.gec.RefreshHighestGec();
+            RefreshUserDict();
 
-            year = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek").Split("$")[0]);
-            _lastRun = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek").Split("$")[1]);
             bool wasRefreshed = false;
             
-            DateTime time = DateTime.Now;
-            int seconds = time.Minute * 60 + time.Second;
-
-            _lastCheck = DateTime.Now;
-
-            // If the hour loop is misaligned, reset timer and rerun FirstStart at the strike of the next hour
-            if (time.Minute > 0)
-            {
-                //stops current timer
-                dmTimer.Close();
-
-                //sets timer to amount of time until next hour plus a little bit
-                System.Timers.Timer timer2 = new((3601 - seconds) * 1000);
-                timer2.Elapsed += async (sender, e) => await FirstStart(timer2, false);
-                timer2.Start();
-
-                dmTimer2 = timer2;
-
-                //sets some variables so stats show up
-                Started = false;
-                IsCounting = true;
-            }
-
             DirectoryInfo dir = new DirectoryInfo(@"../../../dectalk/audio/");
 
             //clears files in dectalk audio cache if some still exist for some reason
@@ -278,56 +383,47 @@ namespace GeckoBot.Commands
             }
 
             // Run daily dm if it has been a day since the last dm
-            if (force || _lastRun != DateTime.Now.DayOfYear)
+            if (force || DmUsers[id].Item3 != DateTime.Now.DayOfYear)
             {
-                await dailydm();
+                await dailydm(id);
                 wasRefreshed = true;
+            }
+
+            if (natural)
+            {
+                if (DmTimers.ContainsKey(id)) 
+                {
+                    DmTimers[id].Dispose();
+                    DmTimers.Remove(id);
+                }
+                initiateUserTimer(id);
             }
 
             return wasRefreshed;
         }
 
-        // Starts the loop and runs first check
-        // Called when the first hour (hh:00) is reached so that the subsequent 1 hour loop runs checks at :00 as well
-        private async Task FirstStart(System.Timers.Timer timer, bool reply)
+        public void initiateUserTimer(ulong id)
         {
-            timer.Close();
+            RefreshUserDict();
 
-            //checks because timer does not check when first initialized. trust me, future self, this is necessary
-            await runChecks();
+            //starts a timer with desired amount of time
+            System.Timers.Timer t = new(returnTimeToNextCheck(DmUsers[id].Item4));
+            t.Elapsed += async (sender, e) => await runChecks(id, true);
+            t.Start();
 
-            Start();
-
-            if (!CounterStarted)
-            {
-                CounterStarted = true;
-                if (reply)
-                {
-                    await ReplyAsync("hourly check started");
-                }
-            }
-
-        }
-
-        // Starts the one hour loop for running checks
-        private void Start()
-        {
-            dmTimer.Close();
-            
-            System.Timers.Timer timer = new(1000*60*60);
-            timer.Elapsed += async (sender, e) => await runChecks();
-            timer.Start();
-
-            dmTimer = timer;
-
-            //makes sure there is only one timer
-            Started = true;
+            DmTimers.Add(id, t);
         }
 
         //sends daily dm
-        async Task dailydm()
+        async Task dailydm(ulong id)
         {
+            RefreshUserDict();
+
+            await Program.gec.RefreshHighestGec();
+
             Gec.RefreshGec();
+
+            int year = DmUsers[id].Item2;
 
             //generates statement to send
             DateTime date = DateTime.Today;
@@ -335,108 +431,39 @@ namespace GeckoBot.Commands
             string final = $"Today is {date.ToString("d")}. Day {date.DayOfYear} of the year {date.Year} (gecko: {Gec.geckos[DriveUtils.addZeros(((year - 1) * 367) + (date.DayOfYear - 1))]}) \n" +
                 $"Other geckos of today include: ";
 
-            int i = 0;
-            while ((date.DayOfYear - 1) + (i * 367) < Gec._highestGecko)
+            for (int i = 0; (DateTime.Now.DayOfYear - 1) + (i * 367) < Gec._highestGecko; i++)
             {
                 final += $" {Gec.geckos[DriveUtils.addZeros((date.DayOfYear - 1) + (i * 367))]}";
-                i++;
             }
 
-            //DMs everybody on the list
-            await DmGroup(
-                DriveUtils.ImagePath(((year - 1) * 367) + (date.DayOfYear - 1), false),
-                final);
+            await (_client.GetUser(id) as IUser).SendFileAsync(DriveUtils.ImagePath(((year - 1) * 367) + (date.DayOfYear - 1), false), final);
 
-            //changes geckobot's profile to new gecko
-            Utils.Utils.changeProfile(
-                _client, 
-                DriveUtils.ImagePath(((year - 1) * 367) + (date.DayOfYear - 1), false));
+            var temp = DmUsers[id];
+            temp.Item3 = DateTime.Now.DayOfYear;
+            DmUsers.Remove(id);
+            DmUsers.Add(id, temp);
 
-            //updates last run counter
-            _lastRun = DateTime.Now.DayOfYear;
+            SaveUserDict();
 
-            FileUtils.Save(year + "$" + _lastRun.ToString(), @"..\..\Cache\gecko4.gek");
+            checkProfile();
         }
 
-        [RequireGeckobotAdmin]
-        [Command("send to group")]
-        [Summary("sends a message to the daily dm group.")]
-        public async Task test([Summary("the message to send to the group.")] [Remainder] string message)
+        public void checkProfile()
         {
-            await DmGroup("", message, false);
+            LoadLocalInfo();
 
-            await Context.Message.AddReactionAsync(new Emoji("✅"));
-        }
-
-        // Dms a group of users
-        public async Task DmGroup(string path, string content, bool isFile = true)
-        {
-            RefreshDmGroup();
-            DiscordSocketClient client = _client;
-
-            DateTime date = DateTime.Today;
-
-            //if it is geckobot's birthday
-            bool isBirthday = date.DayOfYear == 288;
-            
-            // Map ids to users
-
-            var users = DmUsers.Select(client.GetUser);
-            var channels = Channelthings.Select(client.GetChannel);
-
-            //DMs everybody on the list
-            foreach (var a in users.Distinct().ToList())
+            if (DateTime.Now.DayOfYear != _lastRun)
             {
-                if (isFile)
-                {
-                    await a.SendFileAsync(
-                        path,
-                        content);
-                }
-                else
-                {
-                    await a.SendMessageAsync(content);
-                }
+                //changes geckobot's profile to new gecko
+                Utils.Utils.changeProfile(
+                    _client,
+                    DriveUtils.ImagePath(((_year - 1) * 367) + (DateTime.Now.DayOfYear - 1), false));
 
-                if (isBirthday)
-                {
-                    await a.SendMessageAsync("happy birthday geckobot :cake:");
-                }
+                //updates last run counter
+                _lastRun = DateTime.Now.DayOfYear;
             }
 
-            //sends messages in channels
-            foreach (var a in channels.Distinct().ToList())
-            {
-                var temp = a as IMessageChannel;
-                if (isFile)
-                {
-                    await temp.SendFileAsync(
-                        path,
-                        content);
-                }
-                else
-                {
-                    await temp.SendMessageAsync(content);
-                }
-            }
-        }
-        
-        // Updates the DmUsers list from the file
-        public static void RefreshDmGroup()
-        {
-            FileUtils.checkForExistance();
-            
-            //clears
-            DmUsers.Clear();
-            Channelthings.Clear();
-
-            //gets info
-            string content = FileUtils.Load(@"..\..\Cache\gecko3.gek");
-            if (content != "")
-            {
-                DmUsers.AddRange(content.Split(",").Where(a => !a.Contains("c")).Select(ulong.Parse));
-                Channelthings.AddRange(content.Split(",").Where(a => a.Contains("c")).Select(a => ulong.Parse(a.Remove(0,1))));
-            }
+            SaveLocalInfo();
         }
     }
 }
