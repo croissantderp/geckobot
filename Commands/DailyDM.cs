@@ -299,7 +299,7 @@ namespace GeckoBot.Commands
         [RequireGeckobotAdmin]
         [Command("add channel")]
         [Summary("adds a channel to the daily dm system.")]
-        public async Task addchannel([Summary("Bool whether you want to sign up or not.")] bool join, [Summary("The id of the channel you want to sign up.")] string strchannelid, [Summary("The year to sign up for.")] int year, [Summary("The time to dens the notice everyday.")] string time)
+        public async Task addchannel([Summary("Bool whether you want to sign up or not.")] bool join, [Summary("The id of the channel you want to sign up.")] string strchannelid, [Summary("The year to sign up for.")] int year = 1, [Summary("The time to dens the notice everyday.")] string time = "")
         {
             ulong channelid = ulong.Parse(strchannelid);
 
