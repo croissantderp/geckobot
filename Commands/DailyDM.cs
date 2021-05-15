@@ -391,9 +391,9 @@ namespace GeckoBot.Commands
         {
             RefreshUserDict();
 
-            foreach(ulong key in DmUsers.Keys)
+            foreach (ulong key in DmUsers.Keys)
             {
-                await runChecks(key, true, false);
+                await runChecks(key, true);
             }
         }
 
@@ -431,11 +431,6 @@ namespace GeckoBot.Commands
 
             if (natural)
             {
-                if (DmTimers.ContainsKey(id)) 
-                {
-                    DmTimers[id].Dispose();
-                    DmTimers.Remove(id);
-                }
                 initiateUserTimer(id);
             }
 
@@ -445,6 +440,12 @@ namespace GeckoBot.Commands
         public void initiateUserTimer(ulong id)
         {
             RefreshUserDict();
+
+            if (DmTimers.ContainsKey(id))
+            {
+                DmTimers[id].Dispose();
+                DmTimers.Remove(id);
+            }
 
             //starts a timer with desired amount of time
             System.Timers.Timer t = new(returnTimeToNextCheck(DmUsers[id].Item4));

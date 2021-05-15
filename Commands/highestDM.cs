@@ -40,6 +40,14 @@ namespace GeckoBot.Commands
         {
             await Program.gec.RefreshHighestGec();
             Program.ddm.checkProfile();
+
+
+            foreach (ulong key in DailyDM.DmUsers.Keys)
+            {
+                Program.ddm.initiateUserTimer(key);
+            }
+
+
             lastchecked = DateTime.Now;
         }
 
