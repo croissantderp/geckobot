@@ -138,9 +138,9 @@ namespace GeckoBot.Commands
             // Refresh highest gecko
             await Program.gec.RefreshHighestGec();
 
-            if (year > (Gec._highestGecko % 367))
+            if (!validyear(year))
             {
-                await ReplyAsync("this year does not exist yet");
+                await ReplyAsync("this year is not completed yet");
                 return;
             }
 
@@ -163,9 +163,9 @@ namespace GeckoBot.Commands
             // Refresh highest gecko
             await Program.gec.RefreshHighestGec();
 
-            if (year > (Gec._highestGecko % 367))
+            if (!validyear(year))
             {
-                await ReplyAsync("this year does not exist yet");
+                await ReplyAsync("this year is not completed yet");
                 return;
             }
 
@@ -178,9 +178,19 @@ namespace GeckoBot.Commands
             await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
 
+        bool validyear(int year)
+        {
+            if (year > (Gec._highestGecko / 367))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         [Command("time")]
         [Summary("Sets a new time for the daily dm.")]
-        public async Task settime([Summary("The new time to set.")] string time)
+        public async Task settime([Summary("The new time to set. (Note: The time is in a 1-24 hour format in UTC)")] string time)
         {
             RefreshUserDict();
 
@@ -235,13 +245,19 @@ namespace GeckoBot.Commands
         [Command("dm")]
         [Alias("sign up")]
         [Summary("Signs you up for daily dm.")]
-        public async Task dmgec([Summary("Bool whether you want to sign up or not.")] bool yes, [Summary("The year to sign up for.")] int year = 1, [Summary("The time to dens the notice everyday.")] string time = "")
+        public async Task dmgec([Summary("Bool whether you want to sign up or not.")] bool yes, [Summary("The year to sign up for.")] int year = 1, [Summary("The time to send the notice everyday. (Note: The time is in a 1-24 hour format in UTC)")] string time = "")
         {
             if (yes)
             {
                 if (!validtime(time))
                 {
                     await ReplyAsync("please enter a valid time");
+                    return;
+                }
+
+                if (!validyear(year))
+                {
+                    await ReplyAsync("this year is not completed yet");
                     return;
                 }
 
@@ -299,7 +315,7 @@ namespace GeckoBot.Commands
         [RequireGeckobotAdmin]
         [Command("add channel")]
         [Summary("adds a channel to the daily dm system.")]
-        public async Task addchannel([Summary("Bool whether you want to sign up or not.")] bool join, [Summary("The id of the channel you want to sign up.")] string strchannelid, [Summary("The year to sign up for.")] int year = 1, [Summary("The time to dens the notice everyday.")] string time = "")
+        public async Task addchannel([Summary("Bool whether you want to sign up or not.")] bool join, [Summary("The id of the channel you want to sign up.")] string strchannelid, [Summary("The year to sign up for.")] int year = 1, [Summary("The time to send the notice everyday. (Note: The time is in a 1-24 hour format in UTC)")] string time = "")
         {
             ulong channelid = ulong.Parse(strchannelid);
 
