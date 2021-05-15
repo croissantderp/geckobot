@@ -52,12 +52,15 @@ namespace GeckoBot.Commands
         }
 
         //checks
-        [Command("highest check")]
+        [Command("hcheck")]
+        [Alias("highest check")]
         [Summary("Checks whether the highest gecko needs to be sent.")]
         public async Task check()
         {
             await Program.gec.RefreshHighestGec();
             Program.ddm.checkProfile();
+
+            await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
 
         [RequireGeckobotAdmin]
