@@ -94,12 +94,32 @@ namespace GeckoBot.Commands
         [Summary("Checks whether the daily dm needs to be sent.")]
         public async Task check()
         {
+            RefreshUserDict();
+
             var ran = await runChecks(Context.User.Id);
             
             if (ran)
                 await ReplyAsync("checked and updated");
             else
                 await ReplyAsync("checked");
+        }
+
+        
+        //checks
+        [Command("bcheck")]
+        [Summary("Checks whether the daily dm needs to be sent for all users.")]
+        public async Task bcheck()
+        {
+            RefreshUserDict();
+
+            int i = 0;
+            foreach (ulong key in DmUsers.Keys)
+            {
+                bool yes = await runChecks(key, true, false);
+                if (yes) i++;
+            }
+
+            await ReplyAsync("checked, " + i + " users updated.");
         }
 
         //checks
@@ -272,7 +292,7 @@ namespace GeckoBot.Commands
                 else
                 {
                     //adds id
-                    DmUsers.Add(user.Id, (false, year, DateTime.Now.DayOfYear, time));
+                    DmUsers.Add(user.Id, (false, year, DateTime.Now.DayOfYear - 1, time));
 
                     //saves info
                     SaveUserDict();
@@ -373,7 +393,7 @@ namespace GeckoBot.Commands
 
             foreach(ulong key in DmUsers.Keys)
             {
-                await runChecks(key, true);
+                await runChecks(key, true, false);
             }
         }
 
@@ -398,8 +418,12 @@ namespace GeckoBot.Commands
                 }
             }
 
+            var timeArray = DmUsers[id].Item4.Split(":");
+            int seconds = (int.Parse(timeArray[0]) * 60 + int.Parse(timeArray[1])) * 60 + int.Parse(timeArray[2]);
+            int useconds = (DateTime.Now.ToUniversalTime().Hour * 60 + DateTime.Now.ToUniversalTime().Minute) * 60 + DateTime.Now.ToUniversalTime().Second;
+
             // Run daily dm if it has been a day since the last dm
-            if (force || DmUsers[id].Item3 != DateTime.Now.DayOfYear)
+            if (force || (DmUsers[id].Item3 != DateTime.Today.ToUniversalTime().AddSeconds(seconds).DayOfYear && seconds < useconds))
             {
                 await dailydm(id);
                 wasRefreshed = true;
@@ -433,6 +457,9 @@ namespace GeckoBot.Commands
         //sends daily dm
         async Task dailydm(ulong id)
         {
+            var timeArray = DmUsers[id].Item4.Split(":");
+            int seconds = (int.Parse(timeArray[0]) * 60 + int.Parse(timeArray[1])) * 60 + int.Parse(timeArray[2]);
+
             RefreshUserDict();
 
             await Program.gec.RefreshHighestGec();
@@ -442,20 +469,27 @@ namespace GeckoBot.Commands
             int year = DmUsers[id].Item2;
 
             //generates statement to send
-            DateTime date = DateTime.Today;
-            
+            DateTime date = DateTime.Today.ToUniversalTime().AddSeconds(seconds);
+
             string final = $"Today is {date.ToString("d")}. Day {date.DayOfYear} of the year {date.Year} (gecko: {Gec.geckos[DriveUtils.addZeros(((year - 1) * 367) + (date.DayOfYear - 1))]}) \n" +
                 $"Other geckos of today include: ";
 
-            for (int i = 0; (DateTime.Now.DayOfYear - 1) + (i * 367) < Gec._highestGecko; i++)
+            for (int i = 0; (date.DayOfYear - 1) + (i * 367) < Gec._highestGecko; i++)
             {
                 final += $" {Gec.geckos[DriveUtils.addZeros((date.DayOfYear - 1) + (i * 367))]}";
             }
 
-            await (_client.GetUser(id) as IUser).SendFileAsync(DriveUtils.ImagePath(((year - 1) * 367) + (date.DayOfYear - 1), false), final);
+            if (DmUsers[id].Item1 == false)
+            {
+                await (_client.GetUser(id) as IUser).SendFileAsync(DriveUtils.ImagePath(((year - 1) * 367) + (date.DayOfYear - 1), false), final);
+            }
+            else
+            {
+                await (_client.GetChannel(id) as IMessageChannel).SendFileAsync(DriveUtils.ImagePath(((year - 1) * 367) + (date.DayOfYear - 1), false), final);
+            }
 
             var temp = DmUsers[id];
-            temp.Item3 = DateTime.Now.DayOfYear;
+            temp.Item3 = date.DayOfYear;
             DmUsers.Remove(id);
             DmUsers.Add(id, temp);
 

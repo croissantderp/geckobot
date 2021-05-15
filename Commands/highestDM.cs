@@ -19,8 +19,8 @@ namespace GeckoBot.Commands
     {
         // Receive the client via dependency injection
         public DiscordSocketClient _client { get; set; }
-        System.Timers.Timer htimer = new System.Timers.Timer();
-        DateTime lastchecked = DateTime.Now;
+        public static System.Timers.Timer htimer = new System.Timers.Timer();
+        public static DateTime lastchecked = new DateTime();
 
         // Initialize timers and run initial checks
         public async Task initiatethings()
