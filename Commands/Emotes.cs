@@ -102,6 +102,7 @@ namespace GeckoBot.Commands
         }
 
         //replies to message
+        [RequireGeckobotAdmin]
         [Command("ame")]
         [Summary("Sends a message with words replaced by emotes from the dictionary in a reply to a message but admin only")]
         public async Task amention([Summary("The message content.")] string message, [Summary("url or channel id")] string target = null, [Summary("message id")] string target2 = null)

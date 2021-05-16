@@ -33,10 +33,18 @@ namespace GeckoBot.Commands
 
         [Command("now")]
         [Summary("NOW. You're looking at now, sir. Everything that happens now is happening now. Go back to then! What? THEN! I can't! Why not? We passed it! When? Just now! When will then be now? soon.")]
-        public async Task now()
+        public async Task now(string timeZone = null)
         {
             var n = DateTimeOffset.Now.UtcDateTime;
             var n2 = DateTimeOffset.Now.DateTime;
+
+            TimeZoneInfo tzinfo = TimeZoneInfo.Local;
+
+            if (timeZone != null)
+            {
+                tzinfo = TimeZoneInfo.FindSystemTimeZoneById(timeZone);
+            }
+            var ns = TimeZoneInfo.ConvertTimeFromUtc(n2.ToUniversalTime(), tzinfo);
 
             long secondsSince = DateTimeOffset.Now.ToUnixTimeSeconds();
 
@@ -46,7 +54,7 @@ namespace GeckoBot.Commands
                 $"The {DateTime.Now.DayOfYear} day of the year{(DateTime.IsLeapYear(DateTime.Now.Year) ? " (which is a leap year)" : "")}, {DateTime.Now.DayOfWeek} \n" + //days
                 $"Geckobot is currently running in the {TimeZoneInfo.Local.Id} time zone ({TimeZoneInfo.Local.DisplayName}) which currently is {(DateTime.Now.IsDaylightSavingTime() ? "" : "not ")}in daylight savings time \n" + //local time
                 $"local time is {n2.ToLongDateString()} ({n2.ToShortDateString()}), {n2.Hour}:{n2.Minute}:{n2.Second}.{n2.Millisecond} \n" + //local time
-                $""
+                $"specified timezone time is {ns.ToLongDateString()} ({ns.ToShortDateString()}), {ns.Hour}:{ns.Minute}:{ns.Second}.{ns.Millisecond} \n"
                 );
         }
 
