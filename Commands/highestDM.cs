@@ -41,12 +41,10 @@ namespace GeckoBot.Commands
             await Program.gec.RefreshHighestGec();
             Program.ddm.checkProfile();
 
-
             foreach (ulong key in DailyDM.DmUsers.Keys)
             {
                 Program.ddm.initiateUserTimer(key);
             }
-
 
             lastchecked = DateTime.Now;
         }
@@ -122,13 +120,31 @@ namespace GeckoBot.Commands
                 var temp = a as IMessageChannel;
                 if (isFile)
                 {
-                    await temp.SendFileAsync(
+                    IUserMessage message = await temp.SendFileAsync(
                         path,
                         content);
+
+                    try
+                    {
+                        await message.CrosspostAsync();
+                    }
+                    catch
+                    {
+                        continue;
+                    }
                 }
                 else
                 {
-                    await temp.SendMessageAsync(content);
+                    IUserMessage message = await temp.SendMessageAsync(content);
+
+                    try
+                    {
+                        await message.CrosspostAsync();
+                    }
+                    catch
+                    {
+                        continue;
+                    }
                 }
             }
         }
