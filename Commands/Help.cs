@@ -2,6 +2,7 @@
 using System.Linq;
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -47,11 +48,14 @@ namespace GeckoBot.Commands
         
         [Command("help")]
         [Summary("Dynamic help command.")]
-        public async Task help([Remainder][Summary("The specific command or module to send info about. Enter 'list' if you want a list of commands under their respective modules. Add a space and a number at the end for the index of the result.")] string all = "")
+        public async Task help(
+            [Remainder]
+            [Summary("The specific command or module to send info about. Enter 'list' if you want a list of commands under their respective modules. Add a space and a number at the end for the index of the result.")] 
+            string all = ""
+        ) 
         {
             string target = all;
-            int result;
-            if (int.TryParse(all.Split(" ").Last(), out result))
+            if (int.TryParse(all.Split(" ").Last(), out int result))
             {
                 result--;
                 target = string.Join(" ", all.Split(" ").SkipLast(1));
@@ -64,18 +68,21 @@ namespace GeckoBot.Commands
             // If list is specified, send the command list
             if (target == "list")
             {
-                embedBuilder.Title = "Command List:";
+                // Chunk modules by groups of 25 to fit on an embed
+                var group = modules.ChunkedBy(25)[result];
+
+                embedBuilder.Title = $"Command List (Page {result + 1}):";
                 embedBuilder.Description = "The prefix for this server is " + Prefix.returnPrefix(Context.Guild != null ? Context.Guild.Id.ToString() : "");
                 
-                foreach (var module in modules)
+                // Loop through module in chunk
+                foreach (var module in group)
                 {
-                    EmbedFieldBuilder field = new()
+                    embedBuilder.AddField(new EmbedFieldBuilder()
                     {
                         Name = module.Name,
                         Value = string.Join(", ", module.Commands.Select(FormatCommand)),
                         IsInline = true
-                    };
-                    embedBuilder.AddField(field);
+                    });
                 }
             }
             else if (target != "") // If there was an argument given, send info about that argument

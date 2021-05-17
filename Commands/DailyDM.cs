@@ -292,7 +292,7 @@ namespace GeckoBot.Commands
                 else
                 {
                     //adds id
-                    DmUsers.Add(user.Id, (false, year, DateTime.Now.DayOfYear - 1, time));
+                    DmUsers.Add(user.Id, (false, year, DateTime.Now.ToUniversalTime().DayOfYear - 1, time));
 
                     //saves info
                     SaveUserDict();
@@ -355,7 +355,7 @@ namespace GeckoBot.Commands
                 else
                 {
                     //adds id
-                    DmUsers.Add(channelid, (true, year, DateTime.Now.DayOfYear, time));
+                    DmUsers.Add(channelid, (true, year, DateTime.Now.ToUniversalTime().DayOfYear - 1, time));
 
                     //saves info
                     SaveUserDict();
