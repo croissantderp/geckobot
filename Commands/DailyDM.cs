@@ -25,6 +25,7 @@ namespace GeckoBot.Commands
         //user/channel id, (is channel, year, last gecko, string)
         public static Dictionary<ulong, (bool, int, int, string)> DmUsers = new(); //people to dm for daily gecko images
         public static Dictionary<ulong, System.Timers.Timer> DmTimers = new Dictionary<ulong, System.Timers.Timer>();
+        public static Dictionary<ulong, DateTime> DmTimersLastCheck = new Dictionary<ulong, DateTime>();
 
         public static void LoadLocalInfo()
         {
@@ -139,6 +140,37 @@ namespace GeckoBot.Commands
             await ReplyAsync("year: " + a.Item2 + ", most recent gecko: " + a.Item3 + ", check time: " + a.Item4 + " UTC");
         }
 
+        //checks
+        [Command("ddm last check")]
+        [Summary("Sends your last check time.")]
+        public async Task lastCheckInfo([Summary("The user to send info about.")] string user = null)
+        {
+            if (user == null)
+            {
+                if (!DmUsers.ContainsKey(Context.User.Id))
+                {
+                    await ReplyAsync("you have not signed up for the daily dm!");
+                    return;
+                }
+
+                var a = DmTimersLastCheck[Context.User.Id];
+                await ReplyAsync(a + " UTC");
+            }
+            else
+            {
+                ulong temp = ulong.Parse(user);
+
+                if (!DmUsers.ContainsKey(temp))
+                {
+                    await ReplyAsync("that user has not signed up for the daily dm!");
+                    return;
+                }
+
+                var a = DmTimersLastCheck[temp];
+                await ReplyAsync(a + " UTC");
+            }
+        }
+
         // Force updates
         [Command("fcheck")]
         [Alias("force check")]
@@ -227,11 +259,6 @@ namespace GeckoBot.Commands
 
             SaveUserDict();
 
-            if (DmTimers.ContainsKey(Context.User.Id))
-            {
-                DmTimers[Context.User.Id].Dispose();
-                DmTimers.Remove(Context.User.Id);
-            }
             initiateUserTimer(Context.User.Id);
 
             //adds reaction
@@ -431,6 +458,8 @@ namespace GeckoBot.Commands
 
             if (natural)
             {
+                DmTimersLastCheck.Add(id , DateTime.Now.ToUniversalTime());
+
                 initiateUserTimer(id);
             }
 
