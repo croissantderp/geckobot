@@ -141,7 +141,7 @@ namespace GeckoBot.Commands
         }
 
         //checks
-        [Command("ddm last check")]
+        [Command("ddm last checked")]
         [Summary("Sends your last check time.")]
         public async Task lastCheckInfo([Summary("The user to send info about.")] string user = null)
         {

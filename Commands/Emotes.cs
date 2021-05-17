@@ -247,6 +247,7 @@ namespace GeckoBot.Commands
             //number of emotes added
             int emotesAdded = 0;
             int emotesRemoved = 0;
+            int emotesRedistributed = 0;
 
             List<string> emotes = new List<string>();
 
@@ -265,6 +266,8 @@ namespace GeckoBot.Commands
                 emotesRemoved++;
             }
 
+            List<string> distinct = new List<string>();
+
             foreach (IGuild a in guilds)
             {
                 //gets every emote in a guild
@@ -279,18 +282,62 @@ namespace GeckoBot.Commands
 
                     //shortened name of the emote
                     string name = c.ToString().Remove(count - 20, 20).Remove(0, (isAnim ? 3 : 2));
+                    
+                    bool isDistinct = false;
+                    if (!distinct.Contains(name))
+                    {
+                        isDistinct = true;
+                        distinct.Add(name);
+                    }
 
                     string cstring = c.ToString();
 
                     Regex preRegex = new Regex(@"^" + name + @"(|-)\d*");
 
+                    //escapes forbidden
+                    name = EmoteUtils.escapeforbidden(name);
+                    cstring = EmoteUtils.escapeforbidden(cstring);
+
+                    Regex regex = new Regex(@"^" + name + @"-\d+$");
+
+                    var arrayThing = EmoteDict.Keys.Where(a => regex.IsMatch(a));
+                    if (EmoteDict.ContainsKey(name))
+                    {
+                        arrayThing = arrayThing.Append(name);
+                    }
+
+                    List<string> tempList = new List<string>();
+                    foreach (string key in arrayThing)
+                    {
+                        tempList.Add(EmoteDict[key]);
+                        EmoteDict.Remove(key);
+                    }
+
+                    int offset = 0;
+
+                    foreach (string value in tempList.Distinct())
+                    {
+                        if (offset == 0)
+                        {
+                            EmoteDict.Add(name, value);
+                        }
+                        else
+                        {
+                            EmoteDict.Add(name + "-" + offset, value);
+                        }
+                        offset++;
+
+                        if (isDistinct)
+                        {
+                            emotesRedistributed++;
+                        }
+                    }
+
+                    emotesRemoved += tempList.Count() - tempList.Distinct().Count();
+
                     //if the emote dictionary already contains a key
                     if (!EmoteDict.ContainsKey(name))
                     {
-                        //escapes forbidden
-                        name = EmoteUtils.escapeforbidden(name);
-                        cstring = EmoteUtils.escapeforbidden(cstring);
-
                         //adds to emote dictionary
                         EmoteDict.Add(name, cstring);
 
@@ -299,44 +346,7 @@ namespace GeckoBot.Commands
                     }
                     else if (EmoteDict.Keys.Where(a => preRegex.IsMatch(a)).All(a => EmoteDict[a] != cstring))
                     {
-                        //escapes forbidden
-                        name = EmoteUtils.escapeforbidden(name);
-                        cstring = EmoteUtils.escapeforbidden(cstring);
-
-                        Regex regex = new Regex(@"^" + name + @"-\d+$");
-
-                        var arrayThing = EmoteDict.Keys.Where(a => regex.IsMatch(a));
-
-                        var arrayThingButKeyValuePair = arrayThing.Select(a => new KeyValuePair<string, string>(a,EmoteDict[a]));
-
-                        var duplicateKeys = arrayThingButKeyValuePair.GroupBy(s => s.Value).SelectMany(grp => grp.Skip(1)).Distinct().Select(a => a.Key);
-
-                        foreach (string key in duplicateKeys)
-                        {
-                            Console.WriteLine(key);
-                            EmoteDict.Remove(key);
-                            emotesRemoved++;
-                        }
-
-                        arrayThing = EmoteDict.Keys.Where(a => regex.IsMatch(a));
-
-                        int offset = 0;
-
-                        if (arrayThing.Count() != 0)
-                        {
-                            var numArray = arrayThing.Select(a => a.Split("-").Last()).OrderBy(a => int.Parse(a)).Select(a => int.Parse(a));
-
-                            foreach (int d in numArray)
-                            {
-                                if (!numArray.Contains(d + 1))
-                                {
-                                    offset = d;
-                                    break;
-                                }
-                            }
-                        }
-                        //adds to emote dictionary
-                        EmoteDict.Add(name + "-" + (offset + 1).ToString(), cstring);
+                        EmoteDict.Add(name + "-" + (offset).ToString(), cstring);
 
                         //adds to counter
                         emotesAdded++;
@@ -348,7 +358,7 @@ namespace GeckoBot.Commands
             FileUtils.Save(Globals.DictToString(EmoteDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko2.gek");
 
             //replies with number of new emotes added
-            await ReplyAsync(emotesAdded + " new emotes added, " + emotesRemoved + " emotes removed");
+            await ReplyAsync(emotesAdded + " new emotes added, " + emotesRedistributed + " emotes redistributed, " + emotesRemoved + " emotes removed");
         }
         
         //emote react function

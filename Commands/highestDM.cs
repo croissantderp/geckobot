@@ -46,7 +46,7 @@ namespace GeckoBot.Commands
                 Program.ddm.initiateUserTimer(key);
             }
 
-            lastchecked = DateTime.Now;
+            lastchecked = DateTime.Now.ToUniversalTime();
         }
 
         //checks
@@ -54,7 +54,7 @@ namespace GeckoBot.Commands
         [Summary("Gets the time when the highest gecko was last sent.")]
         public async Task lastcheck()
         {
-            await ReplyAsync(lastchecked.ToString());
+            await ReplyAsync(lastchecked + " UTC");
         }
 
         //checks
