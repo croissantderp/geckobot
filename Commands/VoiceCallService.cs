@@ -53,6 +53,7 @@ namespace GeckoBot.Commands
 
                 IAudioClient client;
                 ConnectedChannels.Remove(guild.Id, out client);
+                client.Dispose();
                 await channels[guild.Id].Item2.DisposeAsync();
                 await channels[guild.Id].Item1.DisconnectAsync();
                 channels.Remove(guild.Id);
