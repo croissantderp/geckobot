@@ -450,7 +450,7 @@ namespace GeckoBot.Commands
             int useconds = (DateTime.Now.ToUniversalTime().Hour * 60 + DateTime.Now.ToUniversalTime().Minute) * 60 + DateTime.Now.ToUniversalTime().Second;
 
             // Run daily dm if it has been a day since the last dm
-            if (force || (DmUsers[id].Item3 != DateTime.Today.ToUniversalTime().AddSeconds(seconds).DayOfYear && seconds < useconds))
+            if (force || (DmUsers[id].Item3 != DateTime.Today.ToUniversalTime().AddSeconds(seconds).DayOfYear && seconds <= useconds))
             {
                 await dailydm(id);
                 wasRefreshed = true;
@@ -458,6 +458,7 @@ namespace GeckoBot.Commands
 
             if (natural)
             {
+                if (DmTimersLastCheck.ContainsKey(id)) DmTimersLastCheck.Remove(id);
                 DmTimersLastCheck.Add(id , DateTime.Now.ToUniversalTime());
 
                 initiateUserTimer(id);
