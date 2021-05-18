@@ -223,8 +223,6 @@ namespace GeckoBot.Commands
         [Summary("Deletes and redownloads the specified gecko.")]
         public async Task rfgec([Summary("The value of the gecko.")] int value)
         {
-            RefreshGec();
-
             //converts int to string
             string final = DriveUtils.addZeros(value);
 
