@@ -516,7 +516,16 @@ namespace GeckoBot.Commands
             }
             else
             {
-                await (_client.GetChannel(id) as IMessageChannel).SendFileAsync(DriveUtils.ImagePath(((year - 1) * 367) + (date.DayOfYear - 1), false), final);
+                IUserMessage message = await (_client.GetChannel(id) as IMessageChannel).SendFileAsync(DriveUtils.ImagePath(((year - 1) * 367) + (date.DayOfYear - 1), false), final);
+
+                try
+                {
+                    await message.CrosspostAsync();
+                }
+                catch
+                {
+
+                }
             }
 
             var temp = DmUsers[id];
