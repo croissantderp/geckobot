@@ -75,7 +75,35 @@ namespace GeckoBot.Commands
                 else
                 {
                     _service.skip(Context.Guild);
-                    await Context.Message.AddReactionAsync(new Emoji("↩️"));
+                    await Context.Message.AddReactionAsync(new Emoji("⏭️"));
+                }
+            }
+            else
+            {
+                await ReplyAsync("I am not in a voice channel");
+            }
+        }
+
+        // You *MUST* mark these commands with 'RunMode.Async'
+        // otherwise the bot will not respond until the Task times out.
+        [Command("clear", RunMode = RunMode.Async)]
+        [Summary("Clears the server queue.")]
+        public async Task superskipCmd()
+        {
+            var voiceState = Context.User as IVoiceState;
+
+            if (VoiceCallService.channels.ContainsKey(Context.Guild.Id))
+            {
+                if (voiceState?.VoiceChannel == null)
+                {
+                    await ReplyAsync("You must be connected to a voice channel!");
+                    return;
+                }
+                else
+                {
+                    _service.skip(Context.Guild);
+                    queue.Remove(Context.Guild.Id);
+                    await Context.Message.AddReactionAsync(new Emoji("⏏️"));
                 }
             }
             else

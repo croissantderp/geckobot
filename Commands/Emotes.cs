@@ -167,6 +167,39 @@ namespace GeckoBot.Commands
             await ReplyAsync($"result {temp2.Count()} of {temp.Count()}, score: {Globals.FuzzyMatchScore(final + EmoteDict[final], yes)}, key: " + final + ", Value: " + EmoteDict[final], allowedMentions: Globals.allowed);
         }
 
+        [Command("em")]
+        [Summary("edits a message.")]
+        public async Task edit([Summary("Text to change the message content to.")] string newValue, [Summary("First input, either link or channel id")] string input = null, [Summary("Second input, message id or leave blank for link.")] string input2 = null)
+        {
+            string[] ids = (await Globals.getIds(input, input2, Context)).ToString().Split("$");
+            string channel = ids[0];
+            string message = ids[1];
+
+            var channel2 = Context.Client.GetChannel(ulong.Parse(channel)) as IMessageChannel;
+
+            //parses message id provided and gets message from channel
+            var message2 = await channel2.GetMessageAsync(ulong.Parse(message));
+
+            if (message2.Author.Id == Context.Client.CurrentUser.Id)
+            {
+                if (!Globals.undeletable.Contains(message2.Id))
+                {
+                    await (message2 as IUserMessage).ModifyAsync(a => a.Content = newValue);
+
+                    //adds reaction
+                    await Context.Message.AddReactionAsync(new Emoji("✅"));
+                }
+                else
+                {
+                    await ReplyAsync("message is uneditable");
+                }
+            }
+            else
+            {
+                await ReplyAsync("can only delete messages sent by geckobot");
+            }
+        }
+
         //finds emote
         [Command("ge")]
         [Summary("Looks up a key in the dictionary given the value; the reverse of `e.")]

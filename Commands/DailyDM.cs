@@ -544,10 +544,34 @@ namespace GeckoBot.Commands
 
             if (DateTime.Now.DayOfYear != _lastRun)
             {
+                string path = "";
+                if (DriveUtils.ImagePath(((_year - 1) * 367) + (DateTime.Now.DayOfYear - 1), false).Split(".").Last() == "gif")
+                {
+                    try
+                    {
+                        if (DriveUtils.ImagePath(((_year - 1) * 367) + (DateTime.Now.DayOfYear - 1), true).Split(".").Last() == "gif")
+                        {
+                            path = DriveUtils.ImagePath(0, false);
+                        }
+                        else
+                        {
+                            path = DriveUtils.ImagePath(((_year - 1) * 367) + (DateTime.Now.DayOfYear - 1), true);
+                        }
+                    }
+                    catch
+                    {
+                        path = DriveUtils.ImagePath(0, false);
+                    }
+                }
+                else
+                {
+                    path = DriveUtils.ImagePath(((_year - 1) * 367) + (DateTime.Now.DayOfYear - 1), false);
+                }
+
                 //changes geckobot's profile to new gecko
                 Utils.Utils.changeProfile(
-                    _client,
-                    DriveUtils.ImagePath(((_year - 1) * 367) + (DateTime.Now.DayOfYear - 1), false));
+                    _client, path
+                    );
 
                 //updates last run counter
                 _lastRun = DateTime.Now.DayOfYear;

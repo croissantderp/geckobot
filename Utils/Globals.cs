@@ -66,7 +66,7 @@ namespace GeckoBot.Utils
         public static DateTime datetime = new();
         public static bool isSleep = false;
         
-        // Very descriptive name gecko, tells me exactly what this is for
+        // The parsed string things for the visual countdown in timer.cs
         public static string[] strings = new string[3];
 
         public static List<ulong> undeletable = new();

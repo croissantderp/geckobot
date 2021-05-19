@@ -15,16 +15,30 @@ namespace GeckoBot.Commands
         [Summary("Blocks a user.")]
         public async Task tempblock([Summary("The user's id to block")][Remainder] string id)
         {
-            Globals.tempBlocked.Add(ulong.Parse(id));
-            await ReplyAsync("block'd");
+            if (Globals.tempBlocked.Contains(ulong.Parse(id)))
+            {
+                await ReplyAsync("this user is already block'd");
+            }
+            else
+            {
+                Globals.tempBlocked.Add(ulong.Parse(id));
+                await ReplyAsync("block'd");
+            }
         }
 
         [Command("unblock")]
         [Summary("Unblocks a user.")]
         public async Task untempblock([Summary("The user's id to block")][Remainder] string id)
         {
-            Globals.tempBlocked.Remove(ulong.Parse(id));
-            await ReplyAsync("unblock'd");
+            if (Globals.tempBlocked.Contains(ulong.Parse(id)))
+            {
+                Globals.tempBlocked.Remove(ulong.Parse(id));
+                await ReplyAsync("unblock'd");
+            }
+            else
+            {
+                await ReplyAsync("this user is already unblock'd");
+            }
         }
 
         //termination command
