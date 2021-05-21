@@ -56,8 +56,15 @@ namespace GeckoBot.Commands
                 DmUsers.Select(a => new KeyValuePair<string, string>(a.Key.ToString(), a.Value.Item1.ToString() + "," + a.Value.Item2.ToString() + "," + a.Value.Item3.ToString() + "," + a.Value.Item4))
                 .ToDictionary(a => a.Key, a => a.Value);
 
-            //saves info
-            FileUtils.Save(Globals.DictToString(parsedDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko3.gek");
+            try
+            {
+                //saves info
+                FileUtils.Save(Globals.DictToString(parsedDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko3.gek");
+            }
+            catch
+            {
+
+            }
         }
 
         //parses time in hh:mm:ss format
@@ -551,7 +558,7 @@ namespace GeckoBot.Commands
                     {
                         if (DriveUtils.ImagePath(((_year - 1) * 367) + (DateTime.Now.DayOfYear - 1), true).Split(".").Last() == "gif")
                         {
-                            path = DriveUtils.ImagePath(0, false);
+                            path = @"..\..\..\IMG_20190521_203810.jpg";
                         }
                         else
                         {
@@ -560,7 +567,7 @@ namespace GeckoBot.Commands
                     }
                     catch
                     {
-                        path = DriveUtils.ImagePath(0, false);
+                        path = @"..\..\..\IMG_20190521_203810.jpg";
                     }
                 }
                 else

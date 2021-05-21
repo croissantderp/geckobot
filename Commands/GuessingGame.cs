@@ -1,61 +1,266 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Threading;
+using Discord;
 using Discord.Commands;
+using GeckoBot.Utils;
+using GeckoBot.Preconditions;
+using Google.Apis.Drive.v3;
+using Google.Apis.Drive.v3.Data;
 
 namespace GeckoBot.Commands
 {
     //number guessing game
-    [Group("g")]
-    [Summary("A number guessing game.")]
+    [Summary("A gecko guessing game.")]
     public class GuessingGame : ModuleBase<SocketCommandContext>
     {
-        //guessing game variables
-        private static int _gNumber;
-        private static int _attempts;
-        private static bool _easyMode;
-        
-        //generates new number
-        [Command("new")]
-        [Summary("Starts a new game from the min and max provided.")]
-        public async Task newNumber([Summary("Minimum value of new random value.")] int min, [Summary("Maximum value of new random value.")] int max)
-        {
-            //generates number based on min and max value
-            Random random = new();
-            int number = random.Next(min, max + 1);
+        public static Dictionary<ulong, (int, string)> games = new Dictionary<ulong, (int, string)>();
+        public static Dictionary<ulong, List<ulong>> played = new Dictionary<ulong, List<ulong>>();
+        public static Dictionary<ulong, System.Timers.Timer> gameTimers = new Dictionary<ulong, System.Timers.Timer>();
 
-            //achievement :D
-            await ReplyAsync(min == max 
-                ? "achievement get! play on the easiest difficulty!" 
-                : $"new number generated between {min} and {max}");
-            
-            //assigns variables
-            _gNumber = number;
-            _easyMode = min == max;
-            _attempts = 0;
+        public static Dictionary<ulong, int> scores = new Dictionary<ulong, int>();
+
+        public static List<int> alreadyDone = new List<int>();
+
+        //loads poll dictionary as string and converts it back into dictionary
+        private static void RefreshScoreDict()
+        {
+            FileUtils.checkForExistance();
+
+            scores = Regex.Split(FileUtils.Load(@"..\..\Cache\gecko10.gek"), @"\s(?<!\\)ҩ\s")
+                .Select(part => Regex.Split(part, @"\s(?<!\\)\⁊\s"))
+                .Where(part => part.Length == 2)
+                .ToDictionary(sp => ulong.Parse(sp[0]), sp => int.Parse(sp[1]));
         }
 
-        [Command("")]
-        [Summary("Guesses the picked number.")]
-        public async Task attempt([Summary("The value to guess.")] int value)
+        [Command("leaderboard")]
+        [Summary("displays the leaderboard fot the gecko guessing game")]
+        public async Task test()
         {
-            _attempts += 1;
+            RefreshScoreDict();
 
-            //checks values and adds to attempts
-            if (value < _gNumber)
+            var unnamed = scores.OrderByDescending(a => a.Value);
+            var unnamed2 = unnamed.Select(a => Context.Client.GetUser(a.Key).Username + " score:" + a.Value).Take(10).ToList();
+
+            for (int i = 0; i < unnamed2.Count(); i++)
             {
-                await ReplyAsync("too low");
+                unnamed2[i] = (i + 1) + ". " + unnamed2[i];
             }
-            else if (value > _gNumber)
+
+            if (!unnamed.Select(a => a.Key).Take(10).ToList().Contains(Context.User.Id) && scores.Keys.Contains(Context.User.Id))
             {
-                await ReplyAsync("too high");
+                int index = unnamed.Select(a => a.Key).ToList().FindIndex(a => a == Context.User.Id);
+                unnamed2.Add("...");
+                unnamed2.Add(index + ". " + Context.User.Username + " score: " + scores[Context.User.Id]);
+                unnamed2.Add("...");
+            }
+
+            //buils an embed
+            var embed = new EmbedBuilder
+            {
+                Title = "gecko guessing leaderboard",
+                Description = string.Join("\n", unnamed2)
+            };
+
+            embed.WithColor(180, 212, 85);
+
+            var embed2 = embed.Build();
+
+            await ReplyAsync(embed: embed2);
+        }
+
+        //generates new number
+        [Command("ggg")]
+        [Summary("Starts a new Gecko Guessing Game.")]
+        public async Task newGame()
+        {
+            if (games.ContainsKey(Context.Channel.Id))
+            {
+                await ReplyAsync("There is already an ongoing game!");
+                return;
+            }
+
+            RefreshScoreDict();
+
+            Gec.RefreshGec();
+
+            if (alreadyDone.Count == 0)
+            {
+                for (int i = 0; i <= Gec._highestGecko; i++)
+                {
+                    alreadyDone.Add(i);
+                }
+            }
+
+            //gets random value
+            Random random = new Random();
+            int indexNumb = random.Next(0, alreadyDone.Count);
+            int numb = alreadyDone[indexNumb];
+
+            alreadyDone.RemoveAt(indexNumb);
+
+            List<string> array = Gec.geckos[DriveUtils.addZeros(numb)].Split("_").ToList();
+            array.RemoveAt(0);
+            List<string> array2 = string.Join("", array).Split(".").ToList();
+            array2.RemoveAt(array2.Count - 1);
+            string final = string.Join(".", array2);
+
+            games.Add(Context.Channel.Id, (numb, final));
+
+            //sends file
+            await Context.Channel.SendFileAsync(
+                DriveUtils.ImagePath(numb, false),
+                $"Guess the name or number of this gecko");
+
+            //starts a timer with desired amount of time
+            System.Timers.Timer t = new(60 * 1000);
+            t.Elapsed += async (sender, e) => await timerUp(Context.Channel.Id, t);
+            t.Start();
+            gameTimers.Add(Context.Channel.Id, t);
+        }
+
+        async Task timerUp(ulong channel, System.Timers.Timer t)
+        {
+            t.Dispose();
+            await (Context.Client.GetChannel(channel) as IMessageChannel).SendMessageAsync("Time is up, the gecko was #" + games[channel].Item1 + ": " + games[channel].Item2);
+
+            if (played.ContainsKey(Context.Channel.Id))
+            {
+                played.Remove(Context.Channel.Id);
+            }
+
+            games.Remove(channel);
+
+            gameTimers.Remove(channel);
+        }
+
+        [Command("g")]
+        [Summary("Guesses the picked gecko.")]
+        public async Task attempt([Summary("The value to guess.")][Remainder] string value)
+        {
+            if (!games.ContainsKey(Context.Channel.Id))
+            {
+                await ReplyAsync("No ongoing game, use 'ggg' to start a game.");
+                return;
+            }
+
+            if (played.ContainsKey(Context.Channel.Id) && played[Context.Channel.Id].Contains(Context.User.Id))
+            {
+                await ReplyAsync("You have already guessed correctly! Use 'gend' to end the game");
+                return;
+            }
+
+            value = value.Replace("_", "").Replace(" ", "");
+
+            int score = 0;
+            int bonus = 0;
+            
+            int num = games[Context.Channel.Id].Item1;
+            string name = games[Context.Channel.Id].Item2;
+
+            double scoreScale = 100.0 / (double)Globals.FuzzyMatchScore(name, name);
+
+            int temp;
+
+            if (int.TryParse(value, out temp) && Math.Abs(num - temp) < 10)
+            {
+                bonus = played.ContainsKey(Context.Channel.Id) ? 30 - (played[Context.Channel.Id].Count * 10) : 30;
+                score = 100 - Math.Abs(num - temp) * 10;
+                await ReplyAsync(Context.User.Username + " guessed correctly with a score of " + score + " and " + bonus + " bonus" + (score >= 50 ? ", the gecko was #" + games[Context.Channel.Id].Item1 + ": " + games[Context.Channel.Id].Item2 : ", keep guessing!"));
+                
+                if (!played.ContainsKey(Context.Channel.Id))
+                {
+                    played.Add(Context.Channel.Id, new List<ulong>());
+                }
+                played[Context.Channel.Id].Add(Context.User.Id);
+
+                int finalScore = score + bonus;
+
+                if (scores.ContainsKey(Context.User.Id))
+                {
+                    finalScore += scores[Context.User.Id];
+                    scores.Remove(Context.User.Id);
+                }
+                scores.Add(Context.User.Id, finalScore);
+
+                if (score >= 50)
+                {
+                    played.Remove(Context.Channel.Id);
+
+                    games.Remove(Context.Channel.Id);
+
+                    gameTimers[Context.Channel.Id].Dispose();
+                    gameTimers.Remove(Context.Channel.Id);
+
+                    //converts dictionary to string and saves
+                    FileUtils.Save(Globals.DictToString(scores, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko10.gek");
+                }
+            }
+            else if (Globals.FuzzyMatch(name, value, out temp) && !temp.ToString().Contains("-"))
+            {
+                bonus = played.ContainsKey(Context.Channel.Id) ? 30 - (played[Context.Channel.Id].Count * 10) : 30;
+                score = int.Parse(Math.Round(temp * scoreScale).ToString());
+                await ReplyAsync(Context.User.Username + " guessed correctly with a score of " + score + " and " + bonus + " bonus" + (score >= 50 ? ", the gecko was #" + games[Context.Channel.Id].Item1 + ": " + games[Context.Channel.Id].Item2 : ", keep guessing!"));
+
+                if (!played.ContainsKey(Context.Channel.Id))
+                {
+                    played.Add(Context.Channel.Id, new List<ulong>());
+                }
+                played[Context.Channel.Id].Add(Context.User.Id);
+
+                int finalScore = score + bonus;
+
+                if (scores.ContainsKey(Context.User.Id))
+                {
+                    finalScore += scores[Context.User.Id];
+                    scores.Remove(Context.User.Id);
+                }
+                scores.Add(Context.User.Id, finalScore);
+
+                if (score >= 50)
+                {
+                    played.Remove(Context.Channel.Id);
+
+                    games.Remove(Context.Channel.Id);
+
+                    gameTimers[Context.Channel.Id].Dispose();
+                    gameTimers.Remove(Context.Channel.Id);
+
+                    //converts dictionary to string and saves
+                    FileUtils.Save(Globals.DictToString(scores, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko10.gek");
+                }
             }
             else
             {
-                //achievement :D
-                await ReplyAsync(_easyMode && _attempts > 1 
-                    ? "achievement get! lose the game on the easiest difficulty!" 
-                    : $"{Context.User} got it! The number was {_gNumber}. It took {_attempts} attempts!");
+                //adds reaction
+                await Context.Message.AddReactionAsync(new Emoji("❌"));
             }
+        }
+
+        [Command("gend")]
+        [Summary("Ends the current game.")]
+        public async Task end()
+        {
+            if (!games.ContainsKey(Context.Channel.Id))
+            {
+                await ReplyAsync("No ongoing game, use 'ggg' to start a game.");
+                return;
+            }
+
+            await ReplyAsync("game ended. The gecko was #" + games[Context.Channel.Id].Item1 + ": " + games[Context.Channel.Id].Item2);
+            
+            if (played.ContainsKey(Context.Channel.Id))
+            {
+                played.Remove(Context.Channel.Id);
+            }
+            
+            games.Remove(Context.Channel.Id);
+
+            gameTimers[Context.Channel.Id].Dispose();
+            gameTimers.Remove(Context.Channel.Id);
         }
     }
 }

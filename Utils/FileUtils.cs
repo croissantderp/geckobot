@@ -41,16 +41,17 @@ namespace GeckoBot.Utils
             // Cache numbers
             // gecko1 stores exceptions and reported bugs
             // gecko2 stores the emote dictionary
-            // gecko3 stores the list of users who have signed up for the daily dm
+            // gecko3 stores the list of users who have signed up for the daily dm and respective information
             // gecko4 stores the most recent gecko
             // gecko5 stores rate dictionary
             // gecko6 stores custom commands
             // gecko7 stores gecko names and other info
             // gecko8 stores prefixes
             // gecko9 stores alerts
+            // gecko10 stores scores for the gecko guessing game
             List<int> caches = new()
             {
-                1, 2, 3, 4, 5, 6, 7, 8, 9
+                1, 2, 3, 4, 5, 6, 7, 8, 9, 10
             };
             
             //checks if files exist

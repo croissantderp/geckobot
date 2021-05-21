@@ -93,6 +93,16 @@ namespace GeckoBot.Commands
             await ReplyAsync("test");
         }
 
+        [Command("match")]
+        [Summary("String matcher using al go r i th m s.")]
+        public async Task match([Summary("the string to search.")] string aha1, [Summary("The pattern to search with.")] string aha2)
+        {
+            int outValue;
+            bool result = Globals.FuzzyMatch(aha1, aha2, out outValue);
+
+            await ReplyAsync($"match: {result}, score {outValue}");
+        }
+
         // This is probably a bad idea
         // Also, there's probably a better way of deleting large bot messages than using a delete command
         [Command("delete")]
