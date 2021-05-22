@@ -43,7 +43,7 @@ namespace GeckoBot.Commands
             RefreshScoreDict();
 
             var unnamed = scores.OrderByDescending(a => a.Value);
-            var unnamed2 = unnamed.Select(a => Context.Client.GetUser(a.Key).Username + " score:" + a.Value).Take(10).ToList();
+            var unnamed2 = unnamed.Select(a => Context.Client.GetUser(a.Key).Username + " score: " + a.Value).Take(10).ToList();
 
             for (int i = 0; i < unnamed2.Count(); i++)
             {

@@ -112,15 +112,18 @@ namespace GeckoBot.Commands
             timer.Elapsed += (sender, e) => VoiceCall.delayDelete(timer, path);
             timer.Start();
 
-            VoiceCall.queue[guild.Id].RemoveAt(0);
+            if (VoiceCall.queue.ContainsKey(guild.Id))
+            {
+                VoiceCall.queue[guild.Id].RemoveAt(0);
 
-            if (VoiceCall.queue[guild.Id].Count > 0)
-            {
-                await SendAudioAsync(guild);
-            }
-            else
-            {
-                VoiceCall.queue.Remove(guild.Id);
+                if (VoiceCall.queue[guild.Id].Count > 0)
+                {
+                    await SendAudioAsync(guild);
+                }
+                else
+                {
+                    VoiceCall.queue.Remove(guild.Id);
+                }
             }
         }
 
