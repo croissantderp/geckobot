@@ -96,7 +96,7 @@ namespace GeckoBot.Commands
         [Summary("test")]
         public async Task test([Summary("test")] string test = "test")
         {
-            await ReplyAsync("test");
+            await ReplyAsync(test);
         }
 
         [RequireGeckobotAdmin]
@@ -165,13 +165,12 @@ namespace GeckoBot.Commands
 
         private void frameAdd(string[] split)
         {
-            if (frame == split.Length)
+            frame++;
+
+            if (frame == split.Length - 1)
             {
                 Frametimer.Dispose();
-                return;
             }
-
-            frame++;
         }
 
         //the task that is activated when time is up
@@ -179,10 +178,10 @@ namespace GeckoBot.Commands
         { 
             await toEdit.ModifyAsync(a => a.Content = split[frame]);
 
-            if (frame >= split.Length)
+            if (frame >= split.Length - 1)
             {
                 //adds reaction
-                await Context.Message.AddReactionAsync(new Emoji("✅"));
+                await toEdit.AddReactionAsync(new Emoji("✅"));
                 timer.Dispose();
                 frame = 0;
                 return;
