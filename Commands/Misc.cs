@@ -2,15 +2,21 @@
 using System.Threading.Tasks;
 using Discord;
 using System;
+using System.IO;
 using System.Linq;
 using Discord.Commands;
 using GeckoBot.Utils;
+using GeckoBot.Preconditions;
 
 namespace GeckoBot.Commands
 {
     [Summary("Miscellaneous commands.")]
     public class Misc : ModuleBase<SocketCommandContext>
     {
+        static int frame = 0;
+        static System.Timers.Timer timer;
+        static System.Timers.Timer Frametimer;
+
         //creates new files if there are none
         // Shouldn't this be better as a preliminary check instead of a command?
         [Command("instantiate")]
@@ -88,10 +94,102 @@ namespace GeckoBot.Commands
 
         [Command("test")]
         [Summary("test")]
-        public async Task test()
+        public async Task test([Summary("test")] string test = "test")
         {
             await ReplyAsync("test");
         }
+
+        [RequireGeckobotAdmin]
+        [Command("apple")]
+        [Summary("plays bad apple in text. (taken from the transcript of https://youtu.be/G8DjxY8FNKA )")]
+        public async Task badApple([Summary("The frame rate in milliseconds, lower framerates might cause geckobot to skip (range 0 to 3000)")] int frameRate = 100)
+        {
+            if (frame != 0)
+            {
+                await ReplyAsync("Ongoing animation elsewhere");
+                return;
+            }
+
+            if (frameRate > 3000)
+            {
+                await ReplyAsync("Framerate cannot be greater than the message update speed");
+                return;
+            }
+
+            if (frameRate <= 0)
+            {
+                await ReplyAsync("Framerate cannot be less than or equal to 0");
+                return;
+            }
+
+            string unsplit = File.ReadAllText(@"..\..\..\badApple.txt");
+
+            string[] split = unsplit.Split("\n\n");
+
+            var message = await ReplyAsync(split[0]);
+
+            frame++;
+
+            //time between checks
+            System.Timers.Timer t2 = new(frameRate);
+            t2.Elapsed += (sender, e) => frameAdd(split);
+            t2.Start();
+            Frametimer = t2;
+
+            //time between checks
+            System.Timers.Timer t = new(3000);
+            t.Elapsed += async (sender, e) => await timerUp(message, split);
+            t.Start();
+            timer = t;
+        }
+
+        [RequireGeckobotAdmin]
+        [Command("bad apple")]
+        [Summary("stops bad apple")]
+        public async Task badAppleStop()
+        {
+            if (frame == 0)
+            {
+                await ReplyAsync("no ongoing animation");
+                return;
+            }
+
+            Frametimer.Dispose();
+            timer.Dispose();
+
+            frame = 0;
+
+            //adds reaction
+            await Context.Message.AddReactionAsync(new Emoji("✅"));
+        }
+
+        private void frameAdd(string[] split)
+        {
+            if (frame == split.Length)
+            {
+                Frametimer.Dispose();
+                return;
+            }
+
+            frame++;
+        }
+
+        //the task that is activated when time is up
+        private async Task timerUp(IUserMessage toEdit, string[] split)
+        { 
+            await toEdit.ModifyAsync(a => a.Content = split[frame]);
+
+            if (frame >= split.Length)
+            {
+                //adds reaction
+                await Context.Message.AddReactionAsync(new Emoji("✅"));
+                timer.Dispose();
+                frame = 0;
+                return;
+            }
+        }
+
+
 
         [Command("match")]
         [Summary("String matcher using al go r i th m s.")]

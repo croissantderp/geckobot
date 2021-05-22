@@ -150,10 +150,8 @@ namespace GeckoBot.Utils
                 //adds name of gecko to list
                 if (!Commands.Gec.geckos.ContainsKey(name))
                 {
-                    Console.WriteLine(Commands.Gec.geckos.Count());
-                    Commands.Gec.geckos.Add(name, file.Name);
+                    Commands.Gec.geckos.TryAdd(name, file.Name);
 
-                    Console.WriteLine(Commands.Gec.geckos.Count());
                     FileUtils.Save(Globals.DictToString(Commands.Gec.geckos, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko7.gek");
 
                     if (cached != null) return cached;

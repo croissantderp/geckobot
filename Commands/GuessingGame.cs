@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using Discord;
@@ -36,7 +37,7 @@ namespace GeckoBot.Commands
 
         [Command("leaderboard")]
         [Summary("displays the leaderboard fot the gecko guessing game")]
-        public async Task test()
+        public async Task ldrbrd()
         {
             RefreshScoreDict();
 
@@ -106,10 +107,23 @@ namespace GeckoBot.Commands
             array2.RemoveAt(array2.Count - 1);
             string final = string.Join(".", array2);
 
+            string stFormD = final.Normalize(NormalizationForm.FormD);
+            int len = stFormD.Length;
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < len; i++)
+            {
+                System.Globalization.UnicodeCategory uc = System.Globalization.CharUnicodeInfo.GetUnicodeCategory(stFormD[i]);
+                if (uc != System.Globalization.UnicodeCategory.NonSpacingMark)
+                {
+                    sb.Append(stFormD[i]);
+                }
+            }
+            final = sb.ToString();
+
             //sends file
             await Context.Channel.SendFileAsync(
                 DriveUtils.ImagePath(numb, false),
-                $"Guess the name or number of this gecko");
+                $"Guess the name or number of this gecko using 'g' (spacing and underscores do not matter and remove diacritics)");
 
             //starts a timer with desired amount of time
             System.Timers.Timer t = new(60 * 1000);
@@ -158,7 +172,8 @@ namespace GeckoBot.Commands
             if (int.TryParse(value, out temp) && Math.Abs(num - temp) < 10)
             {
                 bonus = 30 - (games[Context.Channel.Id].Item3.Count * 10);
-                score = 100 - Math.Abs(num - temp) * 10;
+                score = 100 - (int)Math.Round(Math.Log10(Math.Abs(num - temp) + 1) * 100);
+                score = score == 0 ? 1 : score;
                 await ReplyAsync(Context.User.Username + " guessed correctly with a score of " + score + " and " + bonus + " bonus" + (score >= 50 ? ", the gecko was #" + games[Context.Channel.Id].Item1 + ": " + games[Context.Channel.Id].Item2 : ", keep guessing!"));
 
                 games[Context.Channel.Id].Item3.Add(Context.User.Id);

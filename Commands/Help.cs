@@ -259,7 +259,7 @@ namespace GeckoBot.Commands
                 "   Then open and build the solution in an ide (Visual Studios recommended). \n" +
                 "   After building for the first time, copy libsodium.dll and opus.dll into your runtime folder for voice features to work. \n" +
                 "   Recommended setup is to use Task Scheduler or something similar to run the bot in the background. \n" + 
-                "   If you get an error stating there are duplicate files, go in to the qeckobot directory and delete those files \n" + 
+                "   If you get an error stating there are duplicate files, go to Geckobot.csproj and remove the last two item blocks. Then rebuild, then add them back and build normally. \n" + 
                 "\n";
 
 
