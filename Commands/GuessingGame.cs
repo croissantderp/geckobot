@@ -17,9 +17,7 @@ namespace GeckoBot.Commands
     [Summary("A gecko guessing game.")]
     public class GuessingGame : ModuleBase<SocketCommandContext>
     {
-        public static Dictionary<ulong, (int, string)> games = new Dictionary<ulong, (int, string)>();
-        public static Dictionary<ulong, List<ulong>> played = new Dictionary<ulong, List<ulong>>();
-        public static Dictionary<ulong, System.Timers.Timer> gameTimers = new Dictionary<ulong, System.Timers.Timer>();
+        public static Dictionary<ulong, (int, string, List<ulong>, System.Timers.Timer)> games = new Dictionary<ulong, (int, string, List<ulong>, System.Timers.Timer)>();
 
         public static Dictionary<ulong, int> scores = new Dictionary<ulong, int>();
 
@@ -108,8 +106,6 @@ namespace GeckoBot.Commands
             array2.RemoveAt(array2.Count - 1);
             string final = string.Join(".", array2);
 
-            games.Add(Context.Channel.Id, (numb, final));
-
             //sends file
             await Context.Channel.SendFileAsync(
                 DriveUtils.ImagePath(numb, false),
@@ -119,7 +115,8 @@ namespace GeckoBot.Commands
             System.Timers.Timer t = new(60 * 1000);
             t.Elapsed += async (sender, e) => await timerUp(Context.Channel.Id, t);
             t.Start();
-            gameTimers.Add(Context.Channel.Id, t);
+
+            games.Add(Context.Channel.Id, (numb, final, new List<ulong>(), t));
         }
 
         async Task timerUp(ulong channel, System.Timers.Timer t)
@@ -127,14 +124,7 @@ namespace GeckoBot.Commands
             t.Dispose();
             await (Context.Client.GetChannel(channel) as IMessageChannel).SendMessageAsync("Time is up, the gecko was #" + games[channel].Item1 + ": " + games[channel].Item2);
 
-            if (played.ContainsKey(Context.Channel.Id))
-            {
-                played.Remove(Context.Channel.Id);
-            }
-
             games.Remove(channel);
-
-            gameTimers.Remove(channel);
         }
 
         [Command("g")]
@@ -147,7 +137,7 @@ namespace GeckoBot.Commands
                 return;
             }
 
-            if (played.ContainsKey(Context.Channel.Id) && played[Context.Channel.Id].Contains(Context.User.Id))
+            if (games[Context.Channel.Id].Item3.Contains(Context.User.Id))
             {
                 await ReplyAsync("You have already guessed correctly! Use 'gend' to end the game");
                 return;
@@ -167,15 +157,11 @@ namespace GeckoBot.Commands
 
             if (int.TryParse(value, out temp) && Math.Abs(num - temp) < 10)
             {
-                bonus = played.ContainsKey(Context.Channel.Id) ? 30 - (played[Context.Channel.Id].Count * 10) : 30;
+                bonus = 30 - (games[Context.Channel.Id].Item3.Count * 10);
                 score = 100 - Math.Abs(num - temp) * 10;
                 await ReplyAsync(Context.User.Username + " guessed correctly with a score of " + score + " and " + bonus + " bonus" + (score >= 50 ? ", the gecko was #" + games[Context.Channel.Id].Item1 + ": " + games[Context.Channel.Id].Item2 : ", keep guessing!"));
-                
-                if (!played.ContainsKey(Context.Channel.Id))
-                {
-                    played.Add(Context.Channel.Id, new List<ulong>());
-                }
-                played[Context.Channel.Id].Add(Context.User.Id);
+
+                games[Context.Channel.Id].Item3.Add(Context.User.Id);
 
                 int finalScore = score + bonus;
 
@@ -188,12 +174,8 @@ namespace GeckoBot.Commands
 
                 if (score >= 50)
                 {
-                    played.Remove(Context.Channel.Id);
-
+                    games[Context.Channel.Id].Item4.Dispose();
                     games.Remove(Context.Channel.Id);
-
-                    gameTimers[Context.Channel.Id].Dispose();
-                    gameTimers.Remove(Context.Channel.Id);
 
                     //converts dictionary to string and saves
                     FileUtils.Save(Globals.DictToString(scores, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko10.gek");
@@ -201,15 +183,11 @@ namespace GeckoBot.Commands
             }
             else if (Globals.FuzzyMatch(name, value, out temp) && !temp.ToString().Contains("-"))
             {
-                bonus = played.ContainsKey(Context.Channel.Id) ? 30 - (played[Context.Channel.Id].Count * 10) : 30;
+                bonus = 30 - (games[Context.Channel.Id].Item3.Count * 10);
                 score = int.Parse(Math.Round(temp * scoreScale).ToString());
                 await ReplyAsync(Context.User.Username + " guessed correctly with a score of " + score + " and " + bonus + " bonus" + (score >= 50 ? ", the gecko was #" + games[Context.Channel.Id].Item1 + ": " + games[Context.Channel.Id].Item2 : ", keep guessing!"));
 
-                if (!played.ContainsKey(Context.Channel.Id))
-                {
-                    played.Add(Context.Channel.Id, new List<ulong>());
-                }
-                played[Context.Channel.Id].Add(Context.User.Id);
+                games[Context.Channel.Id].Item3.Add(Context.User.Id);
 
                 int finalScore = score + bonus;
 
@@ -222,12 +200,8 @@ namespace GeckoBot.Commands
 
                 if (score >= 50)
                 {
-                    played.Remove(Context.Channel.Id);
-
+                    games[Context.Channel.Id].Item4.Dispose();
                     games.Remove(Context.Channel.Id);
-
-                    gameTimers[Context.Channel.Id].Dispose();
-                    gameTimers.Remove(Context.Channel.Id);
 
                     //converts dictionary to string and saves
                     FileUtils.Save(Globals.DictToString(scores, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko10.gek");
@@ -251,16 +225,10 @@ namespace GeckoBot.Commands
             }
 
             await ReplyAsync("game ended. The gecko was #" + games[Context.Channel.Id].Item1 + ": " + games[Context.Channel.Id].Item2);
-            
-            if (played.ContainsKey(Context.Channel.Id))
-            {
-                played.Remove(Context.Channel.Id);
-            }
-            
-            games.Remove(Context.Channel.Id);
 
-            gameTimers[Context.Channel.Id].Dispose();
-            gameTimers.Remove(Context.Channel.Id);
+
+            games[Context.Channel.Id].Item4.Dispose();
+            games.Remove(Context.Channel.Id);
         }
     }
 }
