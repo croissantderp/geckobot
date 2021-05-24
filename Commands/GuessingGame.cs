@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using System.IO;
 using Discord;
 using Discord.Commands;
 using GeckoBot.Utils;
@@ -111,6 +112,7 @@ namespace GeckoBot.Commands
             List<string> array = Gec.geckos[DriveUtils.addZeros(numb)].Split("_").ToList();
             array.RemoveAt(0);
             List<string> array2 = string.Join("", array).Split(".").ToList();
+            string extension = array2[array2.Count - 1];
             array2.RemoveAt(array2.Count - 1);
             string final = string.Join(".", array2);
 
@@ -127,10 +129,18 @@ namespace GeckoBot.Commands
             }
             final = sb.ToString();
 
+            FileInfo file = new FileInfo(DriveUtils.ImagePath(numb, false));
+
+            string newPath = $"../../Cache/{random.Next(0, 100000)}_ggg.{extension}";
+
+            FileInfo newFile = file.CopyTo(newPath);
+
             //sends file
             await Context.Channel.SendFileAsync(
-                DriveUtils.ImagePath(numb, false),
+                newPath,
                 $"Guess the name or number of this gecko using 'g' (spacing and underscores do not matter, remove diacritics)");
+
+            newFile.Delete();
 
             //starts a timer with desired amount of time
             System.Timers.Timer t = new(60 * 1000);
