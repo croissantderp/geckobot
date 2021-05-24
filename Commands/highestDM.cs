@@ -41,6 +41,8 @@ namespace GeckoBot.Commands
             await Program.gec.RefreshHighestGec();
             Program.ddm.checkProfile();
 
+            DailyDM.RefreshUserDict();
+
             foreach (ulong key in DailyDM.DmUsers.Keys)
             {
                 Program.ddm.initiateUserTimer(key);

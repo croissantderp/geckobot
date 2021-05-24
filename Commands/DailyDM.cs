@@ -68,7 +68,7 @@ namespace GeckoBot.Commands
         }
 
         //parses time in hh:mm:ss format
-        public static double returnTimeToNextCheck(string unparsed)
+        public static double returnTimeToNextCheck(string unparsed, bool forceNextDay = false)
         {
             var parsed = unparsed
                 .Split(":")
@@ -83,18 +83,7 @@ namespace GeckoBot.Commands
                 parsed[1],
                 parsed[2]), TimeZoneInfo.Local);
 
-            if (newTime < DateTime.Now)
-            {
-                return (TimeZoneInfo.ConvertTimeFromUtc(new DateTime(
-                    DateTime.Now.Year,
-                    DateTime.Now.Month,
-                    DateTime.Now.Day + 1,
-                    parsed[0],
-                    parsed[1],
-                    parsed[2]), TimeZoneInfo.Local) - DateTime.Now).TotalMilliseconds;
-            }
-
-            return (newTime - DateTime.Now).TotalMilliseconds;
+            return (newTime.AddDays((newTime < DateTime.Now || forceNextDay) ? 1 : 0) - DateTime.Now).TotalMilliseconds;
         }
 
         //checks
@@ -468,16 +457,14 @@ namespace GeckoBot.Commands
                 if (DmTimersLastCheck.ContainsKey(id)) DmTimersLastCheck.Remove(id);
                 DmTimersLastCheck.Add(id , DateTime.Now.ToUniversalTime());
 
-                initiateUserTimer(id);
+                initiateUserTimer(id, (wasRefreshed ? true : false));
             }
 
             return wasRefreshed;
         }
 
-        public void initiateUserTimer(ulong id)
+        public void initiateUserTimer(ulong id, bool force = false)
         {
-            RefreshUserDict();
-
             if (DmTimers.ContainsKey(id))
             {
                 DmTimers[id].Dispose();
@@ -485,7 +472,7 @@ namespace GeckoBot.Commands
             }
 
             //starts a timer with desired amount of time
-            System.Timers.Timer t = new(returnTimeToNextCheck(DmUsers[id].Item4));
+            System.Timers.Timer t = new(returnTimeToNextCheck(DmUsers[id].Item4, force));
             t.Elapsed += async (sender, e) => await runChecks(id, true);
             t.Start();
 
@@ -497,10 +484,6 @@ namespace GeckoBot.Commands
         {
             var timeArray = DmUsers[id].Item4.Split(":");
             int seconds = (int.Parse(timeArray[0]) * 60 + int.Parse(timeArray[1])) * 60 + int.Parse(timeArray[2]);
-
-            RefreshUserDict();
-
-            await Program.gec.RefreshHighestGec();
 
             Gec.RefreshGec();
 
@@ -584,7 +567,14 @@ namespace GeckoBot.Commands
                 _lastRun = DateTime.Now.DayOfYear;
             }
 
-            SaveLocalInfo();
+            try
+            {
+                SaveLocalInfo();
+            }
+            catch
+            {
+
+            }
         }
     }
 }

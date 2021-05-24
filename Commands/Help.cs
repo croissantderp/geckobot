@@ -123,7 +123,7 @@ namespace GeckoBot.Commands
                 }
                 else // Otherwise, nothing was found
                 {
-                    await Context.Channel.SendFileAsync(@"..\..\Cache\message.gif");
+                    await Context.Channel.SendFileAsync(@"..\..\..\message.gif");
                     return;
                 }
             } 

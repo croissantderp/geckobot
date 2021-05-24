@@ -57,8 +57,6 @@ namespace GeckoBot.Commands
             }
         }
 
-        // You *MUST* mark these commands with 'RunMode.Async'
-        // otherwise the bot will not respond until the Task times out.
         [Command("skip", RunMode = RunMode.Async)]
         [Summary("Skips the current playing thing.")]
         public async Task skipCmd()
@@ -84,8 +82,6 @@ namespace GeckoBot.Commands
             }
         }
 
-        // You *MUST* mark these commands with 'RunMode.Async'
-        // otherwise the bot will not respond until the Task times out.
         [Command("clear", RunMode = RunMode.Async)]
         [Summary("Clears the server queue.")]
         public async Task superskipCmd()
@@ -112,9 +108,6 @@ namespace GeckoBot.Commands
             }
         }
 
-        // Remember to add preconditions to your commands,
-        // this is merely the minimal amount necessary.
-        // Adding more commands of your own is also encouraged.
         [Command("leave", RunMode = RunMode.Async)]
         [Alias("disconnect", "dc")]
         [Summary("Has the bot leave a voice call you are currently in.")]
@@ -134,6 +127,39 @@ namespace GeckoBot.Commands
                     await _service.LeaveAudio(Context.Guild);
 
                     await Context.Message.AddReactionAsync(new Emoji("⏬"));
+                }
+            }
+            else
+            {
+                await ReplyAsync("I am not in a voice channel");
+            }
+        }
+
+        [Command("reload", RunMode = RunMode.Async)]
+        [Summary("Has the bot leave and then rejoin a voice call you are currently in.")]
+        public async Task ReloadCmd()
+        {
+            var voiceState = Context.User as IVoiceState;
+
+            if (VoiceCallService.channels.ContainsKey(Context.Guild.Id))
+            {
+                if (voiceState?.VoiceChannel == null)
+                {
+                    await ReplyAsync("You must be connected to a voice channel!");
+                    return;
+                }
+                else
+                {
+                    await _service.LeaveAudio(Context.Guild);
+
+                    await Context.Message.AddReactionAsync(new Emoji("⏬"));
+
+                    //starts a timer with desired amount of time
+                    System.Timers.Timer timer = new(1000);
+                    timer.Elapsed += async (sender, e) => await _service.JoinAudio(timer, Context.Guild, voiceState.VoiceChannel);
+                    timer.Start();
+
+                    await Context.Message.AddReactionAsync(new Emoji("⏫"));
                 }
             }
             else

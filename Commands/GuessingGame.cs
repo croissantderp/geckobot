@@ -35,6 +35,13 @@ namespace GeckoBot.Commands
                 .ToDictionary(sp => ulong.Parse(sp[0]), sp => int.Parse(sp[1]));
         }
 
+        [Command("left")]
+        [Summary("Gets the amount of geckoimages left in ggg.")]
+        public async Task test()
+        {
+            await ReplyAsync(alreadyDone.Count().ToString());
+        }
+
         [Command("leaderboard")]
         [Summary("displays the leaderboard fot the gecko guessing game")]
         public async Task ldrbrd()
@@ -99,7 +106,7 @@ namespace GeckoBot.Commands
             int indexNumb = random.Next(0, alreadyDone.Count);
             int numb = alreadyDone[indexNumb];
 
-            alreadyDone.RemoveAt(indexNumb);
+            alreadyDone.Remove(numb);
 
             List<string> array = Gec.geckos[DriveUtils.addZeros(numb)].Split("_").ToList();
             array.RemoveAt(0);
@@ -123,7 +130,7 @@ namespace GeckoBot.Commands
             //sends file
             await Context.Channel.SendFileAsync(
                 DriveUtils.ImagePath(numb, false),
-                $"Guess the name or number of this gecko using 'g' (spacing and underscores do not matter and remove diacritics)");
+                $"Guess the name or number of this gecko using 'g' (spacing and underscores do not matter, remove diacritics)");
 
             //starts a timer with desired amount of time
             System.Timers.Timer t = new(60 * 1000);
