@@ -191,7 +191,7 @@ namespace GeckoBot.Commands
                 bonus = 30 - (games[Context.Channel.Id].Item3.Count * 10);
                 score = 100 - (int)Math.Round(Math.Log10(Math.Abs(num - temp) + 1) * 100);
                 score = score == 0 ? 1 : score;
-                await ReplyAsync(Context.User.Username + " guessed correctly with a score of " + score + " and " + bonus + " bonus" + (score >= 50 ? ", the gecko was #" + games[Context.Channel.Id].Item1 + ": " + games[Context.Channel.Id].Item2 : ", keep guessing!"));
+                await ReplyAsync(Context.User.Username + " guessed correctly with a score of " + score + " and " + bonus + " bonus" + (score >= 50 ? ", the gecko was #" + games[Context.Channel.Id].Item1 + ": " + games[Context.Channel.Id].Item2 : ", keep guessing or use 'gend' to end the game!"));
 
                 games[Context.Channel.Id].Item3.Add(Context.User.Id);
 
@@ -217,7 +217,7 @@ namespace GeckoBot.Commands
             {
                 bonus = 30 - (games[Context.Channel.Id].Item3.Count * 10);
                 score = int.Parse(Math.Round(temp * scoreScale).ToString());
-                await ReplyAsync(Context.User.Username + " guessed correctly with a score of " + score + " and " + bonus + " bonus" + (score >= 50 ? ", the gecko was #" + games[Context.Channel.Id].Item1 + ": " + games[Context.Channel.Id].Item2 : ", keep guessing!"));
+                await ReplyAsync(Context.User.Username + " guessed correctly with a score of " + score + " and " + bonus + " bonus" + (score >= 50 ? ", the gecko was #" + games[Context.Channel.Id].Item1 + ": " + games[Context.Channel.Id].Item2 : ", keep guessing or use 'gend' to end the game!"));
 
                 games[Context.Channel.Id].Item3.Add(Context.User.Id);
 

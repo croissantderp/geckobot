@@ -91,10 +91,10 @@ namespace GeckoBot.Commands
 
             for (int i = 0; i < year; i++)
             {
-                final += "year " + i + ": " + (dayNum + (i * 367)).ToString() + "\n";
+                final += "year " + (i + 1) + ": " + (dayNum + (i * 367)).ToString() + "\n";
             }
 
-            final += $"year range: {year * 367} - {(year + 1) * 367}";
+            final += $"year range: {(year - 1) * 367} - {year * 367}";
 
             await ReplyAsync(final);
         }

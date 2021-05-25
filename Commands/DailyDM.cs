@@ -228,7 +228,7 @@ namespace GeckoBot.Commands
 
         bool validyear(int year)
         {
-            if (year > (Gec._highestGecko / 367))
+            if (year > ((Gec._highestGecko + 1) / 366))
             {
                 return false;
             }
