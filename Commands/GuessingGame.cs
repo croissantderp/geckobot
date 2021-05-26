@@ -213,8 +213,9 @@ namespace GeckoBot.Commands
                     FileUtils.Save(Globals.DictToString(scores, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko10.gek");
                 }
             }
-            else if (Globals.FuzzyMatch(name, value, out temp) && !temp.ToString().Contains("-"))
+            else if ((Globals.FuzzyMatch(name, value, out temp) && !temp.ToString().Contains("-")) || name == value)
             {
+                temp = name == value ? 100 : temp;
                 bonus = 30 - (games[Context.Channel.Id].Item3.Count * 10);
                 score = int.Parse(Math.Round(temp * scoreScale).ToString());
                 await ReplyAsync(Context.User.Username + " guessed correctly with a score of " + score + " and " + bonus + " bonus" + (score >= 50 ? ", the gecko was #" + games[Context.Channel.Id].Item1 + ": " + games[Context.Channel.Id].Item2 : ", keep guessing or use 'gend' to end the game!"));

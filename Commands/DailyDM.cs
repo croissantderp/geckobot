@@ -52,12 +52,12 @@ namespace GeckoBot.Commands
         //saves user dictionary into a file
         public static void SaveUserDict()
         {
-            Dictionary<string, string> parsedDict = 
-                DmUsers.Select(a => new KeyValuePair<string, string>(a.Key.ToString(), a.Value.Item1.ToString() + "," + a.Value.Item2.ToString() + "," + a.Value.Item3.ToString() + "," + a.Value.Item4))
-                .ToDictionary(a => a.Key, a => a.Value);
-
             try
             {
+                Dictionary<string, string> parsedDict =
+                    DmUsers.Select(a => new KeyValuePair<string, string>(a.Key.ToString(), a.Value.Item1.ToString() + "," + a.Value.Item2.ToString() + "," + a.Value.Item3.ToString() + "," + a.Value.Item4))
+                    .ToDictionary(a => a.Key, a => a.Value);
+
                 //saves info
                 FileUtils.Save(Globals.DictToString(parsedDict, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko3.gek");
             }
