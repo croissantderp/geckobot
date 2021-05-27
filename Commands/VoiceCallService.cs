@@ -17,10 +17,8 @@ namespace GeckoBot.Commands
         public static Dictionary<ulong, Process> ffmpegs = new Dictionary<ulong, Process>();
         public static Dictionary<ulong, ulong> captureChannels = new Dictionary<ulong, ulong>();
 
-        public async Task JoinAudio(System.Timers.Timer timer, IGuild guild, IVoiceChannel target)
+        public async Task JoinAudio(IGuild guild, IVoiceChannel target)
         {
-            timer.Close();
-
             try
             {
                 var audioClient = await target.ConnectAsync(selfDeaf: true);

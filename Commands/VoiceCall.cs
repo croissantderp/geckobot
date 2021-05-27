@@ -43,11 +43,8 @@ namespace GeckoBot.Commands
                 }
                 else
                 {
-                    //starts a timer with desired amount of time
-                    System.Timers.Timer timer = new(1000);
-                    timer.Elapsed += async (sender, e) => await _service.JoinAudio(timer, Context.Guild, voiceState.VoiceChannel);
-                    timer.Start();
-
+                    await _service.JoinAudio(Context.Guild, voiceState.VoiceChannel);
+                    
                     await Context.Message.AddReactionAsync(new Emoji("⏫"));
                 }
             }
@@ -155,9 +152,7 @@ namespace GeckoBot.Commands
                     await Context.Message.AddReactionAsync(new Emoji("⏬"));
 
                     //starts a timer with desired amount of time
-                    System.Timers.Timer timer = new(1000);
-                    timer.Elapsed += async (sender, e) => await _service.JoinAudio(timer, Context.Guild, voiceState.VoiceChannel);
-                    timer.Start();
+                    await _service.JoinAudio(Context.Guild, voiceState.VoiceChannel);
 
                     await Context.Message.AddReactionAsync(new Emoji("⏫"));
                 }
@@ -375,20 +370,16 @@ namespace GeckoBot.Commands
                 else
                 {
                     //starts a timer with desired amount of time
-                    System.Timers.Timer timer = new(1000);
-                    timer.Elapsed += async (sender, e) => await _service.JoinAudio(timer, Context.Guild, voiceState.VoiceChannel);
-                    timer.Start();
+                    //System.Timers.Timer timer = new(1000);
+                    //timer.Elapsed += async (sender, e) => await _service.JoinAudio(timer, Context.Guild, voiceState.VoiceChannel);
+                    //timer.Start();
+
+                    await _service.JoinAudio(Context.Guild, voiceState.VoiceChannel);
 
                     await Context.Message.AddReactionAsync(new Emoji("⏫"));
 
-                    Thread.Sleep(1000);
+                    //Thread.Sleep(1000);
                 }
-            }
-
-            if (voiceState?.VoiceChannel == null)
-            {
-                await ReplyAsync("You must be connected to a voice channel!");
-                return;
             }
 
             string fileName = @"../../../dectalk/audio/" + Context.Message.Id.ToString() + ".wav";
