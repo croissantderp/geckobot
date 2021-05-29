@@ -208,10 +208,10 @@ namespace GeckoBot.Commands
                 {
                     games[Context.Channel.Id].Item4.Dispose();
                     games.Remove(Context.Channel.Id);
-
-                    //converts dictionary to string and saves
-                    FileUtils.Save(Globals.DictToString(scores, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko10.gek");
                 }
+
+                //converts dictionary to string and saves
+                FileUtils.Save(Globals.DictToString(scores, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko10.gek");
             }
             else if ((Globals.FuzzyMatch(name, value, out temp) && !temp.ToString().Contains("-")) || name == value)
             {
@@ -234,10 +234,10 @@ namespace GeckoBot.Commands
                 {
                     games[Context.Channel.Id].Item4.Dispose();
                     games.Remove(Context.Channel.Id);
-
-                    //converts dictionary to string and saves
-                    FileUtils.Save(Globals.DictToString(scores, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko10.gek");
                 }
+
+                //converts dictionary to string and saves
+                FileUtils.Save(Globals.DictToString(scores, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko10.gek");
             }
             else
             {

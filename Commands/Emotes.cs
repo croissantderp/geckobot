@@ -443,7 +443,7 @@ namespace GeckoBot.Commands
         [RequireGeckobotAdmin]
         [Command("aes")]
         [Summary("Saves a key to the dictionary which cannot be removed by non admins.")]
-        public async Task aes([Summary("The key of the value.")] string yes1, [Summary("The value to add.")] string yes)
+        public async Task aes([Summary("The key of the value.")] string yes1, [Summary("The value to add.")] [Remainder] string yes)
         {
             await EmoteSave(yes1, yes, true);
         }
@@ -452,7 +452,7 @@ namespace GeckoBot.Commands
         [RequireGeckobotAdmin]
         [Command("aer")]
         [Summary("Removes a key from the dictionary with admin access (can remove admin keys).")]
-        public async Task aer([Summary("The key to remove.")] string yes1)
+        public async Task aer([Summary("The key to remove.")][Remainder] string yes1)
         {
             await EmoteRemove(yes1, true);
         }
@@ -489,7 +489,7 @@ namespace GeckoBot.Commands
             //if emote dictionary already has a definition for the new key
             if (EmoteDict.ContainsKey(key))
             {
-                await ReplyAsync("this name is taken, use a different name!");
+                throw new Exception("this name is taken, use a different name!");
             }
             else
             {
@@ -524,8 +524,7 @@ namespace GeckoBot.Commands
                 // If the key is an admin key
                 if (EmoteDict[key].Contains("@फΉ̚ᐼㇶ⤊") && !withAdmin)
                 {
-                    await ReplyAsync("that is an admin command and cannot be removed");
-                    return;
+                    throw new Exception("that is an admin command and cannot be removed");
                 }
                 
                 //removes key
@@ -539,8 +538,7 @@ namespace GeckoBot.Commands
             }
             else
             {
-                //if emote is not found
-                await ReplyAsync("emote not found!");
+                throw new Exception("emote not found!");
             }
         }
     }
