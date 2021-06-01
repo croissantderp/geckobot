@@ -18,6 +18,7 @@ namespace GeckoBot.Commands
     {
         public static int _highestGecko = FetchHighestGec().Result;
         public static Dictionary<string, string> geckos = new();
+        static bool runnin = false;
         
         // Force cache a gecko image
         // This functionality is accomplished by fgec already, consider removing
@@ -344,6 +345,12 @@ namespace GeckoBot.Commands
         // Fetches the highest gecko, then updates the HighestGecko value and alerts image subscribers. Also sends multiple geckoimages if there have been multiple added since last checked.
         public async Task RefreshHighestGec()
         {
+            if (runnin)
+            {
+                return;
+            }
+            runnin = true;
+
             var fetched = await FetchHighestGec();
             if (fetched == _highestGecko) return;
             
@@ -381,6 +388,7 @@ namespace GeckoBot.Commands
             }
 
             _highestGecko = fetched;
+            runnin = false;
         }
     }
 }
