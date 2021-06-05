@@ -96,8 +96,8 @@ namespace GeckoBot.Commands
                     ffmpegs.Add(guild.Id, ffmpeg);
                     await ffmpeg.StandardOutput.BaseStream.CopyToAsync(channels[guild.Id].Item2);
                     await channels[guild.Id].Item2.FlushAsync();
-                    ffmpegs.Remove(guild.Id);
                     ffmpeg.Dispose();
+                    ffmpegs.Remove(guild.Id);
                 }
             }
             catch

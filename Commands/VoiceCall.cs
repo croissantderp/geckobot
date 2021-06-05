@@ -466,9 +466,7 @@ namespace GeckoBot.Commands
 
             if (!queue.ContainsKey(guild.Id))
             {
-                bool result = queue.TryAdd(guild.Id, new List<string>() { fileName });
-
-                if (!result) return;
+                queue.TryAdd(guild.Id, new List<string>() { fileName });
 
                 await _service.SendAudioAsync(guild);
             }
