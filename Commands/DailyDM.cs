@@ -492,12 +492,12 @@ namespace GeckoBot.Commands
             //generates statement to send
             DateTime date = DateTime.Today.ToUniversalTime().AddSeconds(seconds);
 
-            string final = $"Today is {date.ToString("d")}. Day {date.DayOfYear} of the year {date.Year} (gecko: {Gec.geckos[DriveUtils.addZeros(((year - 1) * 367) + (date.DayOfYear - 1))]}) \n" +
+            string final = $"Today is {date.ToString("d")}. Day {date.DayOfYear} of the year {date.Year} (gecko: {EmoteUtils.removeforbidden(Gec.geckos[DriveUtils.addZeros(((year - 1) * 367) + (date.DayOfYear - 1))])}) \n" +
                 $"Other geckos of today include: ";
 
             for (int i = 0; (date.DayOfYear - 1) + (i * 367) < Gec._highestGecko; i++)
             {
-                final += $" {Gec.geckos[DriveUtils.addZeros((date.DayOfYear - 1) + (i * 367))]}";
+                final += $" {EmoteUtils.removeforbidden(Gec.geckos[DriveUtils.addZeros((date.DayOfYear - 1) + (i * 367))])}";
             }
 
             if (DmUsers[id].Item1 == false)

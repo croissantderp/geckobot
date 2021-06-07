@@ -109,7 +109,7 @@ namespace GeckoBot.Commands
 
             alreadyDone.Remove(numb);
 
-            List<string> array = Gec.geckos[DriveUtils.addZeros(numb)].Split("_").ToList();
+            List<string> array = EmoteUtils.removeforbidden(Gec.geckos[DriveUtils.addZeros(numb)]).Split("_").ToList();
             array.RemoveAt(0);
             List<string> array2 = string.Join("", array).Split(".").ToList();
             string extension = array2[array2.Count - 1];

@@ -24,6 +24,14 @@ namespace GeckoBot.Commands
             await ReplyAsync("geckobot" + Globals.names[Globals.CurrentName]);
         }
 
+        //identifies the version of geckobot
+        [Command("last reset")]
+        [Summary("Returns the amount of time since geckobot was reset.")]
+        public async Task lastReset()
+        {
+            await ReplyAsync($"It has been {DateTime.Now - Globals.lastReset} since geckobot was brought back from the dead");
+        }
+
         [Command("command count")]
         [Summary("Identifies the total amount of modules and commands.")]
         public async Task cc()

@@ -114,7 +114,7 @@ namespace GeckoBot.Utils
             
             // If image already exists in cache, use it
             string cached = CheckCache(name);
-            if (cached != null && Commands.Gec.geckos.ContainsKey(name)) 
+            if (cached != null && Commands.Gec.geckos.ContainsKey(EmoteUtils.escapeforbidden(name))) 
             {
                 if (!refresh)
                 {
@@ -125,11 +125,9 @@ namespace GeckoBot.Utils
                 cached = null;
             }
 
-            if (refresh && Commands.Gec.geckos.ContainsKey(name))
+            if (refresh && Commands.Gec.geckos.ContainsKey(EmoteUtils.escapeforbidden(name)))
             {
-                Console.WriteLine(Commands.Gec.geckos.Count());
-                Commands.Gec.geckos.Remove(name);
-                Console.WriteLine(Commands.Gec.geckos.Count());
+                Commands.Gec.geckos.Remove(EmoteUtils.escapeforbidden(name));
             }
 
             // Otherwise, fetch it from google drive
@@ -150,7 +148,7 @@ namespace GeckoBot.Utils
                 //adds name of gecko to list
                 if (!Commands.Gec.geckos.ContainsKey(name))
                 {
-                    Commands.Gec.geckos.TryAdd(name, file.Name);
+                    Commands.Gec.geckos.TryAdd(EmoteUtils.escapeforbidden(name), EmoteUtils.escapeforbidden(file.Name));
 
                     FileUtils.Save(Globals.DictToString(Commands.Gec.geckos, "{0} ⁊ {1} ҩ "), @"..\..\Cache\gecko7.gek");
 
@@ -221,19 +219,17 @@ namespace GeckoBot.Utils
                         amount++;
                     }
 
-                    if (!Commands.Gec.geckos.ContainsKey(name))
+                    if (!Commands.Gec.geckos.ContainsKey(EmoteUtils.escapeforbidden(name)))
                     {
-                        Commands.Gec.geckos.Add(name, file.Name);
+                        Commands.Gec.geckos.Add(EmoteUtils.escapeforbidden(name), EmoteUtils.escapeforbidden(file.Name));
 
                         if (CheckCache(name) != null) continue;
                     }
-                    else if (!Commands.Gec.geckos.ContainsValue(file.Name))
+                    else if (!Commands.Gec.geckos.ContainsValue(EmoteUtils.escapeforbidden(file.Name)))
                     {
-                        Commands.Gec.geckos.Remove(name);
-                        Commands.Gec.geckos.Add(name, file.Name);
+                        Commands.Gec.geckos.Remove(EmoteUtils.escapeforbidden(name));
+                        Commands.Gec.geckos.Add(EmoteUtils.escapeforbidden(name), EmoteUtils.escapeforbidden(file.Name));
                     }
-
-
 
                     totalAmount++;
                 }

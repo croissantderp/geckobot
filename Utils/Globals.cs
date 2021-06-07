@@ -71,7 +71,7 @@ namespace GeckoBot.Utils
 
         public static List<ulong> undeletable = new();
 
-        //days since bot was reset
+        // Last time bot was reset
         public static DateTime lastReset = DateTime.Now;
 
         public static List<ulong> tempBlocked = new List<ulong>();
@@ -87,7 +87,8 @@ namespace GeckoBot.Utils
             " 6: The Undiscovered Server",
             " and the deathly nitros",
             " part 8: Geckolion",
-            " IX: Rise of Moofy"
+            " IX: Rise of Moofy",
+            " project 10: Mountain of Guild-count"
         };
 
         public static int CurrentName = 0;

@@ -74,7 +74,7 @@ namespace GeckoBot.Commands
             int i = 0;
             while (dayNum + (i * 367) < _highestGecko)
             {
-                final += $"{geckos[DriveUtils.addZeros(dayNum + (i * 367))]} ";
+                final += $"{EmoteUtils.removeforbidden(geckos[DriveUtils.addZeros(dayNum + (i * 367))])} ";
                 i++;
             }
 
@@ -121,12 +121,12 @@ namespace GeckoBot.Commands
             year = year == 0 ? int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek").Split("$")[0]) : year;
 
 
-            string final = $"Today is {date.ToString("d")}. Day {date.DayOfYear} of the year {date.Year} (gecko: {geckos[DriveUtils.addZeros(((year - 1) * 367) + (date.DayOfYear - 1))]})\n" +
+            string final = $"Today is {date.ToString("d")}. Day {date.DayOfYear} of the year {date.Year} (gecko: {EmoteUtils.removeforbidden(geckos[DriveUtils.addZeros(((year - 1) * 367) + (date.DayOfYear - 1))])})\n" +
                 $"Other geckos of today include: ";
             int i = 0;
             while ((date.DayOfYear - 1) + (i * 367) < _highestGecko)
             {
-                final += $" {geckos[DriveUtils.addZeros((date.DayOfYear - 1) + (i * 367))]}";
+                final += $" {EmoteUtils.removeforbidden(geckos[DriveUtils.addZeros((date.DayOfYear - 1) + (i * 367))])}";
                 i++;
             }
 
@@ -201,7 +201,7 @@ namespace GeckoBot.Commands
             //sends file
             await Context.Channel.SendFileAsync(
                 DriveUtils.ImagePath(numb, false), 
-                $"gecko: {geckos[final]}");
+                $"gecko: {EmoteUtils.removeforbidden(geckos[final])}");
         }
 
         //finds a gecko
@@ -217,7 +217,7 @@ namespace GeckoBot.Commands
             //sends files
             await Context.Channel.SendFileAsync(
                 DriveUtils.ImagePath(value, false), 
-                $"gecko: {geckos[final]}");
+                $"gecko: {EmoteUtils.removeforbidden(geckos[final])}");
         }
 
         //finds a gecko
@@ -231,7 +231,7 @@ namespace GeckoBot.Commands
             //sends files
             await Context.Channel.SendFileAsync(
                 DriveUtils.ImagePath(value, false, true),
-                $"refreshed gecko: {geckos[final]}");
+                $"refreshed gecko: {EmoteUtils.removeforbidden(geckos[final])}");
         }
 
         //finds a gecko
@@ -244,7 +244,7 @@ namespace GeckoBot.Commands
             int tempInt = 0;
             List<int> tempIntList = new List<int>();
 
-            IEnumerable<KeyValuePair<string, string>> temp = geckos.Where(a => Globals.FuzzyMatch(a.Value, input.Replace(" ", ""), out tempInt)).OrderByDescending(a => Globals.FuzzyMatchScore(a.Value, input.Replace(" ", ""))); //a.Value.Contains(input)
+            IEnumerable<KeyValuePair<string, string>> temp = geckos.Where(a => Globals.FuzzyMatch(EmoteUtils.removeforbidden(a.Value), input.Replace(" ", ""), out tempInt)).OrderByDescending(a => Globals.FuzzyMatchScore(EmoteUtils.removeforbidden(a.Value), input.Replace(" ", ""))); //a.Value.Contains(input)
 
             IEnumerable<KeyValuePair<string, string>> temp2 = temp.Take(index);
             string final = temp2.Last().Key;
@@ -263,7 +263,7 @@ namespace GeckoBot.Commands
             //sends files
             await Context.Channel.SendFileAsync(
                 DriveUtils.ImagePath(value, isAlt),
-                $"result {temp2.Count()} of {temp.Count()}, score: {Globals.FuzzyMatchScore(geckos[final], input.Replace(" ", ""))}, gecko: {geckos[final]}");
+                $"result {temp2.Count()} of {temp.Count()}, score: {Globals.FuzzyMatchScore(EmoteUtils.removeforbidden(geckos[final]), input.Replace(" ", ""))}, gecko: {EmoteUtils.removeforbidden(geckos[final])}");
         }
 
      
@@ -279,7 +279,7 @@ namespace GeckoBot.Commands
             //sends files
             await Context.Channel.SendFileAsync(
                 DriveUtils.ImagePath(value, true),
-                $"gecko: {geckos[final]}");
+                $"gecko: {EmoteUtils.removeforbidden(geckos[final])}");
         }
 
         //caches all gecko descriptions
@@ -311,7 +311,7 @@ namespace GeckoBot.Commands
             //sends file
             await Context.Channel.SendFileAsync(
                 DriveUtils.ImagePath(_highestGecko, false), 
-                $"gecko: {geckos[DriveUtils.addZeros(_highestGecko)]}");
+                $"gecko: {EmoteUtils.removeforbidden(geckos[DriveUtils.addZeros(_highestGecko)])}");
         }
 
         // Fetches the highest gecko from Google Drive
@@ -378,7 +378,7 @@ namespace GeckoBot.Commands
             {
                 await Program.hdm.DmGroup(
                     paths[i],
-                    $"new gecko image: {geckos[DriveUtils.addZeros(baseline + i + 1)]}");
+                    $"new gecko image: {EmoteUtils.removeforbidden(geckos[DriveUtils.addZeros(baseline + i + 1)])}");
                 Thread.Sleep(10000);
             }
 
