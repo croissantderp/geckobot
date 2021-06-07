@@ -22,7 +22,7 @@ namespace GeckoBot
         static string ApplicationName = "GeckoBot";
 
         public static readonly DailyDM ddm = new ();
-        public static readonly highestDM hdm = new ();
+        public static readonly HighestDM hdm = new ();
         public static readonly Gec gec = new ();
 
         static void Main(string[] args)

@@ -15,12 +15,12 @@ using Microsoft.Win32;
 namespace GeckoBot.Commands
 {
     [Summary("Commands relating to the highest gecko message system.")]
-    public class highestDM : ModuleBase<SocketCommandContext>
+    public class HighestDM : ModuleBase<SocketCommandContext>
     {
         // Receive the client via dependency injection
         public DiscordSocketClient _client { get; set; }
-        public static System.Timers.Timer htimer = new System.Timers.Timer();
-        public static DateTime lastchecked = new DateTime();
+        private static System.Timers.Timer htimer = new ();
+        private static DateTime lastchecked = new DateTime();
 
         // Initialize timers and run initial checks
         public async Task initiatethings()
@@ -36,7 +36,7 @@ namespace GeckoBot.Commands
         }
 
         // Initialize timers and run initial checks
-        public async Task checkHighest()
+        private async Task checkHighest()
         {
             await Program.gec.RefreshHighestGec();
             Program.ddm.checkProfile();
@@ -45,7 +45,7 @@ namespace GeckoBot.Commands
 
             foreach (ulong key in DailyDM.DmUsers.Keys)
             {
-                Program.ddm.initiateUserTimer(key);
+                await Program.ddm.runChecks(key, true);
             }
 
             lastchecked = DateTime.Now.ToUniversalTime();
