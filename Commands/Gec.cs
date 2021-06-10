@@ -352,7 +352,11 @@ namespace GeckoBot.Commands
             runnin = true;
 
             var fetched = await FetchHighestGec();
-            if (fetched == _highestGecko) return;
+            if (fetched == _highestGecko)
+            {
+                runnin = false;
+                return;
+            }
             
             List<string> paths = new List<string>();
 
