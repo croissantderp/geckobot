@@ -29,8 +29,15 @@ namespace GeckoBot.Commands
 
         public static void LoadLocalInfo()
         {
-            _year = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek").Split("$")[0]);
-            _lastRun = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek").Split("$")[1]);
+            try
+            {
+                _year = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek").Split("$")[0]);
+                _lastRun = int.Parse(FileUtils.Load(@"..\..\Cache\gecko4.gek").Split("$")[1]);
+            }
+            catch
+            {
+
+            }
         }
 
         public static void SaveLocalInfo()
