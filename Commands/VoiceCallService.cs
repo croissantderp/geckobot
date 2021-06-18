@@ -22,9 +22,7 @@ namespace GeckoBot.Commands
             try
             {
                 var audioClient = await target.ConnectAsync(selfDeaf: true);
-
                 ConnectedChannels.TryAdd(guild.Id, audioClient);
-
                 var stream = audioClient.CreatePCMStream(AudioApplication.Mixed);
                 channels.Add(guild.Id, (target, stream));
             }

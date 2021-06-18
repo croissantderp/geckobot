@@ -151,7 +151,6 @@ namespace GeckoBot.Commands
 
                     await Context.Message.AddReactionAsync(new Emoji("⏬"));
 
-                    //starts a timer with desired amount of time
                     await _service.JoinAudio(Context.Guild, voiceState.VoiceChannel);
 
                     await Context.Message.AddReactionAsync(new Emoji("⏫"));
@@ -163,36 +162,35 @@ namespace GeckoBot.Commands
             }
         }
 
-        [Command("start capture")]
+        [Command("start capture", RunMode = RunMode.Async)]
         [Alias("begin capture")]
         [Summary("Starts capturing all the text and transmitting it into a voicecall.")]
         public async Task capture()
         {
             var voiceState = Context.User as IVoiceState;
 
-            if (VoiceCallService.channels.ContainsKey(Context.Guild.Id))
+            if (voiceState?.VoiceChannel == null)
             {
-                if (!VoiceCallService.captureChannels.ContainsKey(Context.Guild.Id))
+                await ReplyAsync("You must be connected to a voice channel!");
+                return;
+            }
+
+
+            if (!VoiceCallService.captureChannels.ContainsKey(Context.Guild.Id))
+            {
+                if (!VoiceCallService.channels.ContainsKey(Context.Guild.Id))
                 {
-                    if (voiceState?.VoiceChannel == null)
-                    {
-                        await ReplyAsync("You must be connected to a voice channel!");
-                        return;
-                    }
-                    else
-                    {
-                        VoiceCallService.captureChannels.Add(Context.Guild.Id, Context.Channel.Id);
-                        await ReplyAsync("Capturing channel, the capture will end either when 'end capture' is called or the bot leaves the voice channel");
-                    }
+                    await _service.JoinAudio(Context.Guild, voiceState.VoiceChannel);
+
+                    await Context.Message.AddReactionAsync(new Emoji("⏫"));
                 }
-                else
-                {
-                    await ReplyAsync("I am already capturing");
-                }
+
+                VoiceCallService.captureChannels.Add(Context.Guild.Id, Context.Channel.Id);
+                await ReplyAsync("Capturing channel, the capture will end either when 'end capture' is called or the bot leaves the voice channel");
             }
             else
             {
-                await ReplyAsync("I am not in a voice channel");
+                await ReplyAsync("I am already capturing");
             }
         }
 
