@@ -326,19 +326,27 @@ namespace GeckoBot.Commands
             listRequest.PageSize = 100; // Only fetch one hundred
             listRequest.OrderBy = "name desc"; // Name descending gets the highest number gecko
             listRequest.Q = "mimeType contains 'image'"; // Filter out folders or other non image types
-            while (true)
+            
+            try
             {
-                FileList files2 = await listRequest.ExecuteAsync();
-                IList<File> files = files2.Files;
-
-                foreach (File a in files)
+                while (true)
                 {
-                    if (Regex.IsMatch(a.Name, @"^\d"))
+                    FileList files2 = await listRequest.ExecuteAsync();
+                    IList<File> files = files2.Files;
+
+                    foreach (File a in files)
                     {
-                        return int.Parse(Regex.Replace(a.Name, @"_.+", ""));
+                        if (Regex.IsMatch(a.Name, @"^\d"))
+                        {
+                            return int.Parse(Regex.Replace(a.Name, @"_.+", ""));
+                        }
                     }
+                    listRequest.PageToken = files2.NextPageToken;
                 }
-                listRequest.PageToken = files2.NextPageToken;
+            }
+            catch
+            {
+                return _highestGecko;
             }
         }
 
