@@ -374,16 +374,16 @@ namespace GeckoBot.Commands
 
             int trunicated = 0;
 
+            for (int i = 0; i < total; i++)
+            {
+                paths.Add(DriveUtils.ImagePath(baseline + i + 1, false));
+            }
+
             if (total > 5)
             {
                 trunicated = total - 5;
                 baseline = fetched - 5;
                 total = 5;
-            }
-
-            for (int i = 0; i < total; i++)
-            {
-                paths.Add(DriveUtils.ImagePath(baseline + i + 1, false));
             }
 
             for (int i = 0; i < total; i++)
