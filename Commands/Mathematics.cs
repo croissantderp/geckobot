@@ -13,7 +13,7 @@ namespace GeckoBot.Commands
         [Summary("Adds two numbers.")]
         public async Task add([Remainder][Summary("Numbers to add, seperated by spaces.")] string numstring)
         {
-            decimal[] nums = numstring.Split(" ").Select(a => decimal.Parse(a)).ToArray();
+            decimal[] nums = numstring.Split(" ").Where(a => a != "").Select(a => decimal.Parse(a)).ToArray();
 
             await ReplyAsync(nums.Sum().ToString());
         }
@@ -22,7 +22,7 @@ namespace GeckoBot.Commands
         [Summary("Subtracts two numbers.")]
         public async Task subtract([Remainder][Summary("Numbers to subtract, seperated by spaces.")] string numstring)
         {
-            decimal[] nums = numstring.Split(" ").Select(a => decimal.Parse(a)).ToArray();
+            decimal[] nums = numstring.Split(" ").Where(a => a != "").Select(a => decimal.Parse(a)).ToArray();
 
             decimal final = nums[0];
 
@@ -38,7 +38,7 @@ namespace GeckoBot.Commands
         [Summary("Multiplies two numbers.")]
         public async Task multiply([Remainder][Summary("Numbers to multiply, seperated by spaces.")] string numstring)
         {
-            decimal[] nums = numstring.Split(" ").Select(a => decimal.Parse(a)).ToArray();
+            decimal[] nums = numstring.Split(" ").Where(a => a != "").Select(a => decimal.Parse(a)).ToArray();
 
             decimal final = nums[0];
 
@@ -54,7 +54,7 @@ namespace GeckoBot.Commands
         [Summary("Divides two numbers.")]
         public async Task divide([Remainder][Summary("Numbers to divide, seperated by spaces.")] string numstring)
         {
-            decimal[] nums = numstring.Split(" ").Select(a => decimal.Parse(a)).ToArray();
+            decimal[] nums = numstring.Split(" ").Where(a => a != "").Select(a => decimal.Parse(a)).ToArray();
 
             decimal final = nums[0];
 
@@ -71,7 +71,7 @@ namespace GeckoBot.Commands
         [Summary("Adds two numbers.")]
         public async Task Tadd([Remainder][Summary("Times seperated by spaces")] string num1)
         {
-            TimeSpan finalTime = new TimeSpan(num1.Split(" ").Select(a => Timer.parseTime(a).Ticks).Sum());
+            TimeSpan finalTime = new TimeSpan(num1.Split(" ").Where(a => a != "").Select(a => Timer.parseTime(a).Ticks).Sum());
 
             await ReplyAsync(finalTime.ToString());
         }
@@ -100,7 +100,7 @@ namespace GeckoBot.Commands
         [Summary("Subtracts two numbers.")]
         public async Task Tsubtract([Remainder][Summary("Times seperated by spaces")] string num1)
         {
-            TimeSpan[] finalTimes = num1.Split(" ").Select(a => Timer.parseTime(a)).ToArray();
+            TimeSpan[] finalTimes = num1.Split(" ").Where(a => a != "").Select(a => Timer.parseTime(a)).ToArray();
 
             TimeSpan finalTime = finalTimes[0];
 

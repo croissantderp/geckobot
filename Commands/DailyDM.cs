@@ -292,10 +292,10 @@ namespace GeckoBot.Commands
         }
 
         //sets up daily dms
-        [Command("dm")]
+        [Command("user join")]
         [Alias("sign up")]
         [Summary("Signs you up for daily dm.")]
-        public async Task dmgec([Summary("Bool whether you want to sign up or not.")] bool yes, [Summary("The time to send the notice everyday. (Note: The time is in a 1-24 hour format in UTC)")] string time, [Summary("The year to sign up for.")] int year = 1)
+        public async Task dmgec([Summary("Bool whether you want to sign up or not.")] bool yes, [Summary("The time to send the notice everyday. (Note: The time is in a 1-24 hour format in UTC)")] string time = "00:00:00", [Summary("The year to sign up for.")] int year = 1)
         {
             if (yes)
             {
@@ -328,7 +328,7 @@ namespace GeckoBot.Commands
                     SaveUserDict();
 
                     //DMs the user
-                    await user.SendMessageAsync("hi, daily gecko updates have been set up, cancel by '\\`dm false'");
+                    await user.SendMessageAsync("daily gecko updates have been set up.");
 
                     //adds reaction
                     await Context.Message.AddReactionAsync(new Emoji("✅"));
@@ -350,7 +350,7 @@ namespace GeckoBot.Commands
                     SaveUserDict();
 
                     //DMs the user
-                    await user.SendMessageAsync("hi, daily gecko updates have been canceled");
+                    await user.SendMessageAsync("gecko updates have been canceled.");
 
                     //adds reaction
                     await Context.Message.AddReactionAsync(new Emoji("✅"));
@@ -363,9 +363,9 @@ namespace GeckoBot.Commands
         }
 
         [RequireGeckobotAdmin]
-        [Command("add channel")]
+        [Command("channel join")]
         [Summary("adds a channel to the daily dm system.")]
-        public async Task addchannel([Summary("Bool whether you want to sign up or not.")] bool join, [Summary("The id of the channel you want to sign up.")] string strchannelid, [Summary("The time to send the notice everyday. (Note: The time is in a 1-24 hour format in UTC)")] string time, [Summary("The year to sign up for.")] int year = 1)
+        public async Task addchannel([Summary("Bool whether you want to sign up or not.")] bool join, [Summary("The id of the channel you want to sign up.")] string strchannelid, [Summary("The time to send the notice everyday. (Note: The time is in a 1-24 hour format in UTC)")] string time = "00:00:00", [Summary("The year to sign up for.")] int year = 1)
         {
             ulong channelid = ulong.Parse(strchannelid);
 
@@ -391,7 +391,7 @@ namespace GeckoBot.Commands
                     SaveUserDict();
 
                     //adds reaction
-                    await Context.Message.AddReactionAsync(new Emoji("✅"));
+                    await (Context.Client.GetChannel(channelid) as IMessageChannel).SendMessageAsync("This channel has been set up to recieve gecko updates.");
                 }
 
             }
@@ -407,7 +407,7 @@ namespace GeckoBot.Commands
                     SaveUserDict();
 
                     //adds reaction
-                    await Context.Message.AddReactionAsync(new Emoji("✅"));
+                    await (Context.Client.GetChannel(channelid) as IMessageChannel).SendMessageAsync("This channel has been removed from gecko updates.");
                 }
                 else
                 {
@@ -433,21 +433,6 @@ namespace GeckoBot.Commands
 
             bool wasRefreshed = false;
             
-            DirectoryInfo dir = new DirectoryInfo(@"../../../dectalk/audio/");
-
-            //clears files in dectalk audio cache if some still exist for some reason
-            foreach (FileInfo file in dir.GetFiles())
-            {
-                try
-                {
-                    file.Delete();
-                }
-                catch
-                {
-                    continue;
-                }
-            }
-
             var timeArray = DmUsers[id].Item4.Split(":");
             int seconds = (int.Parse(timeArray[0]) * 60 + int.Parse(timeArray[1])) * 60 + int.Parse(timeArray[2]);
             int useconds = (DateTime.Now.ToUniversalTime().Hour * 60 + DateTime.Now.ToUniversalTime().Minute) * 60 + DateTime.Now.ToUniversalTime().Second;
@@ -569,6 +554,21 @@ namespace GeckoBot.Commands
                 Utils.Utils.changeProfile(
                     _client, path
                     );
+
+                DirectoryInfo dir = new DirectoryInfo(@"../../../dectalk/audio/");
+
+                //clears files in dectalk audio cache if some still exist for some reason
+                foreach (FileInfo file in dir.GetFiles())
+                {
+                    try
+                    {
+                        file.Delete();
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
 
                 //updates last run counter
                 _lastRun = DateTime.Now.DayOfYear;

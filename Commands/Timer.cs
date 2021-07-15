@@ -27,7 +27,7 @@ namespace GeckoBot.Commands
         //basic timer that dms you when the time runs out
         [Command("timer")]
         [Summary("Sets an alarm which will be sent after the specified length of time.")]
-        public async Task startTimer([Summary("The message to send when time is up.")] string message, [Summary("The time in hh:mm:ss.")] string time)
+        public async Task startTimer([Summary("The time in hh:mm:ss.")] string time, [Remainder][Summary("The message to send when time is up.")] string message)
         {
             //gets user
             IUser user = Context.User;
@@ -44,7 +44,7 @@ namespace GeckoBot.Commands
         //an alarm that counts down towards a specified time then dms you
         [Command("alarm")]
         [Summary("Sets an alarm which will be sent on the specified date and time (in hh:mm:ss format).")]
-        public async Task alarm([Summary("The message to send when time is up.")] string message, [Summary("The time in hh:mm:ss.")] string time, [Summary("Optional date in mm/dd/yyyy.")] string date = null)
+        public async Task alarm([Summary("The time in hh:mm:ss.")] string time, [Summary("Optional date in mm/dd/yyyy.")] string date, [Remainder][Summary("The message to send when time is up.")] string message)
         {
             //parses the input time and calculates the amount of time until the input time
             TimeSpan final = (date != null ? parseDate(date) : DateTime.Today) + parseTime(time) - DateTime.Now;
@@ -255,13 +255,13 @@ namespace GeckoBot.Commands
         {
             var parsed = unparsed
                 .Split(":")
-                .Select(int.Parse)
+                .Select(a => (int?)int.Parse(a))
                 .ToArray();
 
             return new TimeSpan(
-                parsed[0], 
-                parsed[1], 
-                parsed[2]);
+                parsed[0] ?? 0,
+                parsed[1] ?? 0,
+                parsed[2] ?? 0);
         }
 
         //parses date in mm/dd/yyyy format
@@ -269,13 +269,13 @@ namespace GeckoBot.Commands
         {
             var parsed = unparsed
                 .Split("/")
-                .Select(int.Parse)
+                .Select(a => (int?)int.Parse(a))
                 .ToArray();
 
             return new DateTime(
-                parsed[2], 
-                parsed[0], 
-                parsed[1]);
+                parsed[2] ?? 0, 
+                parsed[0] ?? 0, 
+                parsed[1] ?? 0);
         }
     }
 }
