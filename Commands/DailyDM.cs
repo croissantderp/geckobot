@@ -416,19 +416,9 @@ namespace GeckoBot.Commands
             }
         }
 
-        // Initialize timers and run initial checks
-        public async Task initiatethings()
-        {
-            RefreshUserDict();
-
-            foreach (ulong key in DmUsers.Keys)
-            {
-                await runChecks(key, true);
-            }
-        }
-
         public async Task<bool> runChecks(ulong id, bool natural = false, bool force = false)
         {
+            Console.WriteLine($"Initiated runChecks with id {id} at {DateTime.Now.ToString()}");
             RefreshUserDict();
 
             bool wasRefreshed = false;
@@ -449,7 +439,7 @@ namespace GeckoBot.Commands
                 if (DmTimersLastCheck.ContainsKey(id)) DmTimersLastCheck.Remove(id);
                 DmTimersLastCheck.Add(id , DateTime.Now.ToUniversalTime());
 
-                initiateUserTimer(id, (wasRefreshed ? true : false));
+                initiateUserTimer(id, wasRefreshed);
             }
 
             return wasRefreshed;
@@ -474,6 +464,7 @@ namespace GeckoBot.Commands
         //sends daily dm
         async Task dailydm(ulong id)
         {
+            Console.WriteLine($"Initiated dailydm with id {id} at {DateTime.Now.ToString()}");
             var timeArray = DmUsers[id].Item4.Split(":");
             int seconds = (int.Parse(timeArray[0]) * 60 + int.Parse(timeArray[1])) * 60 + int.Parse(timeArray[2]);
 

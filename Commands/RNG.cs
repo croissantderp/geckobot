@@ -23,13 +23,13 @@ namespace GeckoBot.Commands
         [Command("fek")]
         [Alias("rsg")]
         [Summary("Generates a random string.")]
-        public async Task fek(int length = 0)
+        public async Task fek(int? length = null)
         {
             //generates random
             Random random = new Random();
 
             //generate random length of the word
-            int charNum = length != 0 ? length : random.Next(2, 10);
+            int charNum = length ?? random.Next(2, 10);
 
             string[] charFinal = new string[charNum];
 
@@ -42,7 +42,7 @@ namespace GeckoBot.Commands
             }
 
             //joins characters and sends
-            await ReplyAsync(string.Join("", charFinal));
+            await ReplyAsync("​" + string.Join("", charFinal));
         }
 
         //how to stonks

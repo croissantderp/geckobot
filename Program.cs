@@ -88,7 +88,6 @@ namespace GeckoBot
             //sets activity
             await _client.SetGameAsync("`what do you do?");
 
-            await ddm.initiatethings();
             await hdm.initiatethings();
         }
 

@@ -101,9 +101,7 @@ namespace GeckoBot.Commands
             {
                 if (isFile)
                 {
-                    await a.SendFileAsync(
-                        path,
-                        content);
+                    await a.SendFileAsync(path, content);
                 }
                 else
                 {
@@ -119,35 +117,12 @@ namespace GeckoBot.Commands
             //sends messages in channels
             foreach (var a in channels.Distinct().ToList())
             {
-                var temp = a as IMessageChannel;
-                if (isFile)
-                {
-                    IUserMessage message = await temp.SendFileAsync(
-                        path,
-                        content);
-
-                    try
-                    {
-                        await message.CrosspostAsync();
-                    }
-                    catch
-                    {
-                        continue;
-                    }
-                }
-                else
-                {
-                    IUserMessage message = await temp.SendMessageAsync(content);
-
-                    try
-                    {
-                        await message.CrosspostAsync();
-                    }
-                    catch
-                    {
-                        continue;
-                    }
-                }
+                if (!(a is IMessageChannel temp)) return;
+                IUserMessage message = (isFile) 
+                    ? await temp.SendFileAsync(path, content) 
+                    : await temp.SendMessageAsync(content);
+                if (temp is INewsChannel)
+                    await message.CrosspostAsync();
             }
         }
 
