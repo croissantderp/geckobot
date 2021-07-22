@@ -90,7 +90,7 @@ namespace GeckoBot.Commands
                 parsed[1],
                 parsed[2]), TimeZoneInfo.Local);
 
-            return (newTime.AddDays((newTime < DateTime.Now || forceNextDay) ? 1 : 0) - DateTime.Now).TotalMilliseconds;
+            return (newTime.AddDays((newTime <= DateTime.Now || forceNextDay) ? 1 : 0) - DateTime.Now).TotalMilliseconds;
         }
 
         //checks
@@ -489,15 +489,12 @@ namespace GeckoBot.Commands
             }
             else
             {
-                IUserMessage message = await (_client.GetChannel(id) as IMessageChannel).SendFileAsync(DriveUtils.ImagePath(((year - 1) * 367) + (date.DayOfYear - 1), false), final);
+                IChannel channel = _client.GetChannel(id);
+                IUserMessage message = await (channel as IMessageChannel).SendFileAsync(DriveUtils.ImagePath(((year - 1) * 367) + (date.DayOfYear - 1), false), final);
 
-                try
+                if (channel is INewsChannel)
                 {
                     await message.CrosspostAsync();
-                }
-                catch
-                {
-
                 }
             }
 
