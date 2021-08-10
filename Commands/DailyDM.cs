@@ -90,7 +90,7 @@ namespace GeckoBot.Commands
                 parsed[1],
                 parsed[2]), TimeZoneInfo.Local);
 
-            return (newTime.AddDays((newTime <= DateTime.Now || forceNextDay) ? 1 : 0) - DateTime.Now).TotalMilliseconds;
+            return (newTime.AddDays((newTime <= DateTime.Now.AddSeconds(2) || forceNextDay) ? 1 : 0) - DateTime.Now).TotalMilliseconds;
         }
 
         //checks
@@ -418,7 +418,7 @@ namespace GeckoBot.Commands
 
         public async Task<bool> runChecks(ulong id, bool natural = false, bool force = false)
         {
-            Console.WriteLine($"Initiated runChecks with id {id} at {DateTime.Now.ToString()}");
+            Console.WriteLine($"Initiated runChecks with id {id} at {DateTime.Now}");
             RefreshUserDict();
 
             bool wasRefreshed = false;
@@ -454,17 +454,22 @@ namespace GeckoBot.Commands
             }
 
             //starts a timer with desired amount of time
-            System.Timers.Timer t = new(returnTimeToNextCheck(DmUsers[id].Item4, force));
+
+            double time = returnTimeToNextCheck(DmUsers[id].Item4, force);
+
+            System.Timers.Timer t = new(time);
             t.Elapsed += async (sender, e) => await runChecks(id, true);
             t.Start();
 
             DmTimers.Add(id, t);
+
+            Console.WriteLine($"Initiated timer with id {id} to {DateTime.Now.AddMilliseconds(time)}");
         }
 
         //sends daily dm
         async Task dailydm(ulong id)
         {
-            Console.WriteLine($"Initiated dailydm with id {id} at {DateTime.Now.ToString()}");
+            Console.WriteLine($"Initiated dailydm with id {id} at {DateTime.Now}");
             var timeArray = DmUsers[id].Item4.Split(":");
             int seconds = (int.Parse(timeArray[0]) * 60 + int.Parse(timeArray[1])) * 60 + int.Parse(timeArray[2]);
 
@@ -508,59 +513,65 @@ namespace GeckoBot.Commands
             checkProfile();
         }
 
+        // Force updates
+        [Command("check profile")]
+        [Summary("Checks the profile.")]
+        public async Task checkProfileCmd()
+        {
+            checkProfile();
+            await ReplyAsync("profile checked");
+        }
+
         public void checkProfile()
         {
             LoadLocalInfo();
 
-            if (DateTime.Now.DayOfYear != _lastRun)
+            string path = "";
+            if (DriveUtils.ImagePath(((_year - 1) * 367) + (DateTime.Now.DayOfYear - 1), false).Split(".").Last() == "gif")
             {
-                string path = "";
-                if (DriveUtils.ImagePath(((_year - 1) * 367) + (DateTime.Now.DayOfYear - 1), false).Split(".").Last() == "gif")
+                try
                 {
-                    try
-                    {
-                        if (DriveUtils.ImagePath(((_year - 1) * 367) + (DateTime.Now.DayOfYear - 1), true).Split(".").Last() == "gif")
-                        {
-                            path = @"..\..\..\IMG_20190521_203810.jpg";
-                        }
-                        else
-                        {
-                            path = DriveUtils.ImagePath(((_year - 1) * 367) + (DateTime.Now.DayOfYear - 1), true);
-                        }
-                    }
-                    catch
+                    if (DriveUtils.ImagePath(((_year - 1) * 367) + (DateTime.Now.DayOfYear - 1), true).Split(".").Last() == "gif")
                     {
                         path = @"..\..\..\IMG_20190521_203810.jpg";
                     }
-                }
-                else
-                {
-                    path = DriveUtils.ImagePath(((_year - 1) * 367) + (DateTime.Now.DayOfYear - 1), false);
-                }
-
-                //changes geckobot's profile to new gecko
-                Utils.Utils.changeProfile(
-                    _client, path
-                    );
-
-                DirectoryInfo dir = new DirectoryInfo(@"../../../dectalk/audio/");
-
-                //clears files in dectalk audio cache if some still exist for some reason
-                foreach (FileInfo file in dir.GetFiles())
-                {
-                    try
+                    else
                     {
-                        file.Delete();
-                    }
-                    catch
-                    {
-                        continue;
+                        path = DriveUtils.ImagePath(((_year - 1) * 367) + (DateTime.Now.DayOfYear - 1), true);
                     }
                 }
-
-                //updates last run counter
-                _lastRun = DateTime.Now.DayOfYear;
+                catch
+                {
+                    path = @"..\..\..\IMG_20190521_203810.jpg";
+                }
             }
+            else
+            {
+                path = DriveUtils.ImagePath(((_year - 1) * 367) + (DateTime.Now.DayOfYear - 1), false);
+            }
+
+            //changes geckobot's profile to new gecko
+            Utils.Utils.changeProfile(
+                _client, path
+                );
+
+            DirectoryInfo dir = new DirectoryInfo(@"../../../dectalk/audio/");
+
+            //clears files in dectalk audio cache if some still exist for some reason
+            foreach (FileInfo file in dir.GetFiles())
+            {
+                try
+                {
+                    file.Delete();
+                }
+                catch
+                {
+                    continue;
+                }
+            }
+
+            //updates last run counter
+            _lastRun = DateTime.Now.DayOfYear;
 
             try
             {
