@@ -27,7 +27,7 @@ namespace GeckoBot.Commands
             //a list of numbers before the decimal point
             List<string> numberList = new ()
             {
-                numberArray[0]
+                numberArray[0].TrimStart('0')
             };
             
             //if a decimal exists
