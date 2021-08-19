@@ -49,13 +49,19 @@ namespace GeckoBot.Commands
         {
             RefreshScoreDict();
 
+            Console.WriteLine("refreshed");
+
             var unnamed = scores.OrderByDescending(a => a.Value);
             var unnamed2 = unnamed.Select(a => Context.Client.GetUser(a.Key).Username + " score: " + a.Value).Take(10).ToList();
+
+            Console.WriteLine("initiated");
 
             for (int i = 0; i < unnamed2.Count(); i++)
             {
                 unnamed2[i] = (i + 1) + ". " + unnamed2[i];
             }
+
+            Console.WriteLine("counted");
 
             if (!unnamed.Select(a => a.Key).Take(10).ToList().Contains(Context.User.Id) && scores.Keys.Contains(Context.User.Id))
             {
@@ -64,6 +70,8 @@ namespace GeckoBot.Commands
                 unnamed2.Add(index + ". " + Context.User.Username + " score: " + scores[Context.User.Id]);
                 unnamed2.Add("...");
             }
+
+            Console.WriteLine("selected");
 
             //buils an embed
             var embed = new EmbedBuilder
@@ -75,6 +83,8 @@ namespace GeckoBot.Commands
             embed.WithColor(180, 212, 85);
 
             var embed2 = embed.Build();
+
+            Console.WriteLine("built");
 
             await ReplyAsync(embed: embed2);
         }
@@ -89,8 +99,6 @@ namespace GeckoBot.Commands
                 await ReplyAsync("There is already an ongoing game!");
                 return;
             }
-
-            RefreshScoreDict();
 
             Gec.RefreshGec();
 
@@ -182,12 +190,14 @@ namespace GeckoBot.Commands
             int num = games[Context.Channel.Id].Item1;
             string name = games[Context.Channel.Id].Item2;
 
-            double scoreScale = 100.0 / (double)Globals.FuzzyMatchScore(name, name);
+            double scoreScale = 100.0 / Globals.FuzzyMatchScore(name, name);
 
             int temp;
 
             if (int.TryParse(value, out temp) && Math.Abs(num - temp) < 10)
             {
+                RefreshScoreDict();
+
                 bonus = 30 - (games[Context.Channel.Id].Item3.Count * 10);
                 score = 100 - (int)Math.Round(Math.Log10(Math.Abs(num - temp) + 1) * 100);
                 score = score == 0 ? 1 : score;
@@ -215,6 +225,8 @@ namespace GeckoBot.Commands
             }
             else if ((Globals.FuzzyMatch(name, value, out temp) && !temp.ToString().Contains("-")) || name == value)
             {
+                RefreshScoreDict();
+
                 bonus = 30 - (games[Context.Channel.Id].Item3.Count * 10);
                 score = name == value ? 100 : int.Parse(Math.Round(temp * scoreScale).ToString());
                 await ReplyAsync(Context.User.Username + " guessed correctly with a score of " + score + " and " + bonus + " bonus" + (score >= 50 ? ", the gecko was #" + games[Context.Channel.Id].Item1 + ": " + games[Context.Channel.Id].Item2 : ", keep guessing or use 'gend' to end the game!"));
