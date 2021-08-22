@@ -22,11 +22,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Discord.Net" Version="2.3.1" />
-    <PackageReference Include="Google.Apis.Drive.v3" Version="1.51.0.2320" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
-    <PackageReference Include="Microsoft.Quantum.Development.Kit" Version="0.16.2105140472" />
-    <PackageReference Include="Microsoft.Quantum.Standard" Version="0.16.2105140472" />
+    <PackageReference Include="Discord.Net" Version="2.4.0" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.54.0.2397" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
+    <PackageReference Include="Microsoft.Quantum.Standard" Version="0.18.2107153439" />
     <PackageReference Include="Microsoft.Win32.SystemEvents" Version="5.0.0" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
     <PackageReference Include="System.Management" Version="5.0.0" />

@@ -100,7 +100,7 @@ namespace GeckoBot.Commands
             }
             catch
             {
-
+                Console.WriteLine("ffmpeg malfunction");
             }
 
             //timer for deletion

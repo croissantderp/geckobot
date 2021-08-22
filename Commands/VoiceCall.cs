@@ -341,12 +341,9 @@ namespace GeckoBot.Commands
             //cleans strings
             string cleanText = DectalkReplace(text, Context.Client);
 
-            DecTalk(@"./audio/" + Context.Message.Id.ToString() + ".wav", cleanText);
+            await DecTalk(@"./audio/" + Context.Message.Id.ToString() + ".wav", cleanText).WaitForExitAsync();
 
-            //starts a timer with desired amount of time
-            System.Timers.Timer t = new(1000);
-            t.Elapsed += async (sender, e) => await dttimer(t, fileName);
-            t.Start();
+            await dttimer(fileName);
 
             await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
@@ -369,7 +366,6 @@ namespace GeckoBot.Commands
                 await _service.JoinAudio(Context.Guild, voiceState.VoiceChannel);
 
                 await Context.Message.AddReactionAsync(new Emoji("⏫"));
-
             }
 
             string fileName = @"../../../dectalk/audio/" + Context.Message.Id.ToString() + ".wav";
@@ -397,38 +393,30 @@ namespace GeckoBot.Commands
 
             string cleanText = DectalkReplace(text, Context.Client);
 
-            DecTalk(@"./audio/" + Context.Message.Id.ToString() + ".wav", cleanText);
+            await DecTalk(@"./audio/" + Context.Message.Id.ToString() + ".wav", cleanText).WaitForExitAsync();
 
             string fullPath = new FileInfo(fileName).FullName;
 
-            //starts a timer with desired amount of time
-            System.Timers.Timer t = new(1000);
-            t.Elapsed += async (sender, e) => await vcdttimer(t, fullPath, Context.Guild);
-            t.Start();
+            await vcdttimer(fullPath, Context.Guild);
 
             await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
 
-        public void dectalkcapture(ulong message, string text, IGuild guild, DiscordSocketClient client)
+        public async void dectalkcapture(ulong message, string text, IGuild guild, DiscordSocketClient client)
         {
             string fileName = @"../../../dectalk/audio/" + message + ".wav";
 
             string cleanText = DectalkReplace(text, client);
 
-            DecTalk(@"./audio/" + message + ".wav", cleanText);
+            await DecTalk(@"./audio/" + message + ".wav", cleanText).WaitForExitAsync();
 
             string fullPath = new FileInfo(fileName).FullName;
 
-            //starts a timer with desired amount of time
-            System.Timers.Timer t = new(1000);
-            t.Elapsed += async (sender, e) => await vcdttimer(t, fullPath, guild);
-            t.Start();
+            await vcdttimer(fullPath, guild);
         }
 
-        public async Task dttimer(System.Timers.Timer timer, string fileName)
+        public async Task dttimer(string fileName)
         {
-            timer.Close();
-
             try
             {
                 await Context.Channel.SendFileAsync(fileName);
@@ -439,26 +427,31 @@ namespace GeckoBot.Commands
                 await ReplyAsync("error, final recording file size too large or other error, try again");
 
                 //resets timer for deletion
-                timer = new(10000);
-                timer.Elapsed += (sender, e) => delayDelete(timer, fileName);
-                timer.Start();
+                System.Timers.Timer timer2 = new(10000);
+                timer2.Elapsed += (sender, e) => delayDelete(timer2, fileName);
+                timer2.Start();
             }
 
             //resets timer for deletion
-            timer = new(10000);
+            System.Timers.Timer timer = new(10000);
             timer.Elapsed += (sender, e) => delayDelete(timer, fileName);
             timer.Start();
         }
 
-        public async Task vcdttimer(System.Timers.Timer timer, string fileName, IGuild guild)
+        public async Task vcdttimer(string fileName, IGuild guild)
         {
-            timer.Close();
-
             if (!queue.ContainsKey(guild.Id))
             {
-                queue.TryAdd(guild.Id, new List<string>() { fileName });
+                bool success = queue.TryAdd(guild.Id, new List<string>() { fileName });
 
-                await _service.SendAudioAsync(guild);
+                if (!success)
+                {
+                    Console.WriteLine("queue addition failed");
+                }
+                else
+                {
+                    await _service.SendAudioAsync(guild);
+                }
             }
             else
             {
