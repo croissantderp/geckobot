@@ -147,9 +147,8 @@ namespace GeckoBot.Commands
             {
                 Title = "gecko collection",
                 Description = (
-                "[gecko collection center](https://drive.google.com/drive/folders/1Omwv0NNV0k_xlECZq3d4r0MbSbuHC_Og?usp=sharing)\n" +
-                "[geckoimage >submit<](https://forms.gle/CeNkM2aHcdrcidvX6)\n" +
-                "[about](https://docs.google.com/document/d/1cBOt6IL3leouEg90WItw769HLBea5JD1_8bIoKC7A9s/edit?usp=sharing)\n" +
+                "[Website](https://geckos.web.app)\n" +
+                "[Google Drive](https://drive.google.com/drive/folders/1Omwv0NNV0k_xlECZq3d4r0MbSbuHC_Og?usp=sharing)\n" +
                 "[official](https://discord.gg/Jgf6e3xaWf) [server](https://tinyurl.com/geckoimages) [invite](http://www.5z8.info/hack-outlook_n3e7iu_--INITIATE-CREDIT-CARD-XFER--)")
             };
 
