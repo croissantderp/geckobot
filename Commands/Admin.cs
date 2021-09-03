@@ -90,16 +90,16 @@ namespace GeckoBot.Commands
         [Summary("Sets geckobot's profile to the specified image path.")]
         public async Task profile([Summary("The local path of the image.")] string path)
         {
-            Utils.Utils.changeProfile(Context.Client, path);
-            await ReplyAsync("profile changed");
+            bool success = await Utils.Utils.changeProfile(Context.Client, path);
+            await ReplyAsync(success ? "profile changed" : "profile change failed");
         }
 
         [Command("name")]
         [Summary("Sets geckobot's name")]
         public async Task name([Summary("The name to change the in-dicord name to.")] [Remainder]string name)
         {
-            Utils.Utils.changeName(Context.Client, name);
-            await ReplyAsync("name changed");
+            bool success = await Utils.Utils.changeName(Context.Client, name);
+            await ReplyAsync(success ? "name changed" : "name change failed");
         }
     }
 }
