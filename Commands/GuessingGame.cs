@@ -26,7 +26,7 @@ namespace GeckoBot.Commands
         public static List<int> alreadyDone = new List<int>();
 
         //loads poll dictionary as string and converts it back into dictionary
-        private static void RefreshScoreDict()
+        private static Dictionary<ulong, int> RefreshScoreDict()
         {
             FileUtils.checkForExistance();
 
@@ -34,6 +34,8 @@ namespace GeckoBot.Commands
                 .Select(part => Regex.Split(part, @"\s(?<!\\)\⁊\s"))
                 .Where(part => part.Length == 2)
                 .ToDictionary(sp => ulong.Parse(sp[0]), sp => int.Parse(sp[1]));
+
+            return scores;
         }
 
         [Command("left")]
