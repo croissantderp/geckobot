@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Discord;
 using Discord.Commands;
+using Discord.Rest;
 using Discord.WebSocket;
 using GeckoBot.Preconditions;
 using System.Linq;
@@ -52,6 +53,12 @@ namespace GeckoBot.Commands
                 var chnl = client.GetChannel(ulong.Parse(target));
                 
                 var user = await (chnl as IGuildChannel).Guild.GetUserAsync(Context.User.Id);
+
+                if ((chnl as ITextChannel).SlowModeInterval > 5)
+                {
+                    await ReplyAsync("There is slowmode in the targeted channel!");
+                    return;
+                }
 
                 if (!user.GetPermissions(chnl as IGuildChannel).ViewChannel || !user.GetPermissions(chnl as IGuildChannel).SendMessages)
                 {
