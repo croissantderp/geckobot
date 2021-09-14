@@ -25,11 +25,14 @@ namespace GeckoBot.Commands
             int SigNum = 0;
 
             //a list of numbers before the decimal point
-            List<string> numberList = new ()
+            List<string> numberList = new ();
+
+            int temp2electricboogaloo;
+            if (int.TryParse(numberArray[0].ToString(), out temp2electricboogaloo))
             {
-                int.Parse(numberArray[0]).ToString()
-            };
-            
+                numberList.Add(temp2electricboogaloo.ToString());
+            }
+
             //if a decimal exists
             if (numberArray.Length == 2)
             {
@@ -37,7 +40,12 @@ namespace GeckoBot.Commands
                 Decimal.Add(".");
                 string zeros = "";
 
-                if (numberArray[1] == "")
+                if (decimal.Parse(number) == 0)
+                {
+                    Decimal.Add(numberArray[1]);
+                    SigNum = 0;
+                }
+                else if (numberArray[1] == "")
                 {
                     //adds ** which bolds text
                     Decimal.Add(numberArray[1]);

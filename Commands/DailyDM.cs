@@ -553,7 +553,7 @@ namespace GeckoBot.Commands
             //changes geckobot's profile to new gecko
             Utils.Utils.changeProfile(
                 _client, path
-                );
+                ).GetAwaiter().GetResult();
 
             DirectoryInfo dir = new DirectoryInfo(@"../../../dectalk/audio/");
 
