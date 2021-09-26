@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
+using GeckoBot.Utils;
 
 namespace GeckoBot.Commands
 {
@@ -64,6 +65,29 @@ namespace GeckoBot.Commands
             }
 
             await ReplyAsync(final.ToString());
+        }
+
+        [Command("power")]
+        [Summary("Powers a number.")]
+        public async Task power([Summary("Value to raise second number by..")] double root, [Summary("The number to empower.")] double value)
+        {
+            double thing = Math.Pow(value, root);
+
+            await ReplyAsync(thing.ToString());
+        }
+
+        [Command("scinot")]
+        [Summary("puts a number in scientific notation.")]
+        public async Task scinot([Summary("Number to convert to/from scientific notation.")] double value)
+        {
+            await ReplyAsync("Standard: " + decimal.Parse(value.ToString(), System.Globalization.NumberStyles.Float) + "\nScientific: " + string.Format("{0:#.##E+0}", value));
+        }
+
+        [Command("round")]
+        [Summary("Rounds a number.")]
+        public async Task round([Summary("Numbers of digits to round to.")] int digits, [Summary("Number to round.")] decimal value)
+        {
+            await ReplyAsync(Utils.Utils.RoundNum(value, digits).ToString());
         }
 
         //maf but time

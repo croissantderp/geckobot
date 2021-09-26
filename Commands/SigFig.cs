@@ -18,6 +18,14 @@ namespace GeckoBot.Commands
             //splits the number into two strings, one of the digits before the decimal, one of them after
             string[] numberArray = number.Split(".");
 
+            bool negative = false;
+
+            if (numberArray[0].Contains("-"))
+            {
+                negative = true;
+                numberArray[0] = numberArray[0].Remove(0,1);
+            }
+
             //a list of the numbers after the decimal point
             List<string> Decimal = new ();
 
@@ -156,7 +164,7 @@ namespace GeckoBot.Commands
                     }
                 }
             }
-            string[] final = { string.Join("", numberList.Select(p => p.ToString())), string.Join("", Decimal.Select(p => p.ToString())), SigNum.ToString()};
+            string[] final = { (negative ? "-" : "") + string.Join("", numberList.Select(p => p.ToString())), string.Join("", Decimal.Select(p => p.ToString())), SigNum.ToString()};
             return final;
         }
 
@@ -169,41 +177,6 @@ namespace GeckoBot.Commands
             
             //constructs reply
             await ReplyAsync(figs[0] + figs[1] + " " + figs[2]);
-        }
-
-        //rounds values (found off of stack overflow I don't know how it works)
-        private decimal RoundNum(decimal d, int digits)
-        {
-            int neg = 1;
-            if (d < 0)
-            {
-                d = d * (-1);
-                neg = -1;
-            }
-
-            int n = 0;
-            if (d > 1)
-            {
-                while (d > 1)
-                {
-                    d = d / 10;
-                    n++;
-                }
-                d = Math.Round(d * (decimal)Math.Pow(10, digits));
-                d = d * (decimal)Math.Pow(10, n - digits);
-            }
-            else
-            {
-                while ((double)d < 0.1)
-                {
-                    d = d * 10;
-                    n++;
-                }
-                d = Math.Round(d * (decimal)Math.Pow(10, digits));
-                d = d / (decimal)Math.Pow(10, n + digits);
-            }
-
-            return d * neg;
         }
 
         //sigfig add
@@ -233,26 +206,13 @@ namespace GeckoBot.Commands
             
             if (isDecimal)
             {
-                if (accuracy1 < check2[0].Length)
-                {
-                    accuracy1 = check2[0].Length;
-                }
-                if (accuracy1 < check1[0].Length)
-                {
-                    accuracy1 = check1[0].Length;
-                }
-                if (accuracy2 < check1[0].Length)
-                {
-                    accuracy2 = check1[0].Length;
-                }
-                if (accuracy2 < check2[0].Length)
-                {
-                    accuracy2 = check2[0].Length;
-                }
+                accuracy1 = check1[1].Length;
+                accuracy2 = check2[1].Length;
 
                 if (accuracy1 <= accuracy2)
                 {
-                    final = RoundNum(finalNum, accuracy1);
+                    accuracy1 += finalNum.ToString().Split(".")[0].Length;
+                    final = Utils.Utils.RoundNum(finalNum, accuracy1);
 
                     if (accuracy1 > final.ToString().Length)
                     {
@@ -265,7 +225,8 @@ namespace GeckoBot.Commands
                 }
                 else
                 {
-                    final = RoundNum(finalNum, accuracy2);
+                    accuracy2 += finalNum.ToString().Split(".")[0].Length;
+                    final = Utils.Utils.RoundNum(finalNum, accuracy2);
 
                     if (accuracy2 > final.ToString().Length)
                     {
@@ -322,26 +283,13 @@ namespace GeckoBot.Commands
 
             if (isDecimal)
             {
-                if (accuracy1 < check2[0].Length)
-                {
-                    accuracy1 = check2[0].Length;
-                }
-                if (accuracy1 < check1[0].Length)
-                {
-                    accuracy1 = check1[0].Length;
-                }
-                if (accuracy2 < check1[0].Length)
-                {
-                    accuracy2 = check1[0].Length;
-                }
-                if (accuracy2 < check2[0].Length)
-                {
-                    accuracy2 = check2[0].Length;
-                }
+                accuracy1 = check1[1].Length;
+                accuracy2 = check2[1].Length;
 
                 if (accuracy1 <= accuracy2)
                 {
-                    final = RoundNum(finalNum, accuracy1-2);
+                    accuracy1 += finalNum.ToString().Split(".")[0].Length - 1;
+                    final = Utils.Utils.RoundNum(finalNum, accuracy1);
 
                     if (accuracy1 > final.ToString().Length)
                     {
@@ -354,7 +302,8 @@ namespace GeckoBot.Commands
                 }
                 else
                 {
-                    final = RoundNum(finalNum, accuracy2-2);
+                    accuracy2 += finalNum.ToString().Split(".")[0].Length - 1;
+                    final = Utils.Utils.RoundNum(finalNum, accuracy2-2);
 
                     if (accuracy2 > final.ToString().Length)
                     {
@@ -400,7 +349,7 @@ namespace GeckoBot.Commands
 
             if (accuracy1 <= accuracy2)
             {
-                final = RoundNum(finalNum, accuracy1);
+                final = Utils.Utils.RoundNum(finalNum, accuracy1);
                 if (accuracy1 > final.ToString().Length)
                 {
                     extra[0] = ".";
@@ -412,7 +361,7 @@ namespace GeckoBot.Commands
             }
             else
             {
-                final = RoundNum(finalNum, accuracy2);
+                final = Utils.Utils.RoundNum(finalNum, accuracy2);
                 if (accuracy2 > final.ToString().Length)
                 {
                     extra[0] = ".";
@@ -451,7 +400,7 @@ namespace GeckoBot.Commands
 
             if (accuracy1 <= accuracy2)
             {
-                final = RoundNum(finalNum, accuracy1);
+                final = Utils.Utils.RoundNum(finalNum, accuracy1);
                 if (accuracy1 > final.ToString().Length)
                 {
                     extra[0] = ".";
@@ -463,7 +412,7 @@ namespace GeckoBot.Commands
             }
             else
             {
-                final = RoundNum(finalNum, accuracy2);
+                final = Utils.Utils.RoundNum(finalNum, accuracy2);
                 if (accuracy2 > final.ToString().Length)
                 {
                     extra[0] = ".";

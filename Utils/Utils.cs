@@ -51,7 +51,42 @@ namespace GeckoBot.Utils
                 return false;
             }
         }
-        
-        
+
+
+        //rounds values (found off of stack overflow I don't know how it works)
+        public static decimal RoundNum(decimal d, int digits)
+        {
+            int neg = 1;
+            if (d < 0)
+            {
+                d = d * (-1);
+                neg = -1;
+            }
+
+            int n = 0;
+            if (d > 1)
+            {
+                while (d > 1)
+                {
+                    d = d / 10;
+                    n++;
+                }
+                d = Math.Round(d * (decimal)Math.Pow(10, digits));
+                d = d * (decimal)Math.Pow(10, n - digits);
+            }
+            else
+            {
+                while ((double)d < 0.1)
+                {
+                    d = d * 10;
+                    n++;
+                }
+                d = Math.Round(d * (decimal)Math.Pow(10, digits));
+                d = d / (decimal)Math.Pow(10, n + digits);
+            }
+
+            return d * neg;
+        }
+
     }
 }

@@ -89,6 +89,7 @@ namespace GeckoBot.Commands
 
             try
             {
+                Console.WriteLine("playing audio...");
                 using (var ffmpeg = CreateProcess(path))
                 {
                     ffmpegs.Add(guild.Id, ffmpeg);
@@ -107,6 +108,8 @@ namespace GeckoBot.Commands
             System.Timers.Timer timer = new(1000);
             timer.Elapsed += (sender, e) => VoiceCall.delayDelete(timer, path);
             timer.Start();
+
+            Console.WriteLine("done");
 
             if (VoiceCall.queue.ContainsKey(guild.Id))
             {
