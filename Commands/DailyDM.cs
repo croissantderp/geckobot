@@ -102,10 +102,14 @@ namespace GeckoBot.Commands
 
             var ran = await runChecks(Context.User.Id);
             
-            if (ran)
+            if (ran == 1)
                 await ReplyAsync("checked and updated");
-            else
+            else if (ran == 0)
                 await ReplyAsync("checked");
+            else
+            {
+                await ReplyAsync("you are not signed up");
+            }
         }
 
         
@@ -119,8 +123,8 @@ namespace GeckoBot.Commands
             int i = 0;
             foreach (ulong key in DmUsers.Keys)
             {
-                bool yes = await runChecks(key, true, false);
-                if (yes) i++;
+                int yes = await runChecks(key, true, false);
+                if (yes == 1) i++;
             }
 
             await ReplyAsync("checked, " + i + " users updated.");
@@ -416,10 +420,15 @@ namespace GeckoBot.Commands
             }
         }
 
-        public async Task<bool> runChecks(ulong id, bool natural = false, bool force = false)
+        public async Task<int> runChecks(ulong id, bool natural = false, bool force = false)
         {
             Console.WriteLine($"Initiated runChecks with id {id} at {DateTime.Now}");
             RefreshUserDict();
+
+            if (!DmUsers.ContainsKey(id))
+            {
+                return -1;
+            }
 
             bool wasRefreshed = false;
             
@@ -442,7 +451,7 @@ namespace GeckoBot.Commands
                 initiateUserTimer(id, wasRefreshed);
             }
 
-            return wasRefreshed;
+            return wasRefreshed == false ? 0 : 1;
         }
 
         public void initiateUserTimer(ulong id, bool force = false)
