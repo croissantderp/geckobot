@@ -195,7 +195,7 @@ namespace GeckoBot.Commands
         }
 
         [Command("clear dectalk cache")]
-        [Summary("Gets the current capture channel if it exists.")]
+        [Summary("Clears the dectalk audio directory.")]
         public async Task clearFiles()
         {
             DirectoryInfo dir = new DirectoryInfo(@"../../../dectalk/audio/");

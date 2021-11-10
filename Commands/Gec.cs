@@ -106,7 +106,7 @@ namespace GeckoBot.Commands
         public async Task gec([Summary("Optional year.")] int year = 0)
         {
             //gets day of the year
-            DateTime date = DateTime.Today;
+            DateTime date = DateTime.UtcNow;
 
             RefreshGec();
 

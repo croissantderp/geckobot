@@ -22,7 +22,7 @@ namespace GeckoBot.Commands
         private static int _lastRun = DateTime.Now.DayOfYear; //last time bot was run and daily geckoimage was sent
         private static int _year = 1;
 
-        //user/channel id, (is channel, year, last gecko, string)
+        //user/channel id, (is channel, year, last gecko, time)
         public static Dictionary<ulong, (bool, int, int, string)> DmUsers = new(); //people to dm for daily gecko images
         public static Dictionary<ulong, System.Timers.Timer> DmTimers = new Dictionary<ulong, System.Timers.Timer>();
         public static Dictionary<ulong, DateTime> DmTimersLastCheck = new Dictionary<ulong, DateTime>();
@@ -90,7 +90,14 @@ namespace GeckoBot.Commands
                 parsed[1],
                 parsed[2]), TimeZoneInfo.Local);
 
-            return (newTime.AddDays((newTime <= DateTime.Now.AddSeconds(2) || forceNextDay) ? 1 : 0) - DateTime.Now).TotalMilliseconds;
+            //extra one for edge case of time falling on 12:00 am
+            newTime = newTime.AddDays((newTime <= DateTime.Now || forceNextDay) ? 1 : 0);
+            newTime = newTime.AddDays((newTime <= DateTime.Now) ? 1 : 0);
+
+            Console.WriteLine(newTime <= DateTime.Now);
+            Console.WriteLine(newTime);
+
+            return (newTime - DateTime.Now).TotalMilliseconds;
         }
 
         //checks
@@ -326,7 +333,7 @@ namespace GeckoBot.Commands
                 else
                 {
                     //adds id
-                    DmUsers.Add(user.Id, (false, year, DateTime.Now.ToUniversalTime().DayOfYear - 1, time));
+                    DmUsers.Add(user.Id, (false, year, DateTime.UtcNow.DayOfYear - 1, time));
 
                     //saves info
                     SaveUserDict();
@@ -389,7 +396,7 @@ namespace GeckoBot.Commands
                 else
                 {
                     //adds id
-                    DmUsers.Add(channelid, (true, year, DateTime.Now.ToUniversalTime().DayOfYear - 1, time));
+                    DmUsers.Add(channelid, (true, year, DateTime.UtcNow.DayOfYear - 1, time));
 
                     //saves info
                     SaveUserDict();
@@ -434,10 +441,10 @@ namespace GeckoBot.Commands
             
             var timeArray = DmUsers[id].Item4.Split(":");
             int seconds = (int.Parse(timeArray[0]) * 60 + int.Parse(timeArray[1])) * 60 + int.Parse(timeArray[2]);
-            int useconds = (DateTime.Now.ToUniversalTime().Hour * 60 + DateTime.Now.ToUniversalTime().Minute) * 60 + DateTime.Now.ToUniversalTime().Second;
+            int useconds = (DateTime.UtcNow.Hour * 60 + DateTime.UtcNow.Minute) * 60 + DateTime.UtcNow.Second;
 
             // Run daily dm if it has been a day since the last dm
-            if (force || (DmUsers[id].Item3 != DateTime.Today.ToUniversalTime().AddSeconds(seconds).DayOfYear && seconds <= useconds))
+            if (force || (DmUsers[id].Item3 != DateTime.UtcNow.DayOfYear && seconds <= useconds))
             {
                 await dailydm(id);
                 wasRefreshed = true;
@@ -446,7 +453,7 @@ namespace GeckoBot.Commands
             if (natural)
             {
                 if (DmTimersLastCheck.ContainsKey(id)) DmTimersLastCheck.Remove(id);
-                DmTimersLastCheck.Add(id , DateTime.Now.ToUniversalTime());
+                DmTimersLastCheck.Add(id , DateTime.UtcNow);
 
                 initiateUserTimer(id, wasRefreshed);
             }
@@ -487,7 +494,7 @@ namespace GeckoBot.Commands
             int year = DmUsers[id].Item2;
 
             //generates statement to send
-            DateTime date = DateTime.Today.ToUniversalTime().AddSeconds(seconds);
+            DateTime date = DateTime.UtcNow;
 
             string final = $"Today is {date.ToString("d")}. Day {date.DayOfYear} of the year {date.Year} (gecko: {EmoteUtils.removeforbidden(Gec.geckos[DriveUtils.addZeros(((year - 1) * 367) + (date.DayOfYear - 1))])}) \n" +
                 $"Other geckos of today include: ";

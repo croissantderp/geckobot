@@ -93,10 +93,15 @@ namespace GeckoBot.Commands
                 using (var ffmpeg = CreateProcess(path))
                 {
                     ffmpegs.Add(guild.Id, ffmpeg);
+                    Console.WriteLine("adding...");
                     await ffmpeg.StandardOutput.BaseStream.CopyToAsync(channels[guild.Id].Item2);
+                    Console.WriteLine("copying...");
                     await channels[guild.Id].Item2.FlushAsync();
+                    Console.WriteLine("flushing...");
                     ffmpeg.Dispose();
+                    Console.WriteLine("disposing...");
                     ffmpegs.Remove(guild.Id);
+                    Console.WriteLine("removing...");
                 }
             }
             catch
