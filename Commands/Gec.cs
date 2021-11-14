@@ -172,7 +172,6 @@ namespace GeckoBot.Commands
             List<string> channels = new List<string>();
             channels.AddRange(DailyDM.DmUsers.Keys.Where(a => DailyDM.DmUsers[a].Item1).Select(a => Context.Client.GetChannel(a).ToString()));
 
-
             //buils an embed
             var embed = new EmbedBuilder
             {

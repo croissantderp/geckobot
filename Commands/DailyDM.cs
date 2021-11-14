@@ -506,10 +506,32 @@ namespace GeckoBot.Commands
 
             if (DmUsers[id].Item1 == false)
             {
+                if (_client.GetUser(id) == null)
+                {
+                    //removes user form list
+                    DmUsers.Remove(id);
+
+                    //saves info
+                    SaveUserDict();
+
+                    return;
+                }
+
                 await (_client.GetUser(id) as IUser).SendFileAsync(DriveUtils.ImagePath(((year - 1) * 367) + (date.DayOfYear - 1), false), final);
             }
             else
             {
+                if (_client.GetChannel(id) == null)
+                {
+                    //removes user form list
+                    DmUsers.Remove(id);
+
+                    //saves info
+                    SaveUserDict();
+
+                    return;
+                }
+
                 IChannel channel = _client.GetChannel(id);
                 IUserMessage message = await (channel as IMessageChannel).SendFileAsync(DriveUtils.ImagePath(((year - 1) * 367) + (date.DayOfYear - 1), false), final);
 
