@@ -395,6 +395,8 @@ namespace GeckoBot.Commands
 
             await DecTalk(@"./audio/" + Context.Message.Id.ToString() + ".wav", cleanText).WaitForExitAsync();
 
+            Console.WriteLine("e");
+
             string fullPath = new FileInfo(fileName).FullName;
 
             await vcdttimer(fullPath, Context.Guild);
@@ -469,7 +471,7 @@ namespace GeckoBot.Commands
         {
             return Process.Start(new ProcessStartInfo
             {
-                FileName = "powershell.exe",
+                FileName = @"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe",
                 Arguments = $"sl ../../../dectalk | ../../../dectalk/say.exe -w {filePath} -p '{content}'",
                 UseShellExecute = false
             });
