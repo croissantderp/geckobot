@@ -463,6 +463,11 @@ namespace GeckoBot.Commands
 
         public void initiateUserTimer(ulong id, bool force = false)
         {
+            if (!DmUsers.ContainsKey(id))
+            {
+                return;
+            }
+
             if (DmTimers.ContainsKey(id))
             {
                 DmTimers[id].Dispose();
