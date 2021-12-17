@@ -211,7 +211,7 @@ namespace GeckoBot.Commands
 
                 if (accuracy1 <= accuracy2)
                 {
-                    accuracy1 += finalNum.ToString().Split(".")[0].Length;
+                    accuracy1 += finalNum.ToString().Split(".")[0] != "0" ? finalNum.ToString().Split(".")[0].Length : 0;
                     final = Utils.Utils.RoundNum(finalNum, accuracy1);
 
                     if (accuracy1 > final.ToString().Length)
@@ -225,7 +225,7 @@ namespace GeckoBot.Commands
                 }
                 else
                 {
-                    accuracy2 += finalNum.ToString().Split(".")[0].Length;
+                    accuracy2 += finalNum.ToString().Split(".")[0] != "0" ? finalNum.ToString().Split(".")[0].Length : 0;
                     final = Utils.Utils.RoundNum(finalNum, accuracy2);
 
                     if (accuracy2 > final.ToString().Length)
