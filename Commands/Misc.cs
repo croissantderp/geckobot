@@ -19,6 +19,7 @@ namespace GeckoBot.Commands
 
         //creates new files if there are none
         // Shouldn't this be better as a preliminary check instead of a command?
+        //probably, but i don't remember why this exists anymore
         [Command("instantiate")]
         [Summary("Ensures the bot's cache exists.")]
         public async Task instantiate()
@@ -97,6 +98,44 @@ namespace GeckoBot.Commands
         public async Task test([Summary("test")] string test = "test")
         {
             await ReplyAsync(test);
+        }
+
+        [Command("diagnose")]
+        [Summary("Uses totally legit WebMD api to diagnose any conditions and diseases you might have (this is a joke)")]
+        public async Task diagnose([Summary("The symptoms you have")] string symptoms)
+        {
+            string final = (symptoms.Length % 5) switch
+            {
+                0 => "You have terminal cancer.",
+                1 => "You are pregnant.",
+                2 => "You have terminal cancer.",
+                3 => "You have terminal cancer.",
+                4 => "You have terminal cancer.",
+                _ => "Never gonna give you up."
+            };
+
+            //adds reaction
+            await ReplyAsync(final);
+        }
+
+        [Command("wisdom")]
+        [Summary("Spews out wisdoms")]
+        public async Task wisdom()
+        {
+            Random random = new Random();
+
+            string final = random.Next(0, 5) switch
+            {
+                0 => "Do not cough into the toilet.",
+                1 => "Scream, and keep screaming.",
+                2 => "When eating, use hands.",
+                3 => "Always listen to passing dogs.",
+                4 => "When confronting a deer with a gun, aim for the legs",
+                _ => "Never gonna give you up."
+            };
+
+            //adds reaction
+            await ReplyAsync(final);
         }
 
         [RequireGeckobotAdmin]
