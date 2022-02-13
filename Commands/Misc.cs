@@ -102,7 +102,7 @@ namespace GeckoBot.Commands
 
         [Command("diagnose")]
         [Summary("Uses totally legit WebMD api to diagnose any conditions and diseases you might have (this is a joke)")]
-        public async Task diagnose([Summary("The symptoms you have")] string symptoms)
+        public async Task diagnose([Summary("The symptoms you have")][Remainder] string symptoms)
         {
             string final = (symptoms.Length % 5) switch
             {

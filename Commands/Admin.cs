@@ -91,6 +91,7 @@ namespace GeckoBot.Commands
         public async Task profile([Summary("The local path of the image.")] string path)
         {
             bool success = await Utils.Utils.changeProfile(Context.Client, path);
+            DailyDM.allowedToPfp = false;
             await ReplyAsync(success ? "profile changed" : "profile change failed");
         }
 

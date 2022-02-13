@@ -27,6 +27,8 @@ namespace GeckoBot.Commands
         public static Dictionary<ulong, System.Timers.Timer> DmTimers = new Dictionary<ulong, System.Timers.Timer>();
         public static Dictionary<ulong, DateTime> DmTimersLastCheck = new Dictionary<ulong, DateTime>();
 
+        public static bool allowedToPfp = true;
+
         public static void LoadLocalInfo()
         {
             try
@@ -561,12 +563,16 @@ namespace GeckoBot.Commands
         [Summary("Checks the profile.")]
         public async Task checkProfileCmd()
         {
+            allowedToPfp = true;
             checkProfile();
             await ReplyAsync("profile checked");
         }
 
         public void checkProfile()
         {
+            if (!allowedToPfp)
+                return;
+
             LoadLocalInfo();
 
             string path = "";
