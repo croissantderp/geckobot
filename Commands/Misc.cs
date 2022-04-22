@@ -100,6 +100,8 @@ namespace GeckoBot.Commands
             await ReplyAsync(test);
         }
 
+
+
         [Command("diagnose")]
         [Summary("Uses totally legit WebMD api to diagnose any conditions and diseases you might have (this is a joke)")]
         public async Task diagnose([Summary("The symptoms you have")][Remainder] string symptoms)
