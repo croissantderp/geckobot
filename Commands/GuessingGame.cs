@@ -154,15 +154,17 @@ namespace GeckoBot.Commands
 
             //starts a timer with desired amount of time
             System.Timers.Timer t = new(60 * 1000);
-            t.Elapsed += async (sender, e) => await timerUp(Context.Channel.Id, t);
-            t.Start();
 
             games.Add(Context.Channel.Id, (numb, final, new List<ulong>(), t));
+
+            t.Elapsed += async (sender, e) => await timerUp(Context.Channel.Id, t);
+            t.Start();
         }
 
         async Task timerUp(ulong channel, System.Timers.Timer t)
         {
             t.Dispose();
+
             await (Context.Client.GetChannel(channel) as IMessageChannel).SendMessageAsync("Time is up, the gecko was #" + games[channel].Item1 + ": " + games[channel].Item2);
 
             games.Remove(channel);

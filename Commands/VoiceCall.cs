@@ -299,12 +299,12 @@ namespace GeckoBot.Commands
         {
             Regex eregex = new Regex(@"\<a?\:\w*\:\d{18}\>");
             Regex cregex = new Regex(@"\<\#\d{18}\>");
-            Regex mregex = new Regex(@"\<\@\!\d{18}\>");
+            Regex mregex = new Regex(@"\<\@\!?\d{18}\>");
             Regex rregex = new Regex(@"\<\@\&\d{18}\>");
 
             original = eregex.Replace(original, a => a.ToString().Split(":")[1]);
             original = cregex.Replace(original, a => client.GetChannel(ulong.Parse(a.ToString().Remove(0, 2).Remove(18, 1))).ToString());
-            original = mregex.Replace(original, a => client.GetUser(ulong.Parse(a.ToString().Remove(0, 3).Remove(18, 1))).Username);
+            original = mregex.Replace(original, a => client.GetUser(ulong.Parse(a.ToString().Replace("!", "").Remove(0, 2).Remove(18, 1))).Username);
             original = rregex.Replace(original, "role");
 
             return original.Replace("'", "''").Replace("\n", " ").Replace("’", "''").Replace("‘", "''").Replace("\t", " ").Replace("“", "\"").Replace("”", "\"");
