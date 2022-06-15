@@ -508,7 +508,16 @@ namespace GeckoBot.Commands
 
             for (int i = 0; (date.DayOfYear - 1) + (i * 367) < Gec._highestGecko; i++)
             {
-                final += $" {EmoteUtils.removeforbidden(Gec.geckos[DriveUtils.addZeros((date.DayOfYear - 1) + (i * 367))])}";
+                try
+                {
+                    final += $" {EmoteUtils.removeforbidden(Gec.geckos[DriveUtils.addZeros((date.DayOfYear - 1) + (i * 367))])}";
+                }
+                catch
+                {
+                    Gec.RefreshGec();
+                    DriveUtils.ImagePath((date.DayOfYear - 1) + (i * 367), false);
+                    final += $" {EmoteUtils.removeforbidden(Gec.geckos[DriveUtils.addZeros((date.DayOfYear - 1) + (i * 367))])}";
+                }
             }
 
             if (DmUsers[id].Item1 == false)
