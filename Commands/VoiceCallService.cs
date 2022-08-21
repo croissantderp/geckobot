@@ -77,7 +77,8 @@ namespace GeckoBot.Commands
 
             IAudioClient client;
 
-            string path = VoiceCall.queue[guild.Id][0];
+            string path = VoiceCall.queue[guild.Id][0].Item1;
+            bool delete = VoiceCall.queue[guild.Id][0].Item2;
 
             ConnectedChannels.TryGetValue(guild.Id, out client);
 
@@ -110,9 +111,12 @@ namespace GeckoBot.Commands
             }
 
             //timer for deletion
-            System.Timers.Timer timer = new(1000);
-            timer.Elapsed += (sender, e) => VoiceCall.delayDelete(timer, path);
-            timer.Start();
+            if (delete)
+            {
+                System.Timers.Timer timer = new(1000);
+                timer.Elapsed += (sender, e) => VoiceCall.delayDelete(timer, path);
+                timer.Start();
+            }
 
             Console.WriteLine("done");
 

@@ -17,7 +17,7 @@ namespace GeckoBot.Commands
     public sealed class VoiceCall : ModuleBase<SocketCommandContext>
     {
         //private readonly VoiceCallService _service;
-        public static Dictionary<ulong, List<string>> queue = new Dictionary<ulong, List<string>>();
+        public static Dictionary<ulong, List<(string, bool)>> queue = new Dictionary<ulong, List<(string,bool)>>();
 
         private readonly VoiceCallService _service;
 
@@ -316,7 +316,7 @@ namespace GeckoBot.Commands
         {
             string fileName = @"../../../dectalk/audio/" + Context.Message.Id.ToString() + ".wav";
 
-            //.txt file support
+                //.txt file support
             if (Context.Message.Attachments.Count != 0)
             {
                 IAttachment attach = Context.Message.Attachments.First();
@@ -338,6 +338,11 @@ namespace GeckoBot.Commands
                 }
             }
 
+            if (text == null)
+            {
+                await Context.Message.AddReactionAsync(new Emoji("❎"));
+                return;
+            }
             //cleans strings
             string cleanText = DectalkReplace(text, Context.Client);
 
@@ -391,6 +396,12 @@ namespace GeckoBot.Commands
                 }
             }
 
+            if (text == null)
+            {
+                await Context.Message.AddReactionAsync(new Emoji("❎"));
+                return;
+            }
+
             string cleanText = DectalkReplace(text, Context.Client);
 
             await DecTalk(@"./audio/" + Context.Message.Id.ToString() + ".wav", cleanText).WaitForExitAsync();
@@ -400,6 +411,53 @@ namespace GeckoBot.Commands
             string fullPath = new FileInfo(fileName).FullName;
 
             await vcdttimer(fullPath, Context.Guild);
+
+            await Context.Message.AddReactionAsync(new Emoji("✅"));
+        }
+
+        [Command("p", RunMode = RunMode.Async)]
+        [Summary("Plays some preset audio files in a voice call.")]
+        public async Task p([Remainder][Summary("the audio file that will play")] string text)
+        {
+            var voiceState = Context.User as IVoiceState;
+
+            if (voiceState?.VoiceChannel == null)
+            {
+                await ReplyAsync("You must be connected to a voice channel!");
+                return;
+            }
+
+            if (!VoiceCallService.channels.ContainsKey(Context.Guild.Id))
+            {
+                await _service.JoinAudio(Context.Guild, voiceState.VoiceChannel);
+
+                await Context.Message.AddReactionAsync(new Emoji("⏫"));
+            }
+
+            bool found = false;
+            string file = "";
+
+            DirectoryInfo thing = new DirectoryInfo(@"..\..\..\audio\");
+
+            FileInfo[] audioFiles = thing.GetFiles();
+
+            foreach (FileInfo audioFile in audioFiles)
+            {
+                if (audioFile.Name.Split(".")[0] == text)
+                {
+                    file = audioFile.FullName;
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                await ReplyAsync("Effect not found.");
+                return;
+            }
+
+            await vcdttimer(file, Context.Guild, false);
 
             await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
@@ -440,11 +498,11 @@ namespace GeckoBot.Commands
             timer.Start();
         }
 
-        public async Task vcdttimer(string fileName, IGuild guild)
+        public async Task vcdttimer(string fileName, IGuild guild, bool delete = true)
         {
             if (!queue.ContainsKey(guild.Id))
             {
-                bool success = queue.TryAdd(guild.Id, new List<string>() { fileName });
+                bool success = queue.TryAdd(guild.Id, new List<(string, bool)>() { (fileName, delete) });
 
                 if (!success)
                 {
@@ -457,7 +515,7 @@ namespace GeckoBot.Commands
             }
             else
             {
-                queue[guild.Id].Add(fileName);
+                queue[guild.Id].Add((fileName, delete));
             }
         }
 
