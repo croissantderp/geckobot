@@ -415,6 +415,17 @@ namespace GeckoBot.Commands
             await Context.Message.AddReactionAsync(new Emoji("✅"));
         }
 
+        [Command("audio list")]
+        [Summary("Finds all current audio files loaded in geckobot.")]
+        public async Task pList()
+        {
+            DirectoryInfo thing = new DirectoryInfo(@"..\..\..\audio\");
+
+            string[] audioFiles = thing.GetFiles().Select(a => a.Name).ToArray();
+
+            await ReplyAsync("Current playable audio:\n" + String.Join("\n", audioFiles));
+        }
+
         [Command("p", RunMode = RunMode.Async)]
         [Summary("Plays some preset audio files in a voice call.")]
         public async Task p([Remainder][Summary("the audio file that will play")] string text)

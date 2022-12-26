@@ -470,20 +470,18 @@ namespace GeckoBot.Commands
                 return;
             }
 
-            if (DmTimers.ContainsKey(id))
-            {
-                DmTimers[id].Dispose();
-                DmTimers.Remove(id);
-            }
-
             //starts a timer with desired amount of time
-
             double time = returnTimeToNextCheck(DmUsers[id].Item4, force);
 
             System.Timers.Timer t = new(time);
             t.Elapsed += async (sender, e) => await runChecks(id, true);
             t.Start();
 
+            if (DmTimers.ContainsKey(id))
+            {
+                DmTimers[id].Dispose();
+                DmTimers.Remove(id);
+            }
             DmTimers.Add(id, t);
 
             Console.WriteLine($"Initiated timer with id {id} to {DateTime.Now.AddMilliseconds(time)}");
