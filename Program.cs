@@ -41,6 +41,7 @@ namespace GeckoBot
             _config.GatewayIntents = 
                   GatewayIntents.DirectMessageReactions 
                 | GatewayIntents.DirectMessages 
+                | GatewayIntents.MessageContent
                 | GatewayIntents.DirectMessageTyping 
                 //| GatewayIntents.GuildBans 
                 | GatewayIntents.GuildEmojis

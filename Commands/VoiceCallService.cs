@@ -26,9 +26,9 @@ namespace GeckoBot.Commands
                 var stream = audioClient.CreatePCMStream(AudioApplication.Mixed);
                 channels.Add(guild.Id, (target, stream));
             }
-            catch
+            catch (Exception ex)
             {
-
+                Console.WriteLine(ex);
             }
         }
 

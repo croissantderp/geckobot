@@ -322,7 +322,7 @@ namespace GeckoBot.Commands
             var listRequest = driveService.Files.List();
             //listRequest.Fields = "nextPageToken, files(id, name)";
             listRequest.PageSize = 100; // Only fetch one hundred
-            listRequest.OrderBy = "name desc"; // Name descending gets the highest number gecko
+            listRequest.OrderBy = "name_natural desc"; // Name descending gets the highest number gecko
             listRequest.Q = "mimeType contains 'image'"; // Filter out folders or other non image types
             
             try
@@ -334,6 +334,7 @@ namespace GeckoBot.Commands
 
                     foreach (File a in files)
                     {
+                        Console.WriteLine(a.Name);
                         if (Regex.IsMatch(a.Name, @"^\d"))
                         {
                             return int.Parse(Regex.Replace(a.Name, @"_.+", ""));
