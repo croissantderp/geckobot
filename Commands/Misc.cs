@@ -100,26 +100,6 @@ namespace GeckoBot.Commands
             await ReplyAsync(test);
         }
 
-
-
-        [Command("diagnose")]
-        [Summary("Uses totally legit WebMD api to diagnose any conditions and diseases you might have (this is a joke)")]
-        public async Task diagnose([Summary("The symptoms you have")][Remainder] string symptoms)
-        {
-            string final = (symptoms.Length % 5) switch
-            {
-                0 => "You have terminal cancer.",
-                1 => "You are pregnant.",
-                2 => "You have terminal cancer.",
-                3 => "You have terminal cancer.",
-                4 => "You have terminal cancer.",
-                _ => "Never gonna give you up."
-            };
-
-            //adds reaction
-            await ReplyAsync(final);
-        }
-
         [Command("wisdom")]
         [Summary("Spews out wisdoms")]
         public async Task wisdom()

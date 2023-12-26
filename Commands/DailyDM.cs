@@ -248,12 +248,17 @@ namespace GeckoBot.Commands
 
         bool validyear(int year)
         {
+            //TEMPORARY OVERRIDE for year 3 specifically
+            return true;
+
+            /*
             if (year > ((Gec._highestGecko + 1) / 366))
             {
                 return false;
             }
 
             return true;
+            */
         }
 
         [Command("time")]
